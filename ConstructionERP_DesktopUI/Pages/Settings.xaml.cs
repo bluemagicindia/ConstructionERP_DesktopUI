@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using ConstructionERP_DesktopUI.Helpers;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
@@ -16,18 +19,17 @@ namespace ConstructionERP_DesktopUI.Pages
         public Settings(MainLayout mainLayout)
         {
             InitializeComponent();
+            DataContext = this;
             this.mainLayout = mainLayout;
+            NavigationCommand = new RelayCommand(mainLayout.SetActiveControl);
         }
 
         #endregion
 
-        #region Navigation Buttons
+        #region Navigation Command
 
-        private void BtnUnit_Click(object sender, RoutedEventArgs e)
-        {
-            mainLayout.SetActiveControl("Unit");
+        public ICommand NavigationCommand { get; private set; }
 
-        }
 
         #endregion
     }

@@ -24,7 +24,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Name="BtnUnit" Grid.Column="0" Grid.Row="0" Margin="15" Padding="10" Click="BtnUnit_Click">
+        <Button Name="BtnUnit" Grid.Column="0" Grid.Row="0" Margin="15" Padding="10" Command="{Binding NavigationCommand}" CommandParameter="Unit">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="8*" />
