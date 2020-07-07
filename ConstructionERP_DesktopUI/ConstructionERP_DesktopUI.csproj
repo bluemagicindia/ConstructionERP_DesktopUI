@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="API\LoginAPIHelper.cs" />
+    <Compile Include="API\UnitAPIHelper.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -96,9 +97,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\FieldValidation.cs" />
+    <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\LoggedInUser.cs" />
     <Compile Include="Models\LoginErrorResponse.cs" />
+    <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>
@@ -107,6 +110,12 @@
     </Compile>
     <Compile Include="Pages\MainLayout.xaml.cs">
       <DependentUpon>MainLayout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Unit.xaml.cs">
+      <DependentUpon>Unit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -134,7 +143,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Images\unit.png" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Pages\Dashboard.xaml">
       <SubType>Designer</SubType>
@@ -145,6 +156,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MainLayout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Unit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

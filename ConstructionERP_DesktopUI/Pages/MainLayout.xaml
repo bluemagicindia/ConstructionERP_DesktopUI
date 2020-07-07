@@ -218,7 +218,7 @@
                         </StackPanel>
                     </Button>-->
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="UnitView">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Click="MenuButton_Click" CommandParameter="Settings">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="CogsSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Settings</TextBlock>

@@ -40,7 +40,7 @@ namespace ConstructionERP_DesktopUI.Pages
             SetActiveControl(((Button)sender).CommandParameter);
         }
 
-        void SetActiveControl(object item)
+        public void SetActiveControl(object item)
         {
             object view = null;
             switch (item.ToString())
@@ -84,6 +84,12 @@ namespace ConstructionERP_DesktopUI.Pages
                 //case "QuotationView":
                 //    view = new QuotationView();
                 //    break;
+                case "Unit":
+                    view = new Unit(this);
+                    break;
+                case "Settings":
+                    view = new Settings(this);
+                    break;
                 default:
                     view = new Dashboard(this);
                     break;
