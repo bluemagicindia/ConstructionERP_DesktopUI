@@ -99,8 +99,14 @@
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\LoggedInUser.cs" />
     <Compile Include="Models\LoginErrorResponse.cs" />
+    <Compile Include="Pages\Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\MainLayout.xaml.cs">
+      <DependentUpon>MainLayout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -130,7 +136,15 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Pages\Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\MainLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,337 @@
+﻿<UserControl x:Class="ConstructionERP_DesktopUI.Pages.Dashboard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
+      mc:Ignorable="d" Background="#fff"
+      d:DesignHeight="1200" d:DesignWidth="1100">
+   
+    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.25*"/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="1.25*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1">
+
+                <!--Welcome Section-->
+                <StackPanel Name="WelcomeSection" Margin="0 10">
+                    <StackPanel.Background>
+                        <ImageBrush ImageSource="/Resources/Images/dash_back.png"/>
+                    </StackPanel.Background>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 70 0 0">
+                        <TextBlock Foreground="#333" FontSize="24" FontWeight="Normal" Padding="0 0 8 0">Welcome,</TextBlock>
+                        <TextBlock x:Name="LblUser" Foreground="#333" FontSize="24" FontWeight="SemiBold"></TextBlock>
+
+                    </StackPanel>
+                    <TextBlock FontSize="18" Foreground="#444" Padding="0 0 0 70" FontWeight="Normal">Here's what's happening on your project today</TextBlock>
+                </StackPanel>
+
+                <!--Project Completion-->
+                <StackPanel>
+                    <Border BorderBrush="#ccc" BorderThickness="1" Background="#fff" CornerRadius="4" Padding="15">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Foreground="#aaa" FontSize="14">70% COMPLETED</TextBlock>
+                                    <TextBlock Foreground="#444" FontSize="16" >20 Days left in this project</TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Foreground="#666" FontSize="11">Target Completion Date</TextBlock>
+                                    <TextBlock Foreground="#444" FontSize="17" >Aug, 12, 2020</TextBlock>
+                                </StackPanel>
+
+
+                            </Grid>
+
+                            <StackPanel Margin="0 20 0 10">
+                                <ProgressBar Value="70"></ProgressBar>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!--Project Related Info-->
+                <Grid Margin="0 16 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Left Column-->
+                    <StackPanel Grid.Column="0" Margin="0 0 8 0">
+
+                        <!--Project Links-->
+                        <StackPanel Margin="0 0 0 16">
+                            <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
+                                <StackPanel>
+                                    <TextBlock Foreground="#999" FontSize="13">PROJECT LINKS</TextBlock>
+                                    <Grid Margin="0 10 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <Border BorderThickness="0 0 1 0" Margin="0 10 0 0" BorderBrush="#ccc" >
+                                                <StackPanel Margin="10 0">
+                                                    <Button Margin="0 0 0 10" Style="{StaticResource TransparentButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <icons:PackIconFontAwesome Kind="FileExcelRegular" Height="25" Width="25"/>
+                                                            <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="15">10</TextBlock>
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">+ Sheets</Button>
+                                                </StackPanel>
+                                            </Border>
+
+
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" >
+                                            <Border BorderThickness="0 0 1 0" Margin="0 10 0 0" BorderBrush="#ccc" >
+
+
+                                                <StackPanel Margin="10 0">
+                                                    <Button Margin="0 0 0 10" Style="{StaticResource TransparentButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <icons:PackIconFontAwesome Kind="UsersSolid" Height="25" Width="25"/>
+                                                            <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="15">5</TextBlock>
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">+ Team</Button>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Margin="10 10 10 0" >
+                                            <Button Margin="0 0 0 10" Style="{StaticResource TransparentButton}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <icons:PackIconFontAwesome Kind="FileAltRegular" Height="25" Width="25"/>
+                                                    <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="15">10</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">+ Documents</Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!--Project Work-->
+                        <StackPanel Margin="0 0 0 16">
+                            <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
+                                <StackPanel>
+                                    <TextBlock Foreground="#999" FontSize="13">PROJECT WORK</TextBlock>
+                                    <Grid Margin="0 20 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <Border BorderThickness="0 0 1 0" Margin="0 10 0 0" BorderBrush="#ccc" >
+                                                <StackPanel Margin="10 0">
+                                                    <mah:Badged Badge="25" BadgePlacementMode="Top">
+                                                        <Button Margin="0 10 0 10" Style="{StaticResource TransparentButton}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <icons:PackIconFontAwesome Kind="TasksSolid" Foreground="{StaticResource SuccessColor}" Height="22" Width="22"/>
+                                                                <TextBlock VerticalAlignment="Center" Padding="7 0 0 0" Foreground="#333" FontSize="13">Ongoing Tasks</TextBlock>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </mah:Badged>
+                                                </StackPanel>
+                                            </Border>
+
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Column="1" Margin="0 10 0 0">
+                                            <StackPanel Margin="10 0">
+                                                <mah:Badged Badge="10" BadgePlacementMode="Top">
+                                                    <Button Margin="0 10 0 10" Style="{StaticResource TransparentButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <icons:PackIconFontAwesome Kind="TasksSolid" Foreground="{StaticResource WarningColor}" Height="22" Width="22"/>
+                                                            <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="13" VerticalAlignment="Center">Pending Tasks</TextBlock>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </mah:Badged>
+
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!--Material Info-->
+                        <StackPanel Margin="0 0 0 16">
+                            <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
+                                <StackPanel>
+                                    <TextBlock Foreground="#999" FontSize="13">MATERIAL INFO</TextBlock>
+                                    <Grid Margin="0 20 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--Pending Requests-->
+                                        <StackPanel Grid.Column="0">
+                                            <Border BorderThickness="0 0 1 0" Margin="0 10 0 0" BorderBrush="#ccc" >
+                                                <StackPanel Margin="10 0">
+                                                    <mah:Badged Badge="14" BadgePlacementMode="Top">
+                                                        <Button Margin="0 10 0 10" Style="{StaticResource TransparentButton}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <icons:PackIconFontAwesome Kind="ExclamationSolid" Foreground="{StaticResource WarningColor}" Height="22" Width="22"/>
+                                                                <TextBlock VerticalAlignment="Center" Padding="7 0 0 0" Foreground="#333" FontSize="13">Peding Requests</TextBlock>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </mah:Badged>
+                                                </StackPanel>
+                                            </Border>
+
+                                        </StackPanel>
+
+                                        <!--Passed Requests-->
+                                        <StackPanel Grid.Column="1" Margin="0 10 0 0">
+
+                                            <StackPanel Margin="10 0">
+                                                <mah:Badged Badge="99" BadgePlacementMode="Top">
+                                                    <Button Margin="0 10 0 10" Style="{StaticResource TransparentButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <icons:PackIconFontAwesome Kind="CheckCircleRegular" Foreground="{StaticResource SuccessColor}" Height="22" Width="22"/>
+                                                            <TextBlock VerticalAlignment="Center" Padding="7 0 0 0" Foreground="#333" FontSize="13">Passed Requests</TextBlock>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </mah:Badged>
+                                            </StackPanel>
+
+
+                                        </StackPanel>
+
+                                        <!--Recent Passed Requests-->
+                                        <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0 16 0 0">
+                                            <Border BorderThickness="0 1 0 0" BorderBrush="#ccc" >
+                                                <StackPanel Margin="10 30 10 0">
+                                                    <mah:Badged Badge="12" BadgePlacementMode="Top">
+                                                        <Button Margin="0 10 0 10" Style="{StaticResource TransparentButton}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <icons:PackIconFontAwesome Kind="CalendarCheckRegular" Foreground="{StaticResource SuccessColor}" Height="22" Width="22"/>
+                                                                <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="13" VerticalAlignment="Center">Recent Passed Requests</TextBlock>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </mah:Badged>
+
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+
+                        <!--Sales Links-->
+                        <StackPanel Margin="0 0 0 16">
+                            <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
+                                <StackPanel>
+                                    <TextBlock Foreground="#999" FontSize="13">SALES LINKS</TextBlock>
+                                    <Grid Margin="0 10 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <Border BorderThickness="0 0 1 0" Margin="0 10 0 0" BorderBrush="#ccc" >
+                                                <StackPanel Margin="10 0">
+                                                    <Button Margin="0 0 0 10" Style="{StaticResource TransparentButton}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <icons:PackIconFontAwesome Kind="UsersSolid" Height="25" Width="25"/>
+                                                            <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="15">15</TextBlock>
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">Customers</Button>
+                                                </StackPanel>
+                                            </Border>
+
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Margin="10 10 10 0" >
+                                            <Button Margin="0 0 0 10" Style="{StaticResource TransparentButton}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <icons:PackIconFontAwesome Kind="StopwatchSolid" Height="25" Width="25"/>
+                                                    <TextBlock Padding="7 0 0 0" Foreground="#333" FontSize="15">10</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">Pending</Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <!--Right Column-->
+                    <!--Recent Activity-->
+                    <StackPanel Grid.Column="1" Margin="8 0 0 0">
+                        <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
+                            <StackPanel>
+                                <TextBlock Foreground="#999" FontSize="13" Margin="0 0 0 10">RECENT ACTIVITY</TextBlock>
+                                <mah:SplitButton  x:Name="DrpActivityFilter" BorderBrush="{StaticResource PrimaryColor}" 
+                 HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="1">
+                                    <mah:SplitButton.Icon>
+                                        <icons:PackIconFontAwesome Margin="6" Kind="ListAltRegular" />
+                                    </mah:SplitButton.Icon>
+                                </mah:SplitButton>
+
+                                <StackPanel x:Name="TimeLineStack" Margin="0 40 0 0">
+                                    <StackPanel >
+                                        <StackPanel Orientation="Horizontal">
+                                            <icons:PackIconFontAwesome Kind="CalendarAltRegular" Height="20" Width="20" Foreground="#333" />
+                                            <TextBlock Padding="10 0 0 20" FontSize="15" Foreground="#333">May 30, 2020</TextBlock>
+                                        </StackPanel>
+
+                                        <StackPanel Margin="20 0 0 10" Orientation="Horizontal">
+                                            <icons:PackIconFontAwesome Foreground="#666" Kind="ArrowAltCircleRightRegular" Height="18" Width="18" />
+                                            <TextBlock Foreground="#666" FontSize="13" Padding="10 0 0 0">Basharat Hussain created a new project</TextBlock>
+                                        </StackPanel>
+
+                                        <StackPanel Margin="20 0 0 10" Orientation="Horizontal">
+                                            <icons:PackIconFontAwesome Foreground="#666" Kind="ArrowAltCircleRightRegular" Height="18" Width="18" />
+                                            <TextBlock Foreground="#666" FontSize="13" Padding="10 0 0 0">Basharat Hussain created a new document</TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>
+

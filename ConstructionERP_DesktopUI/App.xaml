@@ -16,19 +16,11 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <ControlTemplate x:Key="ErrorTemplate">
-                <StackPanel>
-                    <AdornedElementPlaceholder />
-                    <TextBlock Text="{Binding [0].ErrorContent}" Foreground="OrangeRed" Margin="0 3 0 0" ></TextBlock>
-                </StackPanel>
-
-            </ControlTemplate>
-
             <SolidColorBrush x:Key="PrimaryColor" Color="#3393DF"/>
             <SolidColorBrush x:Key="SecondaryColor" Color="#ff9900"/>
             <SolidColorBrush x:Key="DangerColor" Color="#cc0000"/>
             <SolidColorBrush x:Key="WarningColor" Color="#ff9900"/>
-            <SolidColorBrush x:Key="SuccessColor" Color="{StaticResource PrimaryColor}"/>
+            <SolidColorBrush x:Key="SuccessColor" Color="#1f9f3c"/>
             <SolidColorBrush x:Key="FadeColor" Color="#999999"/>
 
             <Style  x:Key="WatermarkTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -265,7 +257,7 @@
             <Style TargetType="Button" x:Key="NavigationButton" BasedOn="{StaticResource {x:Type Button}}" >
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Foreground" Value="#ddd"/>
+                <Setter Property="Foreground" Value="#fff"/>
                 <Setter Property="Padding" Value="25 13"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="FontWeight" Value="Normal"/>

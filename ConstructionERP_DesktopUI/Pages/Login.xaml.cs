@@ -62,13 +62,13 @@ namespace ConstructionERP_DesktopUI.Pages
                         LoggedInUser loggedInUser = await loginAPIHelper.GetLoggedInUser(authenticatedUser.Access_Token).ConfigureAwait(false);
                         loggedInUser.Token = authenticatedUser.Access_Token;
                         Application.Current.Properties["LoggedInUser"] = loggedInUser;
-                        //Application.Current.Dispatcher.Invoke((Action)delegate
-                        //{
-                        //    AdminLayoutView adminLayoutView = new AdminLayoutView();
-                        //    adminLayoutView.Show();
-                        //    Application.Current.Windows[0].Close();
+                      this.Dispatcher.Invoke((Action)delegate
+                        {
+                            MainLayout mainLayout = new MainLayout();
+                            mainLayout.Show();
+                            this.Close();
 
-                        //});
+                        });
 
                     }
                     else
