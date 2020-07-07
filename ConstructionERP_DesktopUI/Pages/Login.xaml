@@ -1,0 +1,47 @@
+﻿<mah:MetroWindow x:Class="ConstructionERP_DesktopUI.Pages.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
+                 xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d" TitleCharacterCasing="Normal"
+                 ResizeMode="NoResize"
+                 WindowStartupLocation="CenterScreen"
+        Title="User Login" Height="475" Width="330">
+
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button>
+                <icons:PackIconFontAwesome Width="18" Height="18" Kind="SignInAltSolid" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+
+    <StackPanel>
+        <TextBlock TextAlignment="Center" Margin="0 35 0 0">
+            <icons:PackIconFontAwesome Kind="UserLockSolid" Foreground="{StaticResource PrimaryColor}" Height="100" Width="100" />
+        </TextBlock>
+        <TextBlock TextAlignment="Center" Text="Login" FontSize="24" Margin="0 10 0 0" />
+
+        <StackPanel Margin="50 10 50 10">
+
+            <TextBox x:Name="TxtUserName" MaxLength="25" Margin="0 0 0 25" Style="{StaticResource WatermarkTextBox}" mah:TextBoxHelper.Watermark="Username"></TextBox>
+
+            <PasswordBox x:Name="TxtPassword" MaxLength="16" Style="{StaticResource WatermarkPasswordBox}" mah:TextBoxHelper.Watermark="Password"  Margin="0 0 0 25" >
+            </PasswordBox>
+
+            <CheckBox x:Name="ChkRememberMe" Content="Remember Me" Margin="0 10 0 0">
+            </CheckBox>
+            <Button x:Name="BtnLogin" Click="BtnLogin_Click" Style="{StaticResource SquaredButton}" Width="150" Margin="0 20 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <icons:PackIconFontAwesome x:Name="BtnIcon" Kind="SignInAltSolid" VerticalAlignment="Center" />
+                    <TextBlock Text="Login" VerticalAlignment="Center" Padding="5 0 0 0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+
+</mah:MetroWindow>
+
