@@ -66,6 +66,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "SalesEnquiry":
                     view = new SalesEnquiry(this);
                     break;
+                case "Quotation":
+                    view = new Quotation(this);
+                    break;
                 case "Settings":
                     view = new Settings(this);
                     break;

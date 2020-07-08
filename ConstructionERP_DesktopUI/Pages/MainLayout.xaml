@@ -105,7 +105,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Tasks">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="TasksMain">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="TasksSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Tasks</TextBlock>
@@ -132,15 +132,6 @@
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Documents</TextBlock>
                         </StackPanel>
                     </Button>
-
-                   
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="SalesEnquiryView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ChartBarRegular" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Sales Enquiry</TextBlock>
-                        </StackPanel>
-                    </Button>-->
 
 
                     <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="QuotationView">
@@ -203,6 +194,20 @@
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ChartBarSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Sales Enquiry</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectsMain">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="BuildingSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Projects</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Quotation">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Quotations</TextBlock>
                         </StackPanel>
                     </Button>
 

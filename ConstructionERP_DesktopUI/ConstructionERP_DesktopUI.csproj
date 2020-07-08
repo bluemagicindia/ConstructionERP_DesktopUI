@@ -91,6 +91,7 @@
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
+    <Compile Include="API\QuotationAPIHelper.cs" />
     <Compile Include="API\SalesEnquiryAPIHelper.cs" />
     <Compile Include="API\SupplierAPIHelper.cs" />
     <Compile Include="API\UnitAPIHelper.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Models\LoggedInUser.cs" />
     <Compile Include="Models\LoginErrorResponse.cs" />
     <Compile Include="Models\MaterialModel.cs" />
+    <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
     <Compile Include="Models\UnitModel.cs" />
@@ -131,6 +133,9 @@
     </Compile>
     <Compile Include="Pages\MaterialMain.xaml.cs">
       <DependentUpon>MaterialMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Quotation.xaml.cs">
+      <DependentUpon>Quotation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SalesEnquiry.xaml.cs">
       <DependentUpon>SalesEnquiry.xaml</DependentUpon>
@@ -202,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MaterialMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Quotation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
