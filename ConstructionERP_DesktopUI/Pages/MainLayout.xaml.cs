@@ -1,4 +1,6 @@
-﻿using ConstructionERP_DesktopUI.Models;
+﻿using ConstructionERP_DesktopUI.Helpers;
+using ConstructionERP_DesktopUI.Models;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,37 +10,30 @@ namespace ConstructionERP_DesktopUI.Pages
     /// <summary>
     /// Interaction logic for MainLayout.xaml
     /// </summary>
-    public partial class MainLayout
+    public partial class MainLayout : INotifyPropertyChanged
     {
         #region Initialization
-
-        public LoggedInUser loggedInUser = null;
 
         public MainLayout()
         {
             InitializeComponent();
+            DataContext = this;
             SetValues();
+
         }
 
         void SetValues()
         {
-            loggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
-            if (loggedInUser != null)
-            {
-                LblUser.Text = loggedInUser.Name;
-
-            }
-            SetActiveControl("Dashboard");
+            NavigationCommand = new RelayCommand(SetActiveControl);
+            LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
+            NavigationCommand.Execute("Dashboard");
         }
 
         #endregion
 
         #region ActiveControl
 
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            SetActiveControl(((Button)sender).CommandParameter);
-        }
+        public ICommand NavigationCommand { get; private set; }
 
         public void SetActiveControl(object item)
         {
@@ -48,44 +43,14 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Dashboard":
                     view = new Dashboard(this);
                     break;
-                //case "ProjectView":
-                //    view = new ProjectView();
-                //    break;
-                //case "SalesEnquiryView":
-                //    view = new SalesEnquiryView();
-                //    break;
-                //case "UnitView":
-                //    view = new UnitView();
-                //    break;
-                //case "ContractorView":
-                //    view = new ContractorView();
-                //    break;
-                //case "SupplierView":
-                //    view = new SupplierView();
-                //    break;
-                //case "SiteManagerView":
-                //    view = new SiteManagerView();
-                //    break;
-                //case "StatusView":
-                //    view = new StatusView();
-                //    break;
-                //case "TaskTypeView":
-                //    view = new TaskTypeView();
-                //    break;
-                //case "StampView":
-                //    view = new StampView();
-                //    break;
-                //case "MaterialView":
-                //    view = new MaterialView();
-                //    break;
-                //case "TeamView":
-                //    view = new TeamView();
-                //    break;
-                //case "QuotationView":
-                //    view = new QuotationView();
-                //    break;
                 case "Unit":
                     view = new Unit(this);
+                    break;
+                case "MaterialMain":
+                    view = new MaterialMain(this);
+                    break;
+                case "Material":
+                    view = new Material(this);
                     break;
                 case "Settings":
                     view = new Settings(this);
@@ -99,5 +64,28 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Properties
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        private LoggedInUser loggedInUser;
+
+        public LoggedInUser LoggedInUser
+        {
+            get { return loggedInUser; }
+            set
+            {
+                loggedInUser = value;
+                OnPropertyChanged("LoggedInUser");
+            }
+        }
+
+        #endregion
     }
 }

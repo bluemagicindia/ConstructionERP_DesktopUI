@@ -26,7 +26,7 @@
 
                     <StackPanel Orientation="Horizontal" Margin="0 70 0 0">
                         <TextBlock Foreground="#333" FontSize="24" FontWeight="Normal" Padding="0 0 8 0">Welcome,</TextBlock>
-                        <TextBlock x:Name="LblUser" Foreground="#333" FontSize="24" FontWeight="SemiBold"></TextBlock>
+                        <TextBlock Foreground="#333" FontSize="24" FontWeight="SemiBold" Text="{Binding ParentLayout.LoggedInUser.Name}"></TextBlock>
 
                     </StackPanel>
                     <TextBlock FontSize="18" Foreground="#444" Padding="0 0 0 70" FontWeight="Normal">Here's what's happening on your project today</TextBlock>

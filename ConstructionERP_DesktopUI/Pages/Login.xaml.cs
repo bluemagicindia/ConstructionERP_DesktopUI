@@ -5,56 +5,112 @@ using System.Collections.Generic;
 using System.Windows;
 using MahApps.Metro.IconPacks;
 using ConstructionERP_DesktopUI.Helpers;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class Login
+    public partial class Login: INotifyPropertyChanged
     {
+
         #region Initilization
 
         LoginAPIHelper loginAPIHelper;
         public Login()
         {
             InitializeComponent();
+            DataContext = this;
             loginAPIHelper = new LoginAPIHelper();
+            LoginCommand = new RelayCommand(async delegate { await Task.Run(() => DoLogin()); }, CLogin);
         }
 
         #endregion
 
-        #region Login
+        #region Properties
 
-        private async void BtnLogin_Click(object sender, RoutedEventArgs e)
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            #region Field Buildup
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
-            List<KeyValuePair<string, string>> fields = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("UserName", TxtUserName.Text),
-                    new KeyValuePair<string, string>("Password", TxtPassword.Password)
-                };
+        private string userName = "hussain@gmail.com";
 
-            #endregion
-
-            if (FieldValidation.ValidateFields(fields))
+        public string UserName
+        {
+            get { return userName; }
+            set
             {
+                userName = value;
+                OnPropertyChanged("UserName");
+            }
+        }
+
+      
+        private string password = "Pass@123";
+
+        public  string Password
+        {
+            get { return password; }
+            set
+            {
+                password = value;
+                OnPropertyChanged("Password");
+            }
+        }
+
+        #endregion
+
+        #region Login Command
+
+        public ICommand LoginCommand { get; private set; }
+
+        private bool canLogin = true;
+
+        public bool CanLogin
+        {
+            get { return canLogin; }
+            set
+            {
+                canLogin = value;
+                OnPropertyChanged("CanLogin");
+                OnPropertyChanged("IsSpinning");
+                OnPropertyChanged("LoginBtnText");
+                OnPropertyChanged("LoginBtnIcon");
+            }
+        }
+
+        public bool CLogin() => canLogin;
+
+        public bool IsSpinning => !canLogin;
+
+        public string LoginBtnText => canLogin ? "Login" : "Wait...";
+
+        public string LoginBtnIcon => canLogin ? "SignInAltSolid" : "SpinnerSolid";
+
+        private async Task DoLogin()
+        {
+            List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("UserName", UserName),
+                    new KeyValuePair<string, string>("Password", Password)
+                };
+            if (FieldValidation.ValidateFields(values))
+            {
+                CanLogin = false;
                 try
                 {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        BtnIcon.Kind = PackIconFontAwesomeKind.SpinnerSolid;
-                        BtnIcon.Spin = true;
-                        BtnLogin.IsEnabled = false;
-                    });
-
-                    var result = await loginAPIHelper.Authenticate(TxtUserName.Text, TxtPassword.Password).ConfigureAwait(false);
+                    LoginAPIHelper loginAPIHelper = new LoginAPIHelper();
+                    var result = await loginAPIHelper.Authenticate(UserName, Password).ConfigureAwait(false);
                     if (result.GetType() == typeof(LoginErrorResponse))
                     {
                         LoginErrorResponse response = result as LoginErrorResponse;
                         MessageBox.Show(response.Error_Description, response.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-
                     }
                     else if (result.GetType() == typeof(AuthenticatedUser))
                     {
@@ -62,10 +118,10 @@ namespace ConstructionERP_DesktopUI.Pages
                         LoggedInUser loggedInUser = await loginAPIHelper.GetLoggedInUser(authenticatedUser.Access_Token).ConfigureAwait(false);
                         loggedInUser.Token = authenticatedUser.Access_Token;
                         Application.Current.Properties["LoggedInUser"] = loggedInUser;
-                      this.Dispatcher.Invoke((Action)delegate
+                        Application.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            MainLayout mainLayout = new MainLayout();
-                            mainLayout.Show();
+                            MainLayout adminLayoutView = new MainLayout();
+                            adminLayoutView.Show();
                             this.Close();
 
                         });
@@ -75,24 +131,12 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show("OOPS! Unexpected error occured", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        BtnIcon.Kind = PackIconFontAwesomeKind.SignInAltSolid;
-                        BtnIcon.Spin = false;
-                        BtnLogin.IsEnabled = true;
-                    });
-
+                    CanLogin = true;
                 }
                 catch (Exception ex)
                 {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        BtnIcon.Kind = PackIconFontAwesomeKind.SignInAltSolid;
-                        BtnIcon.Spin = false;
-                        BtnLogin.IsEnabled = true;
-
-                    });
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CanLogin = true;
                 }
             }
         }

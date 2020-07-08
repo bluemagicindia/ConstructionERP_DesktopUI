@@ -5,25 +5,33 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for Unit.xaml
+    /// Interaction logic for Material.xaml
     /// </summary>
-    public partial class Unit : UserControl, INotifyPropertyChanged
+    public partial class Material : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
-        private UnitAPIHelper apiHelper;
+        private MaterialAPIHelper apiHelper;
 
-        public Unit(MainLayout mainLayout)
+        public Material(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
@@ -33,11 +41,12 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            apiHelper = new UnitAPIHelper();
+            apiHelper = new MaterialAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
+            new Action(async () => await GetMaterials())();
             new Action(async () => await GetUnits())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateUnit()); }, () => CanSaveUnit);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteUnit()); }, () => CanDeleteUnit);
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateMaterial()); }, () => CanSaveMaterial);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteMaterial()); }, () => CanDeleteMaterial);
         }
 
         #endregion
@@ -64,16 +73,17 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
-        //Selected Unit
-        private UnitModel selectedUnit;
 
-        public UnitModel SelectedUnit
+        //Selected Material
+        private MaterialModel selectedMaterial;
+
+        public MaterialModel SelectedMaterial
         {
-            get { return selectedUnit; }
+            get { return selectedMaterial; }
             set
             {
-                selectedUnit = value;
-                OnPropertyChanged("SelectedUnit");
+                selectedMaterial = value;
+                OnPropertyChanged("SelectedMaterial");
             }
         }
 
@@ -103,6 +113,32 @@ namespace ConstructionERP_DesktopUI.Pages
                 OnPropertyChanged("Title");
             }
         }
+
+        //Unit
+        private ObservableCollection<UnitModel> units;
+
+        public ObservableCollection<UnitModel> Units
+        {
+            get { return units; }
+            set
+            {
+                units = value;
+                OnPropertyChanged("Units");
+            }
+        }
+
+        private UnitModel unit;
+
+        public UnitModel Unit
+        {
+            get { return unit; }
+            set
+            {
+                unit = value;
+                OnPropertyChanged("Unit");
+            }
+        }
+
 
         #endregion
 
@@ -140,10 +176,12 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedUnit != null)
+                    if (SelectedMaterial != null)
                     {
-                        ID = SelectedUnit.ID;
-                        Title = SelectedUnit.Title;
+                        ID = SelectedMaterial.ID;
+                        Title = SelectedMaterial.Name;
+                        Unit = SelectedMaterial.Unit;
+
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -166,34 +204,31 @@ namespace ConstructionERP_DesktopUI.Pages
                     OperationsVisibility = OperationsVisibility == "Visible" ? "Collapsed" : "Visible";
                     break;
 
-
             }
-
-
 
         }
 
         #endregion
 
-        #region Get Units
+        #region Get Materials
 
-        private ObservableCollection<UnitModel> units;
+        private ObservableCollection<MaterialModel> materials;
 
-        public ObservableCollection<UnitModel> Units
+        public ObservableCollection<MaterialModel> Materials
         {
-            get { return units; }
+            get { return materials; }
             set
             {
-                units = value;
-                OnPropertyChanged("Units");
+                materials = value;
+                OnPropertyChanged("Materials");
             }
         }
 
-        private async Task GetUnits()
+        private async Task GetMaterials()
         {
             try
             {
-                Units = await apiHelper.GetUnits(ParentLayout.LoggedInUser.Token);
+                Materials = await apiHelper.GetMaterials(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -205,7 +240,25 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Unit Command
+        #region Get Units
+
+        private async Task GetUnits()
+        {
+            try
+            {
+                Units = await new UnitAPIHelper().GetUnits(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
+
+        #endregion
+
+        #region Create and Edit Material Command
 
         private bool isUpdate;
 
@@ -222,72 +275,81 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveUnit = true;
+        private bool canSaveMaterial = true;
 
-        public bool CanSaveUnit
+        public bool CanSaveMaterial
         {
-            get { return canSaveUnit; }
+            get { return canSaveMaterial; }
             set
             {
-                canSaveUnit = value;
-                OnPropertyChanged("CreateUnit");
+                canSaveMaterial = value;
+                OnPropertyChanged("CreateMaterial");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveUnit;
+        public bool IsSaveSpinning => !canSaveMaterial;
 
-        public string SaveBtnText => canSaveUnit ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveMaterial ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveUnit ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveMaterial ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateUnit()
+        private async Task CreateMaterial()
         {
-            List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("Title", Title)
-                };
-            if (FieldValidation.ValidateFields(values))
+            try
             {
-                CanSaveUnit = false;
-                try
+                List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
-                    UnitModel unitData = new UnitModel()
+                    new KeyValuePair<string, string>("Name", Title),
+                    new KeyValuePair<string, string>("Unit", Unit.Title)
+                };
+                if (FieldValidation.ValidateFields(values))
+                {
+                    CanSaveMaterial = false;
+
+                    MaterialModel materialData = new MaterialModel()
                     {
-                        Title = Title,
+                        Name = Title,
+                        UnitID = Unit.ID,
+                       
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        unitData.ID = ID;
-                        unitData.CreatedBy = SelectedUnit.CreatedBy;
-                        result = await apiHelper.PutUnit(ParentLayout.LoggedInUser.Token, unitData).ConfigureAwait(false);
+                        materialData.ID = ID;
+                        materialData.CreatedBy = selectedMaterial.CreatedBy;
+                        result = await apiHelper.PutMaterial(ParentLayout.LoggedInUser.Token, materialData).ConfigureAwait(false);
                     }
                     else
                     {
-                        unitData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostUnit(ParentLayout.LoggedInUser.Token, unitData).ConfigureAwait(false);
+                        materialData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostMaterial(ParentLayout.LoggedInUser.Token, materialData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Unit Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetUnits();
+                        MessageBox.Show($"Material Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetMaterials();
                         ClearFields();
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Unit", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving Material", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveUnit = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveUnit = true;
-                }
+                    CanSaveMaterial = true;
 
+
+                }
+                else
+                {
+                    MessageBox.Show("Please fill in all the fields", "Fields Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                CanSaveMaterial = true;
             }
 
         }
@@ -298,6 +360,7 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 ID = 0;
                 Title = "";
+                Unit = new UnitModel();
             }
             catch (Exception)
             {
@@ -307,67 +370,65 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Unit Command
+        #region Delete Material Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteUnit = true;
+        private bool canDeleteMaterial = true;
 
-
-        public bool CanDeleteUnit
+        public bool CanDeleteMaterial
         {
-            get { return canDeleteUnit; }
+            get { return canDeleteMaterial; }
             set
             {
-                canSaveUnit = value;
-                OnPropertyChanged("DeleteUnit");
+                canSaveMaterial = value;
+                OnPropertyChanged("DeleteMaterial");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteUnit;
+        public bool IsDeleteSpinning => !canDeleteMaterial;
 
-        public string DeleteBtnText => canDeleteUnit ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteMaterial ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteUnit ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteMaterial ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteUnit()
+        private async Task DeleteMaterial()
         {
 
-            if (SelectedUnit != null)
+            if (SelectedMaterial != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {SelectedUnit.Title}'s Unit?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedMaterial.Name} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteUnit = false;
+                CanDeleteMaterial = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteUnit(ParentLayout.LoggedInUser.Token, SelectedUnit.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteMaterial(ParentLayout.LoggedInUser.Token, SelectedMaterial.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetUnits();
+                        await GetMaterials();
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Unit", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting Material", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveUnit = true;
+                    CanSaveMaterial = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteUnit = true;
+                    CanDeleteMaterial = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select an unit to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select a Material to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
 
         #endregion
-
     }
 }
