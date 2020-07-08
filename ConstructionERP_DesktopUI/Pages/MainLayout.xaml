@@ -185,7 +185,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Suppliers">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SuppliersMain">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTagSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Suppliers</TextBlock>
