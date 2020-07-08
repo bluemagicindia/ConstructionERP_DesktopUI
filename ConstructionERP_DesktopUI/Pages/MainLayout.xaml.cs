@@ -42,14 +42,8 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Dashboard":
                     view = new Dashboard(this);
                     break;
-                case "Unit":
-                    view = new Unit(this);
-                    break;
-                case "MaterialMain":
-                    view = new MaterialMain(this);
-                    break;
-                case "Material":
-                    view = new Material(this);
+                case "TasksMain":
+                    view = new TaskMain(this);
                     break;
                 case "ContractorsMain":
                     view = new ContractorsMain(this);
@@ -63,8 +57,20 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Supplier":
                     view = new Supplier(this);
                     break;
+                case "MaterialMain":
+                    view = new MaterialMain(this);
+                    break;
+                case "Unit":
+                    view = new Unit(this);
+                    break;
+                case "Material":
+                    view = new Material(this);
+                    break;
                 case "SalesEnquiry":
                     view = new SalesEnquiry(this);
+                    break;
+                case "ProjectsMain":
+                    view = new ProjectMain(this);
                     break;
                 case "Quotation":
                     view = new Quotation(this);
