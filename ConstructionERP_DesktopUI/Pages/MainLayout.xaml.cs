@@ -2,7 +2,6 @@
 using ConstructionERP_DesktopUI.Models;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ConstructionERP_DesktopUI.Pages
@@ -52,10 +51,16 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Material":
                     view = new Material(this);
                     break;
+                case "ContractorsMain":
+                    view = new ContractorsMain(this);
+                    break;
+                case "Contractor":
+                    view = new Contractor(this);
+                    break;
                 case "SuppliersMain":
                     view = new SuppliersMain(this);
                     break;
-                case "Suppliers":
+                case "Supplier":
                     view = new Supplier(this);
                     break;
                 case "SalesEnquiry":

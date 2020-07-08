@@ -14,15 +14,16 @@ using System.Windows.Input;
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for Supplier.xaml
+    /// Interaction logic for Contractor.xaml
     /// </summary>
-    public partial class Supplier : UserControl, INotifyPropertyChanged
+    public partial class Contractor : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
-        private SupplierAPIHelper apiHelper;
-        public Supplier(MainLayout mainLayout)
+        private ContractorAPIHelper apiHelper;
+
+        public Contractor(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
@@ -30,15 +31,15 @@ namespace ConstructionERP_DesktopUI.Pages
             SetValues();
         }
 
+
         void SetValues()
         {
-            apiHelper = new SupplierAPIHelper();
+            apiHelper = new ContractorAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetSuppliers())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSupplier()); }, () => CanSaveSupplier);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSupplier()); }, () => CanDeleteSupplier);
+            new Action(async () => await GetContractors())();
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateContractor()); }, () => CanSaveContractor);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteContractor()); }, () => CanDeleteContractor);
         }
-
 
         #endregion
 
@@ -65,15 +66,15 @@ namespace ConstructionERP_DesktopUI.Pages
 
 
         //Selected Enquiry
-        private SupplierModel selectedSupplier;
+        private ContractorModel selectedContractor;
 
-        public SupplierModel SelectedSupplier
+        public ContractorModel SelectedContractor
         {
-            get { return selectedSupplier; }
+            get { return selectedContractor; }
             set
             {
-                selectedSupplier = value;
-                OnPropertyChanged("SelectedSupplier");
+                selectedContractor = value;
+                OnPropertyChanged("SelectedContractor");
             }
         }
 
@@ -92,15 +93,15 @@ namespace ConstructionERP_DesktopUI.Pages
 
 
         //Name
-        private string supplierName;
+        private string contractorName;
 
-        public string SupplierName
+        public string ContractorName
         {
-            get { return supplierName; }
+            get { return contractorName; }
             set
             {
-                supplierName = value;
-                OnPropertyChanged("SupplierName");
+                contractorName = value;
+                OnPropertyChanged("ContractorName");
             }
         }
 
@@ -192,14 +193,14 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedSupplier != null)
+                    if (SelectedContractor != null)
                     {
-                        ID = SelectedSupplier.ID;
-                        SupplierName = SelectedSupplier.Name;
-                        Phone = SelectedSupplier.Phone;
-                        Email = SelectedSupplier.Email;
-                        GSTN = SelectedSupplier.GSTN;
-                        WorkDescription = SelectedSupplier.WorkDescription;
+                        ID = SelectedContractor.ID;
+                        ContractorName = SelectedContractor.Name;
+                        Phone = SelectedContractor.Phone;
+                        Email = SelectedContractor.Email;
+                        GSTN = SelectedContractor.GSTN;
+                        WorkDescription = SelectedContractor.WorkDescription;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -228,25 +229,25 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Get Suppliers
+        #region Get Contractors
 
-        private ObservableCollection<SupplierModel> suppliers;
+        private ObservableCollection<ContractorModel> contractors;
 
-        public ObservableCollection<SupplierModel> Suppliers
+        public ObservableCollection<ContractorModel> Contractors
         {
-            get { return suppliers; }
+            get { return contractors; }
             set
             {
-                suppliers = value;
-                OnPropertyChanged("Suppliers");
+                contractors = value;
+                OnPropertyChanged("Contractors");
             }
         }
 
-        private async Task GetSuppliers()
+        private async Task GetContractors()
         {
             try
             {
-                Suppliers = await apiHelper.GetSuppliers(ParentLayout.LoggedInUser.Token);
+                Contractors = await apiHelper.GetContractors(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -258,7 +259,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Supplier Command
+        #region Create and Edit Contractor Command
 
         private bool isUpdate;
 
@@ -275,32 +276,32 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveSupplier = true;
+        private bool canSaveContractor = true;
 
-        public bool CanSaveSupplier
+        public bool CanSaveContractor
         {
-            get { return canSaveSupplier; }
+            get { return canSaveContractor; }
             set
             {
-                canSaveSupplier = value;
-                OnPropertyChanged("CreateSupplier");
+                canSaveContractor = value;
+                OnPropertyChanged("CreateContractor");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveSupplier;
+        public bool IsSaveSpinning => !canSaveContractor;
 
-        public string SaveBtnText => canSaveSupplier ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveContractor ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveSupplier ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveContractor ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateSupplier()
+        private async Task CreateContractor()
         {
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("Name", SupplierName),
+                    new KeyValuePair<string, string>("Name", ContractorName),
                     new KeyValuePair<string, string>("Phone", Phone),
                     new KeyValuePair<string, string>("Email", Email),
                     new KeyValuePair<string, string>("GSTN", GSTN),
@@ -309,48 +310,47 @@ namespace ConstructionERP_DesktopUI.Pages
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveSupplier = false;
+                CanSaveContractor = false;
                 try
                 {
-                    SupplierModel supplierData = new SupplierModel()
+                    ContractorModel contractorData = new ContractorModel()
                     {
-                        Name = SupplierName,
+                        Name = ContractorName,
                         Phone = phone,
                         Email = Email,
                         GSTN = GSTN,
                         WorkDescription = WorkDescription,
-
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        supplierData.ID = ID;
-                        supplierData.CreatedBy = SelectedSupplier.CreatedBy;
-                        supplierData.ModifiedOn = DateTime.Now;
-                        supplierData.ModifiedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PutSupplier(ParentLayout.LoggedInUser.Token, supplierData).ConfigureAwait(false);
+                        contractorData.ID = ID;
+                        contractorData.CreatedBy = SelectedContractor.CreatedBy;
+                        contractorData.ModifiedOn = DateTime.Now;
+                        contractorData.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PutContractor(ParentLayout.LoggedInUser.Token, contractorData).ConfigureAwait(false);
                     }
                     else
                     {
-                        supplierData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostSupplier(ParentLayout.LoggedInUser.Token, supplierData).ConfigureAwait(false);
+                        contractorData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostContractor(ParentLayout.LoggedInUser.Token, contractorData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Supplier Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetSuppliers();
+                        MessageBox.Show($"Contractor Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetContractors();
                         ClearFields();
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Supplier", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving Contractor", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSupplier = true;
+                    CanSaveContractor = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveSupplier = true;
+                    CanSaveContractor = true;
                 }
 
             }
@@ -362,7 +362,7 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 ID = 0;
-                SupplierName = "";
+                ContractorName = "";
                 Phone = "";
                 Email = "";
                 GSTN = "";
@@ -376,61 +376,61 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Supplier Command
+        #region Delete Contractor Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteSupplier = true;
+        private bool canDeleteContractor = true;
 
-        public bool CanDeleteSupplier
+        public bool CanDeleteContractor
         {
-            get { return canDeleteSupplier; }
+            get { return canDeleteContractor; }
             set
             {
-                canSaveSupplier = value;
-                OnPropertyChanged("DeleteSupplier");
+                canSaveContractor = value;
+                OnPropertyChanged("DeleteContractor");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteSupplier;
+        public bool IsDeleteSpinning => !canDeleteContractor;
 
-        public string DeleteBtnText => canDeleteSupplier ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteContractor ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteSupplier ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteContractor ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteSupplier()
+        private async Task DeleteContractor()
         {
 
-            if (SelectedSupplier != null)
+            if (SelectedContractor != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {SelectedSupplier.Name} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedContractor.Name} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteSupplier = false;
+                CanDeleteContractor = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteSupplier(ParentLayout.LoggedInUser.Token, SelectedSupplier.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteContractor(ParentLayout.LoggedInUser.Token, SelectedContractor.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetSuppliers();
+                        await GetContractors();
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Supplier", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting Contractor", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSupplier = true;
+                    CanSaveContractor = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteSupplier = true;
+                    CanDeleteContractor = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select a Supplier to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select an Contractor to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
