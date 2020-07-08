@@ -91,8 +91,10 @@
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
+    <Compile Include="API\TaskStatusAPIHelper.cs" />
     <Compile Include="API\QuotationAPIHelper.cs" />
     <Compile Include="API\SalesEnquiryAPIHelper.cs" />
+    <Compile Include="API\ProjectStatusAPIHelper.cs" />
     <Compile Include="API\SupplierAPIHelper.cs" />
     <Compile Include="API\UnitAPIHelper.cs" />
     <Compile Include="App.xaml.cs">
@@ -111,7 +113,9 @@
     <Compile Include="Models\MaterialModel.cs" />
     <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
+    <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
+    <Compile Include="Models\TypeModel.cs" />
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">
       <DependentUpon>Contractor.xaml</DependentUpon>
@@ -137,6 +141,9 @@
     <Compile Include="Pages\ProjectMain.xaml.cs">
       <DependentUpon>ProjectMain.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ProjectStatus.xaml.cs">
+      <DependentUpon>ProjectStatus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Quotation.xaml.cs">
       <DependentUpon>Quotation.xaml</DependentUpon>
     </Compile>
@@ -154,6 +161,9 @@
     </Compile>
     <Compile Include="Pages\TaskMain.xaml.cs">
       <DependentUpon>TaskMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TaskStatus.xaml.cs">
+      <DependentUpon>TaskStatus.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Unit.xaml.cs">
       <DependentUpon>Unit.xaml</DependentUpon>
@@ -220,6 +230,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ProjectStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Quotation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,6 +255,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\TaskMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TaskStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

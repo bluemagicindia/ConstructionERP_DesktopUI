@@ -45,6 +45,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "TasksMain":
                     view = new TaskMain(this);
                     break;
+                case "TaskStatus":
+                    view = new TaskStatus(this);
+                    break;
                 case "ContractorsMain":
                     view = new ContractorsMain(this);
                     break;
@@ -71,6 +74,9 @@ namespace ConstructionERP_DesktopUI.Pages
                     break;
                 case "ProjectsMain":
                     view = new ProjectMain(this);
+                    break;
+                case "ProjectStatus":
+                    view = new ProjectStatus(this);
                     break;
                 case "Quotation":
                     view = new Quotation(this);

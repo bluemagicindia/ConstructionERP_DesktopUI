@@ -5,25 +5,33 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for Unit.xaml
+    /// Interaction logic for ProjectStatus.xaml
     /// </summary>
-    public partial class Unit : UserControl, INotifyPropertyChanged
+    public partial class ProjectStatus : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
-        private UnitAPIHelper apiHelper;
+        private ProjectStatusAPIHelper apiHelper;
 
-        public Unit(MainLayout mainLayout)
+        public ProjectStatus(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
@@ -33,11 +41,11 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            apiHelper = new UnitAPIHelper();
+            apiHelper = new ProjectStatusAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetUnits())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateUnit()); }, () => CanSaveUnit);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteUnit()); }, () => CanDeleteUnit);
+            new Action(async () => await GetStatuses())();
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateStatus()); }, () => CanSaveStatus);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteStatus()); }, () => CanDeleteStatus);
         }
 
         #endregion
@@ -63,17 +71,16 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        //Selected Status
+        private StatusModel selectedStatus;
 
-        //Selected Unit
-        private UnitModel selectedUnit;
-
-        public UnitModel SelectedUnit
+        public StatusModel SelectedStatus
         {
-            get { return selectedUnit; }
+            get { return selectedStatus; }
             set
             {
-                selectedUnit = value;
-                OnPropertyChanged("SelectedUnit");
+                selectedStatus = value;
+                OnPropertyChanged("SelectedStatus");
             }
         }
 
@@ -103,6 +110,8 @@ namespace ConstructionERP_DesktopUI.Pages
                 OnPropertyChanged("Title");
             }
         }
+
+
 
         #endregion
 
@@ -140,10 +149,10 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedUnit != null)
+                    if (SelectedStatus != null)
                     {
-                        ID = SelectedUnit.ID;
-                        Title = SelectedUnit.Title;
+                        ID = SelectedStatus.ID;
+                        Title = SelectedStatus.Title;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -168,31 +177,29 @@ namespace ConstructionERP_DesktopUI.Pages
 
             }
 
-
-
         }
 
         #endregion
 
-        #region Get Units
+        #region Get Statuses
 
-        private ObservableCollection<UnitModel> units;
+        private ObservableCollection<StatusModel> statuses;
 
-        public ObservableCollection<UnitModel> Units
+        public ObservableCollection<StatusModel> Statuses
         {
-            get { return units; }
+            get { return statuses; }
             set
             {
-                units = value;
-                OnPropertyChanged("Units");
+                statuses = value;
+                OnPropertyChanged("Statuses");
             }
         }
 
-        private async Task GetUnits()
+        private async Task GetStatuses()
         {
             try
             {
-                Units = await apiHelper.GetUnits(ParentLayout.LoggedInUser.Token);
+                Statuses = await apiHelper.GetStatuses(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -204,7 +211,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Unit Command
+        #region Create and Edit Status Command
 
         private bool isUpdate;
 
@@ -221,28 +228,28 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveUnit = true;
+        private bool canSaveStatus = true;
 
-        public bool CanSaveUnit
+        public bool CanSaveStatus
         {
-            get { return canSaveUnit; }
+            get { return canSaveStatus; }
             set
             {
-                canSaveUnit = value;
-                OnPropertyChanged("CreateUnit");
+                canSaveStatus = value;
+                OnPropertyChanged("CreateStatus");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveUnit;
+        public bool IsSaveSpinning => !canSaveStatus;
 
-        public string SaveBtnText => canSaveUnit ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveStatus ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveUnit ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveStatus ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateUnit()
+        private async Task CreateStatus()
         {
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
@@ -250,42 +257,42 @@ namespace ConstructionERP_DesktopUI.Pages
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveUnit = false;
+                CanSaveStatus = false;
                 try
                 {
-                    UnitModel unitData = new UnitModel()
+                    StatusModel statusData = new StatusModel()
                     {
                         Title = Title,
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        unitData.ID = ID;
-                        unitData.CreatedBy = SelectedUnit.CreatedBy;
-                        result = await apiHelper.PutUnit(ParentLayout.LoggedInUser.Token, unitData).ConfigureAwait(false);
+                        statusData.ID = ID;
+                        statusData.CreatedBy = SelectedStatus.CreatedBy;
+                        result = await apiHelper.PutStatus(ParentLayout.LoggedInUser.Token, statusData).ConfigureAwait(false);
                     }
                     else
                     {
-                        unitData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostUnit(ParentLayout.LoggedInUser.Token, unitData).ConfigureAwait(false);
+                        statusData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostStatus(ParentLayout.LoggedInUser.Token, statusData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Unit Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetUnits();
+                        MessageBox.Show($"Status Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetStatuses();
                         ClearFields();
                         IsUpdate = false;
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Unit", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving Status", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveUnit = true;
+                    CanSaveStatus = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveUnit = true;
+                    CanSaveStatus = true;
                 }
 
             }
@@ -307,67 +314,65 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Unit Command
+        #region Delete Status Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteUnit = true;
+        private bool canDeleteStatus = true;
 
-
-        public bool CanDeleteUnit
+        public bool CanDeleteStatus
         {
-            get { return canDeleteUnit; }
+            get { return canDeleteStatus; }
             set
             {
-                canSaveUnit = value;
-                OnPropertyChanged("DeleteUnit");
+                canSaveStatus = value;
+                OnPropertyChanged("DeleteStatus");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteUnit;
+        public bool IsDeleteSpinning => !canDeleteStatus;
 
-        public string DeleteBtnText => canDeleteUnit ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteStatus ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteUnit ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteStatus ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteUnit()
+        private async Task DeleteStatus()
         {
 
-            if (SelectedUnit != null)
+            if (SelectedStatus != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {SelectedUnit.Title}'s Unit?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedStatus.Title} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteUnit = false;
+                CanDeleteStatus = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteUnit(ParentLayout.LoggedInUser.Token, SelectedUnit.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteStatus(ParentLayout.LoggedInUser.Token, SelectedStatus.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetUnits();
+                        await GetStatuses();
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Unit", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting Status", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveUnit = true;
+                    CanSaveStatus = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteUnit = true;
+                    CanDeleteStatus = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select an unit to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select a Status to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
 
         #endregion
-
     }
 }
