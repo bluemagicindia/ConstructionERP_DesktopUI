@@ -105,13 +105,6 @@
                         </StackPanel>
                     </Button>
 
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="ProjectView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="BuildingRegular" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Projects</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Tasks">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="TasksSolid" Height="18" Width="18" />
@@ -140,19 +133,7 @@
                         </StackPanel>
                     </Button>
 
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="ContractorView" >
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTieSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Contractor</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="SupplierView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTagSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Supplier</TextBlock>
-                        </StackPanel>
-                    </Button>-->
+                   
 
                     <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="SalesEnquiryView">
                         <StackPanel Orientation="Horizontal">
@@ -161,12 +142,6 @@
                         </StackPanel>
                     </Button>-->
 
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="EnquiryListingView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ListAltRegular" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Enquiry Listing</TextBlock>
-                        </StackPanel>
-                    </Button>-->
 
                     <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="QuotationView">
                         <StackPanel Orientation="Horizontal">
@@ -203,10 +178,31 @@
                         </StackPanel>
                     </Button>-->
 
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Contractors" >
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTieSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Contractors</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Suppliers">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTagSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Suppliers</TextBlock>
+                        </StackPanel>
+                    </Button>
+
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}"  CommandParameter="MaterialMain">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="IndustrySolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Material</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SalesEnquiry">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ChartBarSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Sales Enquiry</TextBlock>
                         </StackPanel>
                     </Button>
 
@@ -217,12 +213,7 @@
                         </StackPanel>
                     </Button>
 
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="TeamView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Team</TextBlock>
-                        </StackPanel>
-                    </Button>-->
+                   
 
                 </StackPanel>
             </ScrollViewer>

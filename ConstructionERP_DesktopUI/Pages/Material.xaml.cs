@@ -339,12 +339,8 @@ namespace ConstructionERP_DesktopUI.Pages
                     }
                     CanSaveMaterial = true;
 
-
                 }
-                else
-                {
-                    MessageBox.Show("Please fill in all the fields", "Fields Required", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+               
             }
             catch (Exception ex)
             {
