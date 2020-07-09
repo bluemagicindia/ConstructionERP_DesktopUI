@@ -90,7 +90,7 @@
                                     <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
                                 </Button>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource FormHeader}">Unit #</TextBlock>
+                                    <TextBlock Style="{StaticResource FormHeader}">Project Status #</TextBlock>
                                     <TextBlock Style="{StaticResource FormHeader}" Text="{Binding ID}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>

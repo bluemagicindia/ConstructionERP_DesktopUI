@@ -91,6 +91,7 @@
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
+    <Compile Include="API\StampAPIHelper.cs" />
     <Compile Include="API\TaskTypeAPIHelper.cs" />
     <Compile Include="API\ProjectTypeAPIHelper.cs" />
     <Compile Include="API\TaskStatusAPIHelper.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Models\MaterialModel.cs" />
     <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
+    <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
     <Compile Include="Models\TypeModel.cs" />
@@ -157,6 +159,9 @@
     </Compile>
     <Compile Include="Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Stamp.xaml.cs">
+      <DependentUpon>Stamp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Supplier.xaml.cs">
       <DependentUpon>Supplier.xaml</DependentUpon>
@@ -255,6 +260,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Stamp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
