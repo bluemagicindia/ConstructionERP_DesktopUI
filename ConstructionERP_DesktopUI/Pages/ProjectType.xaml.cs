@@ -14,16 +14,16 @@ using System.Windows.Input;
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for ProjectStatus.xaml
+    /// Interaction logic for ProjectType.xaml
     /// </summary>
-    public partial class ProjectStatus : UserControl, INotifyPropertyChanged
-    {
+    public partial class ProjectType : UserControl, INotifyPropertyChanged
+    { 
 
         #region Initialization
 
-        private ProjectStatusAPIHelper apiHelper;
+        private ProjectTypeAPIHelper apiHelper;
 
-        public ProjectStatus(MainLayout mainLayout)
+        public ProjectType(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
@@ -33,11 +33,11 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            apiHelper = new ProjectStatusAPIHelper();
+            apiHelper = new ProjectTypeAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetStatuses())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateStatus()); }, () => CanSaveStatus);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteStatus()); }, () => CanDeleteStatus);
+            new Action(async () => await GetTypes())();
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateType()); }, () => CanSaveType);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteType()); }, () => CanDeleteType);
         }
 
         #endregion
@@ -64,15 +64,15 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
         //Selected Status
-        private StatusModel selectedStatus;
+        private TypeModel selectedType;
 
-        public StatusModel SelectedStatus
+        public TypeModel SelectedType
         {
-            get { return selectedStatus; }
+            get { return selectedType; }
             set
             {
-                selectedStatus = value;
-                OnPropertyChanged("SelectedStatus");
+                selectedType = value;
+                OnPropertyChanged("SelectedType");
             }
         }
 
@@ -141,10 +141,10 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedStatus != null)
+                    if (SelectedType != null)
                     {
-                        ID = SelectedStatus.ID;
-                        Title = SelectedStatus.Title;
+                        ID = SelectedType.ID;
+                        Title = SelectedType.Title;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -173,25 +173,25 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Get Statuses
+        #region Get Types
 
-        private ObservableCollection<StatusModel> statuses;
+        private ObservableCollection<TypeModel> types;
 
-        public ObservableCollection<StatusModel> Statuses
+        public ObservableCollection<TypeModel> Types
         {
-            get { return statuses; }
+            get { return types; }
             set
             {
-                statuses = value;
-                OnPropertyChanged("Statuses");
+                types = value;
+                OnPropertyChanged("Types");
             }
         }
 
-        private async Task GetStatuses()
+        private async Task GetTypes()
         {
             try
             {
-                Statuses = await apiHelper.GetStatuses(ParentLayout.LoggedInUser.Token);
+                Types = await apiHelper.GetTypes(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Status Command
+        #region Create and Edit Type Command
 
         private bool isUpdate;
 
@@ -220,28 +220,28 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveStatus = true;
+        private bool canSaveType = true;
 
-        public bool CanSaveStatus
+        public bool CanSaveType
         {
-            get { return canSaveStatus; }
+            get { return canSaveType; }
             set
             {
-                canSaveStatus = value;
-                OnPropertyChanged("CreateStatus");
+                canSaveType = value;
+                OnPropertyChanged("CreateType");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveStatus;
+        public bool IsSaveSpinning => !canSaveType;
 
-        public string SaveBtnText => canSaveStatus ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveType ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveStatus ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveType ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateStatus()
+        private async Task CreateType()
         {
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
@@ -249,42 +249,42 @@ namespace ConstructionERP_DesktopUI.Pages
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveStatus = false;
+                CanSaveType = false;
                 try
                 {
-                    StatusModel statusData = new StatusModel()
+                    TypeModel typeData = new TypeModel()
                     {
                         Title = Title,
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        statusData.ID = ID;
-                        statusData.CreatedBy = SelectedStatus.CreatedBy;
-                        result = await apiHelper.PutStatus(ParentLayout.LoggedInUser.Token, statusData).ConfigureAwait(false);
+                        typeData.ID = ID;
+                        typeData.CreatedBy = SelectedType.CreatedBy;
+                        result = await apiHelper.PutType(ParentLayout.LoggedInUser.Token, typeData).ConfigureAwait(false);
                     }
                     else
                     {
-                        statusData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostStatus(ParentLayout.LoggedInUser.Token, statusData).ConfigureAwait(false);
+                        typeData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostType(ParentLayout.LoggedInUser.Token, typeData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Status Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetStatuses();
+                        MessageBox.Show($"Type Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetTypes();
                         ClearFields();
                         IsUpdate = false;
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Status", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving Type", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveStatus = true;
+                    CanSaveType = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveStatus = true;
+                    CanSaveType = true;
                 }
 
             }
@@ -306,61 +306,61 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Status Command
+        #region Delete Type Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteStatus = true;
+        private bool canDeleteType = true;
 
-        public bool CanDeleteStatus
+        public bool CanDeleteType
         {
-            get { return canDeleteStatus; }
+            get { return canDeleteType; }
             set
             {
-                canSaveStatus = value;
-                OnPropertyChanged("DeleteStatus");
+                canSaveType = value;
+                OnPropertyChanged("DeleteType");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteStatus;
+        public bool IsDeleteSpinning => !canDeleteType;
 
-        public string DeleteBtnText => canDeleteStatus ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteType ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteStatus ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteType ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteStatus()
+        private async Task DeleteType()
         {
 
-            if (SelectedStatus != null)
+            if (SelectedType != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {SelectedStatus.Title} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedType.Title} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteStatus = false;
+                CanDeleteType = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteStatus(ParentLayout.LoggedInUser.Token, SelectedStatus.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteType(ParentLayout.LoggedInUser.Token, SelectedType.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetStatuses();
+                        await GetTypes();
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Status", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting Type", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveStatus = true;
+                    CanSaveType = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteStatus = true;
+                    CanDeleteType = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select a Status to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select a Type to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }

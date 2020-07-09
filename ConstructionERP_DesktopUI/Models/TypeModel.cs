@@ -2,7 +2,7 @@
 
 namespace ConstructionERP_DesktopUI.Models
 {
-    class TypeModel
+    public class TypeModel
     {
 
         public long ID { get; set; }
