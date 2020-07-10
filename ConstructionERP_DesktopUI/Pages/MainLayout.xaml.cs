@@ -1,6 +1,10 @@
-﻿using ConstructionERP_DesktopUI.Helpers;
+﻿using ConstructionERP_DesktopUI.API;
+using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,6 +30,8 @@ namespace ConstructionERP_DesktopUI.Pages
             NavigationCommand = new RelayCommand(SetActiveControl);
             LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
             NavigationCommand.Execute("Dashboard");
+            new Action(async () => await GetProjects())();
+
         }
 
         #endregion
@@ -128,6 +134,54 @@ namespace ConstructionERP_DesktopUI.Pages
                 loggedInUser = value;
                 OnPropertyChanged("LoggedInUser");
             }
+        }
+
+
+        private ObservableCollection<ProjectModel> projects;
+
+        public ObservableCollection<ProjectModel> Projects
+        {
+            get { return projects; }
+            set
+            {
+                projects = value;
+                OnPropertyChanged("Projects");
+            }
+        }
+
+
+        private ProjectModel projectModel;
+
+        public ProjectModel SelectedProject
+        {
+            get { return projectModel; }
+            set
+            {
+                projectModel = value;
+                OnPropertyChanged("SelectedProject");
+            }
+        }
+
+        #endregion
+
+        #region Get Projects
+
+        public  async Task GetProjects()
+        {
+            try
+            {
+                Projects = await new ProjectAPIHelper().GetProjects(LoggedInUser.Token);
+                if (Projects.Count > 0)
+                {
+                    SelectedProject = Projects[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
         }
 
         #endregion

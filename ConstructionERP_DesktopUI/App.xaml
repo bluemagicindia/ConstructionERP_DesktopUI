@@ -258,7 +258,7 @@
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="Hand" />
                 <Setter Property="Foreground" Value="#fff"/>
-                <Setter Property="Padding" Value="25 13"/>
+                <Setter Property="Padding" Value="35 13"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -266,7 +266,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border Name="border" Padding="25 13" BorderBrush="Transparent" BorderThickness="0" Background="{TemplateBinding Background}">
+                            <Border Name="border" Padding="35 13" BorderBrush="Transparent" BorderThickness="0" Background="{TemplateBinding Background}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>
@@ -374,7 +374,6 @@
                 <Setter Property="Foreground" Value="#333"/>
                 <Setter Property="FontSize" Value="14"/>
             </Style>
-
 
             <Style x:Key="ButtonText" TargetType="{x:Type TextBlock}">
                 <Setter Property="TextAlignment" Value="Center"/>

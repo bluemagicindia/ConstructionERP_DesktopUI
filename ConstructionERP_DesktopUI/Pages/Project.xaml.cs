@@ -482,6 +482,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Project Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetProjects();
+                        await ParentLayout.GetProjects();
                         IsUpdate = false;
                         ClearFields();
                     }
@@ -561,6 +562,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (result.IsSuccessStatusCode)
                     {
                         await GetProjects();
+                        await ParentLayout.GetProjects();
                     }
                     else
                     {
