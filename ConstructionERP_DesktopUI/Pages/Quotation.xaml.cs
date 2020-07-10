@@ -1,4 +1,4 @@
-﻿    using ConstructionERP_DesktopUI.API;
+﻿using ConstructionERP_DesktopUI.API;
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
@@ -367,7 +367,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     CanSaveQuotation = true;
 
                 }
-                
+
             }
             catch (Exception ex)
             {

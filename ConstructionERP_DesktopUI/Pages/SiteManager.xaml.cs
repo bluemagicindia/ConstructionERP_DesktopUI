@@ -14,31 +14,30 @@ using System.Windows.Input;
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for Supplier.xaml
+    /// Interaction logic for SiteManager.xaml
     /// </summary>
-    public partial class Supplier : UserControl, INotifyPropertyChanged
+    public partial class SiteManager : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
-        private SupplierAPIHelper apiHelper;
-        public Supplier(MainLayout mainLayout)
+        private SiteManagerAPIHelper apiHelper;
+
+        public SiteManager(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
             ParentLayout = mainLayout;
             SetValues();
         }
-
         void SetValues()
         {
-            apiHelper = new SupplierAPIHelper();
+            apiHelper = new SiteManagerAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetSuppliers())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSupplier()); }, () => CanSaveSupplier);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSupplier()); }, () => CanDeleteSupplier);
+            new Action(async () => await GetSiteManagers())();
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSiteManager()); }, () => CanSaveSiteManager);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSiteManager()); }, () => CanDeleteSiteManager);
         }
-
 
         #endregion
 
@@ -63,17 +62,16 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-
         //Selected Enquiry
-        private SupplierModel selectedSupplier;
+        private SiteManagerModel selectedSiteManager;
 
-        public SupplierModel SelectedSupplier
+        public SiteManagerModel SelectedSiteManager
         {
-            get { return selectedSupplier; }
+            get { return selectedSiteManager; }
             set
             {
-                selectedSupplier = value;
-                OnPropertyChanged("SelectedSupplier");
+                selectedSiteManager = value;
+                OnPropertyChanged("SelectedSiteManager");
             }
         }
 
@@ -92,15 +90,15 @@ namespace ConstructionERP_DesktopUI.Pages
 
 
         //Name
-        private string supplierName;
+        private string siteManagerName;
 
-        public string SupplierName
+        public string SiteManagerName
         {
-            get { return supplierName; }
+            get { return siteManagerName; }
             set
             {
-                supplierName = value;
-                OnPropertyChanged("SupplierName");
+                siteManagerName = value;
+                OnPropertyChanged("SiteManagerName");
             }
         }
 
@@ -130,31 +128,6 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        //GSTN
-        private string gstn;
-
-        public string GSTN
-        {
-            get { return gstn; }
-            set
-            {
-                gstn = value;
-                OnPropertyChanged("GSTN");
-            }
-        }
-
-        //WorkDescription
-        private string workdescription;
-
-        public string WorkDescription
-        {
-            get { return workdescription; }
-            set
-            {
-                workdescription = value;
-                OnPropertyChanged("WorkDescription");
-            }
-        }
 
         #endregion
 
@@ -192,14 +165,12 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedSupplier != null)
+                    if (SelectedSiteManager != null)
                     {
-                        ID = SelectedSupplier.ID;
-                        SupplierName = SelectedSupplier.Name;
-                        Phone = SelectedSupplier.Phone;
-                        Email = SelectedSupplier.Email;
-                        GSTN = SelectedSupplier.GSTN;
-                        WorkDescription = SelectedSupplier.WorkDescription;
+                        ID = SelectedSiteManager.ID;
+                        SiteManagerName = SelectedSiteManager.Name;
+                        Phone = SelectedSiteManager.Phone;
+                        Email = SelectedSiteManager.Email;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -228,25 +199,25 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Get Suppliers
+        #region Get SiteManagers
 
-        private ObservableCollection<SupplierModel> suppliers;
+        private ObservableCollection<SiteManagerModel> siteManagers;
 
-        public ObservableCollection<SupplierModel> Suppliers
+        public ObservableCollection<SiteManagerModel> SiteManagers
         {
-            get { return suppliers; }
+            get { return siteManagers; }
             set
             {
-                suppliers = value;
-                OnPropertyChanged("Suppliers");
+                siteManagers = value;
+                OnPropertyChanged("SiteManagers");
             }
         }
 
-        private async Task GetSuppliers()
+        private async Task GetSiteManagers()
         {
             try
             {
-                Suppliers = await apiHelper.GetSuppliers(ParentLayout.LoggedInUser.Token);
+                SiteManagers = await apiHelper.GetSiteManagers(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -258,7 +229,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Supplier Command
+        #region Create and Edit SiteManager Command
 
         private bool isUpdate;
 
@@ -275,87 +246,83 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveSupplier = true;
+        private bool canSaveSiteManager = true;
 
-        public bool CanSaveSupplier
+        public bool CanSaveSiteManager
         {
-            get { return canSaveSupplier; }
+            get { return canSaveSiteManager; }
             set
             {
-                canSaveSupplier = value;
-                OnPropertyChanged("CreateSupplier");
+                canSaveSiteManager = value;
+                OnPropertyChanged("CreateSiteManager");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveSupplier;
+        public bool IsSaveSpinning => !canSaveSiteManager;
 
-        public string SaveBtnText => canSaveSupplier ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveSiteManager ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveSupplier ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveSiteManager ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateSupplier()
+        private async Task CreateSiteManager()
         {
+           
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("Name", SupplierName),
+                    new KeyValuePair<string, string>("Name", SiteManagerName),
                     new KeyValuePair<string, string>("Phone", Phone),
-                    new KeyValuePair<string, string>("Email", Email),
-                    new KeyValuePair<string, string>("GSTN", GSTN),
-                    new KeyValuePair<string, string>("WorkDescription", WorkDescription)
+                    new KeyValuePair<string, string>("Email", Email)
 
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveSupplier = false;
+                CanSaveSiteManager = false;
                 try
                 {
-                    SupplierModel supplierData = new SupplierModel()
+                    SiteManagerModel siteManagerData = new SiteManagerModel()
                     {
-                        Name = SupplierName,
+                        Name = SiteManagerName,
                         Phone = phone,
                         Email = Email,
-                        GSTN = GSTN,
-                        WorkDescription = WorkDescription,
-
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        supplierData.ID = ID;
-                        supplierData.CreatedBy = SelectedSupplier.CreatedBy;
-                        supplierData.ModifiedOn = DateTime.Now;
-                        supplierData.ModifiedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PutSupplier(ParentLayout.LoggedInUser.Token, supplierData).ConfigureAwait(false);
+                        siteManagerData.ID = ID;
+                        siteManagerData.CreatedBy = SelectedSiteManager.CreatedBy;
+                        siteManagerData.ModifiedOn = DateTime.Now;
+                        siteManagerData.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PutSiteManager(ParentLayout.LoggedInUser.Token, siteManagerData).ConfigureAwait(false);
                     }
                     else
                     {
-                        supplierData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostSupplier(ParentLayout.LoggedInUser.Token, supplierData).ConfigureAwait(false);
+                        siteManagerData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostSiteManager(ParentLayout.LoggedInUser.Token, siteManagerData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Supplier Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetSuppliers();
+                        MessageBox.Show($"Site Manager Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetSiteManagers();
                         IsUpdate = false;
                         ClearFields();
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Supplier", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving SiteManager", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSupplier = true;
+                    CanSaveSiteManager = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveSupplier = true;
+                    CanSaveSiteManager = true;
                 }
 
             }
-
+          
         }
 
         private void ClearFields()
@@ -363,11 +330,9 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 ID = 0;
-                SupplierName = "";
+                SiteManagerName = "";
                 Phone = "";
                 Email = "";
-                GSTN = "";
-                WorkDescription = "";
             }
             catch (Exception)
             {
@@ -377,61 +342,61 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Supplier Command
+        #region Delete SiteManager Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteSupplier = true;
+        private bool canDeleteSiteManager = true;
 
-        public bool CanDeleteSupplier
+        public bool CanDeleteSiteManager
         {
-            get { return canDeleteSupplier; }
+            get { return canDeleteSiteManager; }
             set
             {
-                canSaveSupplier = value;
-                OnPropertyChanged("DeleteSupplier");
+                canSaveSiteManager = value;
+                OnPropertyChanged("DeleteSiteManager");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteSupplier;
+        public bool IsDeleteSpinning => !canDeleteSiteManager;
 
-        public string DeleteBtnText => canDeleteSupplier ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteSiteManager ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteSupplier ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteSiteManager ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteSupplier()
+        private async Task DeleteSiteManager()
         {
 
-            if (SelectedSupplier != null)
+            if (SelectedSiteManager != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete {SelectedSupplier.Name} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedSiteManager.Name} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteSupplier = false;
+                CanDeleteSiteManager = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteSupplier(ParentLayout.LoggedInUser.Token, SelectedSupplier.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteSiteManager(ParentLayout.LoggedInUser.Token, SelectedSiteManager.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetSuppliers();
+                        await GetSiteManagers();
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Supplier", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting SiteManager", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSupplier = true;
+                    CanSaveSiteManager = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteSupplier = true;
+                    CanDeleteSiteManager = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select a Supplier to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select an SiteManager to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
