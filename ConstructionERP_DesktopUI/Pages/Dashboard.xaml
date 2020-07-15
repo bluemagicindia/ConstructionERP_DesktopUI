@@ -7,8 +7,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
       mc:Ignorable="d" Background="#fff"
-      d:DesignHeight="1200" d:DesignWidth="1100">
-   
+      d:DesignHeight="1200" d:DesignWidth="1100" Unloaded="UserControl_Unloaded">
+
     <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -27,7 +27,6 @@
                     <StackPanel Orientation="Horizontal" Margin="0 70 0 0">
                         <TextBlock Foreground="#333" FontSize="24" FontWeight="Normal" Padding="0 0 8 0">Welcome,</TextBlock>
                         <TextBlock Foreground="#333" FontSize="24" FontWeight="SemiBold" Text="{Binding ParentLayout.LoggedInUser.Name}"></TextBlock>
-
                     </StackPanel>
                     <TextBlock FontSize="18" Foreground="#444" Padding="0 0 0 70" FontWeight="Normal">Here's what's happening on your project today</TextBlock>
                 </StackPanel>
@@ -43,20 +42,25 @@
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Foreground="#aaa" FontSize="14">70% COMPLETED</TextBlock>
-                                    <TextBlock Foreground="#444" FontSize="16" >20 Days left in this project</TextBlock>
+                                    <TextBlock Foreground="#aaa" FontSize="14">
+                                        <Run Text="{Binding Progress}"/>% COMPLETED
+                                    </TextBlock>
+                                    <TextBlock Foreground="#444" FontSize="16" > 
+                                        <Run Text="{Binding DaysLeft}" />
+                                        <Span> Days left in this project</Span>
+                                    </TextBlock>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Foreground="#666" FontSize="11">Target Completion Date</TextBlock>
-                                    <TextBlock Foreground="#444" FontSize="17" >Aug, 12, 2020</TextBlock>
+                                    <TextBlock Foreground="#444" FontSize="17" Text="{Binding DueDate, StringFormat='dd MMMM, yyyy'}" />
                                 </StackPanel>
 
 
                             </Grid>
 
                             <StackPanel Margin="0 20 0 10">
-                                <ProgressBar Value="70"></ProgressBar>
+                                <ProgressBar Value="{Binding Progress}" Height="14"></ProgressBar>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -111,7 +115,7 @@
                                                         </StackPanel>
                                                     </Button>
 
-                                                    <Button Style="{StaticResource BorderedHoverButton}" HorizontalAlignment="Stretch">+ Team</Button>
+                                                    <Button Style="{StaticResource BorderedHoverButton}" Command="{Binding NavigationCommand}" CommandParameter="Teams" HorizontalAlignment="Stretch">+ Team</Button>
                                                 </StackPanel>
                                             </Border>
                                         </StackPanel>

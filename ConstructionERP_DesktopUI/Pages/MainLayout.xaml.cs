@@ -22,16 +22,14 @@ namespace ConstructionERP_DesktopUI.Pages
             InitializeComponent();
             DataContext = this;
             SetValues();
-
         }
 
-        void SetValues()
+        async void SetValues()
         {
             NavigationCommand = new RelayCommand(SetActiveControl);
             LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
+            await GetProjects();
             NavigationCommand.Execute("Dashboard");
-            new Action(async () => await GetProjects())();
-
         }
 
         #endregion
@@ -150,15 +148,16 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
-        private ProjectModel projectModel;
+        private ProjectModel selectedProject;
 
         public ProjectModel SelectedProject
         {
-            get { return projectModel; }
+            get { return selectedProject; }
             set
             {
-                projectModel = value;
+                selectedProject = value;
                 OnPropertyChanged("SelectedProject");
+                OnPropertyChanged("Progress");
             }
         }
 
@@ -166,7 +165,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #region Get Projects
 
-        public  async Task GetProjects()
+        public async Task GetProjects()
         {
             try
             {
@@ -185,5 +184,7 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
         #endregion
+
+       
     }
 }
