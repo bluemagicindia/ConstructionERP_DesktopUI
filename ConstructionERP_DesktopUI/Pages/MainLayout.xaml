@@ -105,7 +105,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="TasksMain">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Task">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="TasksSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Tasks</TextBlock>
@@ -128,7 +128,14 @@
 
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Documents">
                         <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="FileInvoiceSolid" Height="18" Width="18" />
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="FileExcelRegular" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Sheets</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Documents">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="FileAltRegular" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Documents</TextBlock>
                         </StackPanel>
                     </Button>
@@ -169,7 +176,7 @@
                         </StackPanel>
                     </Button>-->
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ContractorsMain" >
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Contractor" >
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTieSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Contractors</TextBlock>
@@ -183,24 +190,31 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}"  CommandParameter="MaterialMain">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="IndustrySolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Material</TextBlock>
-                        </StackPanel>
-                    </Button>
-
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SalesEnquiry">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ChartBarSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Sales Enquiry</TextBlock>
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Sales Enquiries</TextBlock>
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectsMain">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Project">
                         <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="BuildingSolid" Height="18" Width="18" />
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="BuildingRegular" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Projects</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SiteManager">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserShieldSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Site Managers</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Team">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UsersSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Teams</TextBlock>
                         </StackPanel>
                     </Button>
 
@@ -208,6 +222,13 @@
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Quotations</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Masters">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="DatabaseSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Masters</TextBlock>
                         </StackPanel>
                     </Button>
 

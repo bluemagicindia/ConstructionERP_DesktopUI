@@ -17,23 +17,23 @@ using System.Windows.Shapes;
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for ContractorsMain.xaml
+    /// Interaction logic for Masters.xaml
     /// </summary>
-    public partial class ContractorsMain : UserControl
+    public partial class Masters : UserControl
     {
 
         #region Initialization
 
         MainLayout mainLayout = null;
 
-        public ContractorsMain(MainLayout mainLayout)
+        public Masters(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
             this.mainLayout = mainLayout;
             NavigationCommand = new RelayCommand(mainLayout.SetActiveControl);
         }
-      
+
         #endregion
 
         #region Navigation Command
