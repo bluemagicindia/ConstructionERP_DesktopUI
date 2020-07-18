@@ -97,6 +97,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "SiteManager":
                     view = new SiteManager(this);
                     break;
+                case "Team":
+                    view = new Team(this);
+                    break;
                 case "Quotation":
                     view = new Quotation(this);
                     break;

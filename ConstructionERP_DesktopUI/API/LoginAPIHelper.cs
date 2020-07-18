@@ -15,6 +15,7 @@ namespace ConstructionERP_DesktopUI.API
 
         public LoginAPIHelper()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             httpClient = new HttpClient();
 
             httpClient.BaseAddress = new Uri(ConfigurationManager.AppSettings["apiUrl"]);

@@ -1,6 +1,4 @@
-﻿using ConstructionERP_DesktopUI.Helpers;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace ConstructionERP_DesktopUI.Models
 {
