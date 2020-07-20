@@ -58,6 +58,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Sheet":
                     view = new Sheet(this);
                     break;
+                case "Document":
+                    view = new Document(this);
+                    break;
                 case "Contractor":
                     view = new Contractor(this);
                     break;
@@ -182,6 +185,6 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-       
+
     }
 }

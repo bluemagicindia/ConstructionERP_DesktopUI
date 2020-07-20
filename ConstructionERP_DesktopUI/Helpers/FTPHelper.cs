@@ -33,7 +33,6 @@ namespace ConstructionERP_DesktopUI.Helpers
                 {
                     client.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["FTPUsername"], ConfigurationManager.AppSettings["FTPPassword"]);
                     client.DownloadFileAsync(new Uri(downloadFromPath), saveSheetPath + "/" + fileName);
-
                 }
             }
 

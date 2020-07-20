@@ -17,16 +17,16 @@ using System.Windows.Input;
 namespace ConstructionERP_DesktopUI.Pages
 {
     /// <summary>
-    /// Interaction logic for Sheet.xaml
+    /// Interaction logic for Document.xaml
     /// </summary>
-    public partial class Sheet : UserControl, INotifyPropertyChanged
+    public partial class Document : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
-        private SheetAPIHelper apiHelper;
+        private DocumentAPIHelper apiHelper;
 
-        public Sheet(MainLayout mainLayout)
+        public Document(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
@@ -36,11 +36,11 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            apiHelper = new SheetAPIHelper();
+            apiHelper = new DocumentAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetSheets())();
-            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSheet()); }, () => CanSaveSheet);
-            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSheet()); }, () => CanDeleteSheet);
+            new Action(async () => await GetDocuments())();
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateDocument()); }, () => CanSaveDocument);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteDocument()); }, () => CanDeleteDocument);
             SelectFileCommand = new RelayCommand(SelectFile);
             DownloadCommand = new RelayCommand(DownloadFile);
         }
@@ -69,16 +69,16 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
-        //Selected Sheet
-        private SheetModel selectedSheet;
+        //Selected Document
+        private DocumentModel selectedDocument;
 
-        public SheetModel SelectedSheet
+        public DocumentModel SelectedDocument
         {
-            get { return selectedSheet; }
+            get { return selectedDocument; }
             set
             {
-                selectedSheet = value;
-                OnPropertyChanged("SelectedSheet");
+                selectedDocument = value;
+                OnPropertyChanged("SelectedDocument");
             }
         }
 
@@ -158,10 +158,10 @@ namespace ConstructionERP_DesktopUI.Pages
             switch (value.ToString())
             {
                 case "Edit":
-                    if (SelectedSheet != null)
+                    if (SelectedDocument != null)
                     {
-                        ID = SelectedSheet.ID;
-                        Title = SelectedSheet.Title;
+                        ID = SelectedDocument.ID;
+                        Title = SelectedDocument.Title;
                         //FilePath = SelectedSheet.DocUrl;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
@@ -193,25 +193,25 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Get Sheets
+        #region Get Documents
 
-        private ObservableCollection<SheetModel> sheets;
+        private ObservableCollection<DocumentModel> documents;
 
-        public ObservableCollection<SheetModel> Sheets
+        public ObservableCollection<DocumentModel> Documents
         {
-            get { return sheets; }
+            get { return documents; }
             set
             {
-                sheets = value;
-                OnPropertyChanged("Sheets");
+                documents = value;
+                OnPropertyChanged("Documents");
             }
         }
 
-        private async Task GetSheets()
+        private async Task GetDocuments()
         {
             try
             {
-                Sheets = await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token);
+                Documents = await apiHelper.GetDocuments(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -223,7 +223,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Create and Edit Sheet Command
+        #region Create and Edit Document Command
 
         private bool isUpdate;
 
@@ -240,28 +240,28 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SaveCommand { get; private set; }
 
-        private bool canSaveSheet = true;
+        private bool canSaveDocument = true;
 
-        public bool CanSaveSheet
+        public bool CanSaveDocument
         {
-            get { return canSaveSheet; }
+            get { return canSaveDocument; }
             set
             {
-                canSaveSheet = value;
-                OnPropertyChanged("CreateSheet");
+                canSaveDocument = value;
+                OnPropertyChanged("CreateDocument");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canSaveSheet;
+        public bool IsSaveSpinning => !canSaveDocument;
 
-        public string SaveBtnText => canSaveSheet ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveDocument ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canSaveSheet ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canSaveDocument ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreateSheet()
+        private async Task CreateDocument()
         {
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
@@ -269,11 +269,11 @@ namespace ConstructionERP_DesktopUI.Pages
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveSheet = false;
+                CanSaveDocument = false;
                 try
                 {
                     string UploadPath = "";
-                    SheetModel sheetData = new SheetModel()
+                    DocumentModel documentData = new DocumentModel()
                     {
                         Title = Title,
                         ProjectID = ParentLayout.SelectedProject.ID,
@@ -281,55 +281,55 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
-                        sheetData.ID = ID;
-                        sheetData.CreatedBy = SelectedSheet.CreatedBy;
-                        sheetData.CreatedOn = SelectedSheet.CreatedOn;
-                        sheetData.DocUrl = SelectedSheet.DocUrl;
+                        documentData.ID = ID;
+                        documentData.CreatedBy = SelectedDocument.CreatedBy;
+                        documentData.CreatedOn = SelectedDocument.CreatedOn;
+                        documentData.DocUrl = SelectedDocument.DocUrl;
                         if (!string.IsNullOrEmpty(FilePath))
                         {
-                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Sheets/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
+                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Documents/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
                             FTPHelper.UploadFile(FilePath, UploadPath);
-                            sheetData.DocUrl = UploadPath;
+                            documentData.DocUrl = UploadPath;
                         }
-                        result = await apiHelper.PutSheet(ParentLayout.LoggedInUser.Token, sheetData).ConfigureAwait(false);
+                        result = await apiHelper.PutDocument(ParentLayout.LoggedInUser.Token, documentData).ConfigureAwait(false);
                     }
                     else
                     {
 
                         if (string.IsNullOrEmpty(FilePath))
                         {
-                            MessageBox.Show("Please select a sheet to upload", "Select Sheet", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            CanSaveSheet = true;
+                            MessageBox.Show("Please select a document to upload", "Select Document", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            CanSaveDocument = true;
                             return;
                         }
                         else
                         {
-                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Sheets/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
+                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Documents/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
                             FTPHelper.UploadFile(FilePath, UploadPath);
 
                         }
-                        sheetData.DocUrl = UploadPath;
-                        sheetData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        result = await apiHelper.PostSheet(ParentLayout.LoggedInUser.Token, sheetData).ConfigureAwait(false);
+                        documentData.DocUrl = UploadPath;
+                        documentData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                        result = await apiHelper.PostDocument(ParentLayout.LoggedInUser.Token, documentData).ConfigureAwait(false);
                     }
                     if (result.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Sheet Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetSheets();
+                        MessageBox.Show($"Document Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await GetDocuments();
                         ClearFields();
-                        
+
                         IsUpdate = false;
                     }
                     else
                     {
-                        MessageBox.Show("Error in saving Sheet", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in saving Document", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSheet = true;
+                    CanSaveDocument = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanSaveSheet = true;
+                    CanSaveDocument = true;
                 }
 
             }
@@ -352,63 +352,63 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Sheet Command
+        #region Delete Document Command
 
         public ICommand DeleteCommand { get; private set; }
 
-        private bool canDeleteSheet = true;
+        private bool canDeleteDocument = true;
 
 
-        public bool CanDeleteSheet
+        public bool CanDeleteDocument
         {
-            get { return canDeleteSheet; }
+            get { return canDeleteDocument; }
             set
             {
-                canSaveSheet = value;
-                OnPropertyChanged("DeleteSheet");
+                canSaveDocument = value;
+                OnPropertyChanged("DeleteDocument");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
                 OnPropertyChanged("DeleteBtnIcon");
             }
         }
 
-        public bool IsDeleteSpinning => !canDeleteSheet;
+        public bool IsDeleteSpinning => !canDeleteDocument;
 
-        public string DeleteBtnText => canDeleteSheet ? "Delete" : "Deleting...";
+        public string DeleteBtnText => canDeleteDocument ? "Delete" : "Deleting...";
 
-        public string DeleteBtnIcon => canDeleteSheet ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnIcon => canDeleteDocument ? "TrashAltRegular" : "SpinnerSolid";
 
-        private async Task DeleteSheet()
+        private async Task DeleteDocument()
         {
 
-            if (SelectedSheet != null)
+            if (SelectedDocument != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete '{SelectedSheet.Title}' Sheet?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete '{SelectedDocument.Title}' Document?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
-                CanDeleteSheet = false;
+                CanDeleteDocument = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteSheet(ParentLayout.LoggedInUser.Token, SelectedSheet.ID).ConfigureAwait(false);
+                    HttpResponseMessage result = await apiHelper.DeleteDocument(ParentLayout.LoggedInUser.Token, SelectedDocument.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetSheets();
-                        FTPHelper.DeletFile(SelectedSheet.DocUrl);
+                        await GetDocuments();
+                        FTPHelper.DeletFile(SelectedDocument.DocUrl);
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Sheet", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error in deleting Document", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveSheet = true;
+                    CanSaveDocument = true;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    CanDeleteSheet = true;
+                    CanDeleteDocument = true;
                 }
             }
             else
             {
-                MessageBox.Show("Please select a sheet to be deleted", "Select Sheet", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select a document to be deleted", "Select Document", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
@@ -427,7 +427,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 App.Current.Dispatcher.Invoke((Action)delegate
                 {
                     OpenFileDialog fileDialog = new OpenFileDialog();
-                    fileDialog.Filter = "Excel Sheets (*.xlsx)|*.xlsx|Excel Old(*.xls)|*xls";
+                    //fileDialog.Filter = "Excel Sheets (*.xlsx)|*.xlsx|Excel Old(*.xls)|*xls";
                     if (fileDialog.ShowDialog() == true)
                     {
                         FilePath = fileDialog.FileName;
@@ -454,22 +454,21 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand DownloadCommand { get; private set; }
 
-
         private void DownloadFile(object parameter)
         {
             try
             {
                 if (parameter != null)
                 {
-                    var downloadingSheet = parameter as SheetModel;
-                    if (downloadingSheet.DocUrl != null)
+                    var downloadingDocument = parameter as DocumentModel;
+                    if (downloadingDocument.DocUrl != null)
                     {
-                        FTPHelper.DownloadFile(downloadingSheet.DocUrl);
-                        MessageBox.Show($"Sheet has been downloaded to '{Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads")}'", "Download Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                        FTPHelper.DownloadFile(downloadingDocument.DocUrl);
+                        MessageBox.Show($"Document has been downloaded to '{Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads")}'", "Download Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Invalid FTP Path for the sheet download", "Invalid Path", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Invalid FTP Path for the document download", "Invalid Path", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
 

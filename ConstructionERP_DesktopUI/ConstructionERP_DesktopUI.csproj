@@ -117,6 +117,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="API\ContractorAPIHelper.cs" />
+    <Compile Include="API\DocumentAPIHelper.cs" />
+    <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
     <Compile Include="API\ProjectAPIHelper.cs" />
@@ -165,6 +167,9 @@
     </Compile>
     <Compile Include="Pages\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Document.xaml.cs">
+      <DependentUpon>Document.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -259,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Document.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
