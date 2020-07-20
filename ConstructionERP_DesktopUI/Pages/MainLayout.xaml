@@ -126,7 +126,7 @@
                         </StackPanel>
                     </Button>-->
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Documents">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Sheet">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="FileExcelRegular" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Sheets</TextBlock>
@@ -140,41 +140,6 @@
                         </StackPanel>
                     </Button>
 
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="QuotationView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Quotations</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="SiteManagerView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Site Manager</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="StatusView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Status</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="TaskTypeView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Task Type</TextBlock>
-                        </StackPanel>
-                    </Button>-->
-
-                    <!--<Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding ViewCommand}" CommandParameter="StampView">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="RupeeSignSolid" Height="18" Width="18" />
-                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Stamp</TextBlock>
-                        </StackPanel>
-                    </Button>-->
 
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Contractor" >
                         <StackPanel Orientation="Horizontal">

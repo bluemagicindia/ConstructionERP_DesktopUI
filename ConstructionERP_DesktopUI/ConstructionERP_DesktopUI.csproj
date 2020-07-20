@@ -131,6 +131,7 @@
     <Compile Include="API\SupplierAPIHelper.cs" />
     <Compile Include="API\TeamAPIHelper.cs" />
     <Compile Include="API\TeamSiteManagerLinkageAPIHelper.cs" />
+    <Compile Include="API\SheetAPIHelper.cs" />
     <Compile Include="API\UnitAPIHelper.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -138,6 +139,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\FTPHelper.cs" />
     <Compile Include="Models\ContractorModel.cs" />
     <Compile Include="Helpers\FieldValidation.cs" />
     <Compile Include="Helpers\PasswordBoxAssistant.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
+    <Compile Include="Models\SheetModel.cs" />
     <Compile Include="Models\SiteManagerModel.cs" />
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
@@ -192,6 +195,9 @@
     </Compile>
     <Compile Include="Pages\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Sheet.xaml.cs">
+      <DependentUpon>Sheet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SiteManager.xaml.cs">
       <DependentUpon>SiteManager.xaml</DependentUpon>
@@ -293,6 +299,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Sheet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
