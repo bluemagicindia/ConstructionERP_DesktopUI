@@ -9,9 +9,9 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Name { get; set; }
 
-        public UnitModel Unit { get; set; }
-
         public long? UnitID { get; set; }
+
+        public UnitModel Unit { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 

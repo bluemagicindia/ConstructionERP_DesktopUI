@@ -60,7 +60,7 @@
                 <!--Data Grid-->
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
                     <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Materials}"
-                        SelectedItem="{Binding SelectedMaterial, Mode=TwoWay}">
+                        SelectedItem="{Binding SelectedMaterial, Mode=TwoWay}" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
                             <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
@@ -102,7 +102,7 @@
                                 <TextBlock Style="{StaticResource FormTitle}">Title</TextBlock>
                                 <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title}"></TextBox>
                                 <TextBlock Style="{StaticResource FormTitle}">Unit</TextBlock>
-                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Units}"  SelectedItem="{Binding Unit, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding Unit.Title}" SelectedIndex="0"  />
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Units}"  SelectedItem="{Binding SelectedUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedUnit.Title}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding UnitText}"  />
 
                             </StackPanel>
                         </ScrollViewer>

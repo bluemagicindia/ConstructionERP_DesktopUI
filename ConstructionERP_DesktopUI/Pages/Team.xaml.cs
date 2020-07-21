@@ -333,7 +333,6 @@ namespace ConstructionERP_DesktopUI.Pages
                         TeamModel teamData = new TeamModel()
                         {
                             Name = Title,
-                            ProjectID = ParentLayout.SelectedProject.ID
                         };
 
                         long? teamID = 0;

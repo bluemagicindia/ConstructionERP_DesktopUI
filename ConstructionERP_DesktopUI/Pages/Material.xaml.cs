@@ -127,17 +127,30 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private UnitModel unit;
+        private UnitModel selectedUnit;
 
-        public UnitModel Unit
+        public UnitModel SelectedUnit
         {
-            get { return unit; }
+            get { return selectedUnit; }
             set
             {
-                unit = value;
-                OnPropertyChanged("Unit");
+                selectedUnit = value;
+                OnPropertyChanged("SelectedUnit");
             }
         }
+
+        private string unitText;
+
+        public string UnitText
+        {
+            get { return unitText; }
+            set
+            {
+                unitText = value;
+                OnPropertyChanged("UnitText");
+            }
+        }
+
 
 
         #endregion
@@ -180,7 +193,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         ID = SelectedMaterial.ID;
                         Title = SelectedMaterial.Name;
-                        Unit = SelectedMaterial.Unit;
+                        SelectedUnit = SelectedMaterial.Unit;
 
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
@@ -303,7 +316,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Name", Title),
-                    new KeyValuePair<string, string>("Unit", Unit.Title)
+                    new KeyValuePair<string, string>("Unit", UnitText)
                 };
                 if (FieldValidation.ValidateFields(values))
                 {
@@ -312,9 +325,10 @@ namespace ConstructionERP_DesktopUI.Pages
                     MaterialModel materialData = new MaterialModel()
                     {
                         Name = Title,
-                        UnitID = Unit.ID,
-                       
+                        UnitID = SelectedUnit?.ID,
+                        Unit = SelectedUnit == null ? new UnitModel { Title = UnitText, CreatedBy = ParentLayout.LoggedInUser.Name, CreatedOn = DateTime.Now } : null,
                     };
+
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
@@ -331,6 +345,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Material Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetMaterials();
+                        await GetUnits();
                         ClearFields();
                     }
                     else
@@ -340,7 +355,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     CanSaveMaterial = true;
 
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -356,7 +371,8 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 ID = 0;
                 Title = "";
-                Unit = new UnitModel();
+                SelectedUnit = null;
+                UnitText = "";
             }
             catch (Exception)
             {

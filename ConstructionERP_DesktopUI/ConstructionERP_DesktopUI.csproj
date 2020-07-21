@@ -118,6 +118,7 @@
     </ApplicationDefinition>
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\DocumentAPIHelper.cs" />
+    <Compile Include="API\TaskAPIHelper.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
+    <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Models\TeamModel.cs" />
     <Compile Include="Models\TeamSiteManagerLinkageModel.cs" />
     <Compile Include="Models\TypeModel.cs" />
@@ -215,6 +217,9 @@
     </Compile>
     <Compile Include="Pages\SuppliersMain.xaml.cs">
       <DependentUpon>SuppliersMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TaskControl.xaml.cs">
+      <DependentUpon>TaskControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\TaskStatus.xaml.cs">
       <DependentUpon>TaskStatus.xaml</DependentUpon>
@@ -328,6 +333,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SuppliersMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TaskControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

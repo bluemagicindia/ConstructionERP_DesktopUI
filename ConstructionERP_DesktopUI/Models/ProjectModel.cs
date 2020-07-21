@@ -26,6 +26,9 @@ namespace ConstructionERP_DesktopUI.Models
         public ContractorModel Contractor { get; set; }
         public long? ContractorID { get; set; }
 
+        public TeamModel Team { get; set; }
+        public long? TeamID { get; set; }
+
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         public string CreatedBy { get; set; }

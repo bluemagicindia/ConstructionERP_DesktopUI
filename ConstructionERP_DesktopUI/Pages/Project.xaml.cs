@@ -22,6 +22,10 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private ProjectAPIHelper apiHelper;
+        private TeamAPIHelper teamAPIHelper;
+        private ProjectStatusAPIHelper statusAPIHelper;
+        private ProjectTypeAPIHelper typeAPIHelper;
+        private ContractorAPIHelper contractorAPIHelper;
 
         public Project(MainLayout mainLayout)
         {
@@ -32,14 +36,19 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
-
         void SetValues()
         {
             apiHelper = new ProjectAPIHelper();
+            teamAPIHelper = new TeamAPIHelper();
+            statusAPIHelper = new ProjectStatusAPIHelper();
+            typeAPIHelper = new ProjectTypeAPIHelper();
+            contractorAPIHelper = new ContractorAPIHelper();
+
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetProjects())();
             new Action(async () => await GetTypes())();
             new Action(async () => await GetStatuses())();
+            new Action(async () => await GetTeams())();
             new Action(async () => await GetContractors())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateProject()); }, () => CanSaveProject);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteProject()); }, () => CanDeleteProject);
@@ -159,6 +168,31 @@ namespace ConstructionERP_DesktopUI.Pages
                 OnPropertyChanged("Type");
             }
         }
+
+        private ObservableCollection<TeamModel> teams;
+
+        public ObservableCollection<TeamModel> Teams
+        {
+            get { return teams; }
+            set
+            {
+                teams = value;
+                OnPropertyChanged("Teams");
+            }
+        }
+
+        private TeamModel team;
+
+        public TeamModel Team
+        {
+            get { return team; }
+            set
+            {
+                team = value;
+                OnPropertyChanged("Team");
+            }
+        }
+
 
         //Contractors
         private ObservableCollection<ContractorModel> contractors;
@@ -286,6 +320,7 @@ namespace ConstructionERP_DesktopUI.Pages
                         Type = SelectedProject.Type;
                         Status = SelectedProject.Status;
                         Contractor = SelectedProject.Contractor;
+                        Team = SelectedProject.Team;
 
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
@@ -351,7 +386,7 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                Types = await new ProjectTypeAPIHelper().GetTypes(ParentLayout.LoggedInUser.Token);
+                Types = await typeAPIHelper.GetTypes(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -369,7 +404,25 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                Statuses = await new ProjectStatusAPIHelper().GetStatuses(ParentLayout.LoggedInUser.Token);
+                Statuses = await statusAPIHelper.GetStatuses(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
+
+        #endregion
+
+        #region Get Teams
+
+        private async Task GetTeams()
+        {
+            try
+            {
+                Teams = await teamAPIHelper.GetTeams(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -387,7 +440,7 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                Contractors = await new ContractorAPIHelper().GetContractors(ParentLayout.LoggedInUser.Token);
+                Contractors = await contractorAPIHelper.GetContractors(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
@@ -460,7 +513,8 @@ namespace ConstructionERP_DesktopUI.Pages
                         StartDate = StartDate,
                         DueDate = DueDate,
                         Address = Address,
-                        ContractorID = Contractor.ID
+                        ContractorID = Contractor.ID,
+                        TeamID = Team.ID
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
@@ -494,7 +548,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
 
                 }
-              
+
             }
             catch (Exception ex)
             {

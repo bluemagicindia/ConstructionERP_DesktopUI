@@ -46,6 +46,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Dashboard":
                     view = new Dashboard(this);
                     break;
+                case "Task":
+                    view = new TaskControl(this);
+                    break;
                 case "TaskStatus":
                     view = new TaskStatus(this);
                     break;
