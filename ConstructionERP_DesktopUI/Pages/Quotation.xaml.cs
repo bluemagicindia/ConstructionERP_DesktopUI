@@ -325,6 +325,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     new KeyValuePair<string, string>("Vendor", Vendor),
                     new KeyValuePair<string, string>("Narration", Narration),
                     new KeyValuePair<string, string>("Cost", Cost.ToString()),
+                    new KeyValuePair<string, string>("Material", Material?.Name),
 
                 };
                 if (FieldValidation.ValidateFields(values))

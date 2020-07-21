@@ -35,7 +35,6 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            SelectedManagers = new ObservableCollection<SiteManagerModel>();
             apiHelper = new TeamAPIHelper();
             linkageApiHelper = new TeamSiteManagerLinkageAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
@@ -43,8 +42,7 @@ namespace ConstructionERP_DesktopUI.Pages
             new Action(async () => await GetSiteManagers())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateTeam()); }, () => CanSaveTeam);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTeam()); }, () => CanDeleteTeam);
-            AddCommand = new RelayCommand(AddSiteManager);
-            RemoveCommand = new RelayCommand(RemoveSiteManager);
+            CheckCommand = new RelayCommand(SetCheckedText);
         }
 
         #endregion
@@ -112,31 +110,18 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
+        private string siteManagersText;
 
-        private ObservableCollection<SiteManagerModel> selectedManagers;
-
-        public ObservableCollection<SiteManagerModel> SelectedManagers
+        public string SiteManagersText
         {
-            get { return selectedManagers; }
+            get { return siteManagersText; }
             set
             {
-                selectedManagers = value;
-                OnPropertyChanged("SelectedManagers");
+                siteManagersText = value;
+                OnPropertyChanged("SiteManagersText");
             }
         }
 
-
-        private SiteManagerModel selectedManager;
-
-        public SiteManagerModel SelectedManager
-        {
-            get { return selectedManager; }
-            set
-            {
-                selectedManager = value;
-                OnPropertyChanged("SelectedManager");
-            }
-        }
 
         #endregion
 
@@ -177,13 +162,22 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         try
                         {
-                            SelectedManagers.Clear();
+                            await GetSiteManagers();
                             ID = SelectedTeam.ID;
                             Title = SelectedTeam.Name;
                             ColSpan = 1;
                             OperationsVisibility = "Visible";
+
                             var linkages = await linkageApiHelper.GetLinkagesByTeamID(ParentLayout.LoggedInUser.Token, SelectedTeam.ID);
-                            linkages.Distinct().ToList().ForEach(l => SelectedManagers.Add(l.SiteManager));
+
+                            foreach (var linkage in linkages)
+                            {
+                                linkage.SiteManager.IsChecked = true;
+                                SiteManagers.FirstOrDefault(s => s.ID == linkage.SiteManager.ID).IsChecked = true;
+                            }
+
+                            SetCheckedText(null);
+
                             IsUpdate = true;
                         }
                         catch (Exception ex)
@@ -203,7 +197,8 @@ namespace ConstructionERP_DesktopUI.Pages
                     ColSpan = 1;
                     OperationsVisibility = "Visible";
                     ClearFields();
-                    SelectedManagers.Clear();
+                    await GetSiteManagers();
+
                     break;
                 default:
                     ColSpan = ColSpan == 1 ? 2 : 1;
@@ -320,12 +315,11 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
-
                     new KeyValuePair<string, string>("Title", Title)
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                if (SelectedManagers?.Count > 0)
+                if (SiteManagers.Where(s => s.IsChecked).Count() > 0)
                 {
                     CanSaveTeam = false;
                     try
@@ -360,10 +354,13 @@ namespace ConstructionERP_DesktopUI.Pages
 
                             List<TeamSiteManagerLinkageModel> teamLinkages = new List<TeamSiteManagerLinkageModel>();
 
-                            foreach (var siteManager in SelectedManagers)
-                            {
-                                teamLinkages.Add(new TeamSiteManagerLinkageModel { TeamID = teamID, SiteManagerID = siteManager.ID, CreatedBy = ParentLayout.LoggedInUser.Name });
-                            }
+                            SiteManagers.Where(s => s.IsChecked).ToList().ForEach(s => teamLinkages.Add(
+                                new TeamSiteManagerLinkageModel
+                                {
+                                    TeamID = teamID,
+                                    SiteManagerID = s.ID,
+                                    CreatedBy = parentLayout.LoggedInUser.Name
+                                }));
 
                             result = await linkageApiHelper.PostTeamLinkage(ParentLayout.LoggedInUser.Token, teamLinkages);
                             if (result.IsSuccessStatusCode)
@@ -371,12 +368,10 @@ namespace ConstructionERP_DesktopUI.Pages
                                 MessageBox.Show($"Team Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                                 await GetTeams();
                                 ClearFields();
+                                await GetSiteManagers();
                                 teamID = 0;
                                 IsUpdate = false;
-                                App.Current.Dispatcher.Invoke((Action)delegate
-                                {
-                                    SelectedManagers.Clear();
-                                });
+
                             }
                         }
                         else
@@ -400,12 +395,14 @@ namespace ConstructionERP_DesktopUI.Pages
 
         }
 
+
         private void ClearFields()
         {
             try
             {
                 ID = 0;
-                Title = "";
+                Title = string.Empty;
+                SiteManagersText = string.Empty;
             }
             catch (Exception)
             {
@@ -459,6 +456,8 @@ namespace ConstructionERP_DesktopUI.Pages
                         if (result.IsSuccessStatusCode)
                         {
                             await GetTeams();
+                            ClearFields();
+                            await GetSiteManagers();
                         }
                     }
                     else
@@ -482,85 +481,29 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Add SiteManager Command
+        #region Check SiteManager Command
 
-        public ICommand AddCommand { get; private set; }
 
-        private void AddSiteManager(object parameter)
+        public ICommand CheckCommand { get; private set; }
+
+
+        private void SetCheckedText(object param)
         {
-
-            if (SelectedManager != null)
+            try
             {
-                if (SelectedManagers.Where(s => s.ID == SelectedManager.ID)?.Count() > 0)
-                {
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        ParentLayout.ShowMessageAsync("Record Existing", "Site Managers already exists in the selected list", MessageDialogStyle.Affirmative, new MetroDialogSettings() { ColorScheme = MetroDialogColorScheme.Accented });
-                    });
+                List<string> checkedManagers = new List<string>();
+                SiteManagers.Where(s => s.IsChecked).Distinct().ToList().ForEach(s => checkedManagers.Add(s.Name));
+                SiteManagersText = string.Join(", ", checkedManagers);
 
-                }
-                else
-                {
-                    try
-                    {
-                        App.Current.Dispatcher.Invoke((Action)delegate
-                        {
-                            SelectedManagers.Add(SelectedManager);
-                            //SiteManagers.Remove(SelectedManager);
-                        });
-
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Current.Dispatcher.Invoke((Action)delegate
-                        {
-                            ParentLayout.ShowMessageAsync("Error", ex.Message, MessageDialogStyle.Affirmative, new MetroDialogSettings() { ColorScheme = MetroDialogColorScheme.Accented });
-                        });
-                    }
-
-                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a manager to be added", "Select Site Manager", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
         #endregion
 
-        #region Remove SiteManager Command
-
-
-        public ICommand RemoveCommand { get; private set; }
-
-
-        private void RemoveSiteManager(object parameter)
-        {
-            if (parameter != null)
-            {
-                try
-                {
-                    var deletingManager = parameter as SiteManagerModel;
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        SelectedManagers.Remove(deletingManager);
-                        //SiteManagers.Add(deletingManager);
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select a manager to be deleted", "Select Site Manager", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-
-        }
-
-        #endregion
     }
 }

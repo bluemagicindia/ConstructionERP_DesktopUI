@@ -8,6 +8,11 @@
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
       mc:Ignorable="d"  d:DesignHeight="820" d:DesignWidth="1100" Background="#fefefe" >
 
+    <UserControl.Resources>
+
+        <CollectionViewSource x:Key="ManagersSource" Source="{Binding SiteManagers}"/>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -102,55 +107,22 @@
                                 <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title}" ></TextBox>
 
                                 <TextBlock Style="{StaticResource FormTitle}">Site Manager</TextBlock>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="4*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ComboBox Grid.Column="0" Style="{StaticResource BorderedComboBox}" MaxDropDownHeight="150" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" IsDropDownOpen="True" ItemsSource="{Binding SiteManagers}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedManager, Mode=TwoWay}" />
-
-                                    <Button Grid.Column="1" Style="{StaticResource BorderedSquaredButton2}" Command="{Binding AddCommand}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <icons:PackIconFontAwesome Kind="PlusSolid" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
                                 
-                                
-                                <ListBox ItemsSource="{Binding SelectedManagers}"  Margin="0 20, 0, 0">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="ListBoxItem">
-                                                        <ContentPresenter/>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                    
-                                    <ListBox.ItemTemplate>
+                                <ComboBox Style="{StaticResource BorderedComboBox}" FontSize="14" MinHeight="35" FontFamily="Calibri"  Name="industry"  IsEditable="True" Text="{Binding SiteManagersText}" >
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <CollectionContainer Collection="{Binding Source={StaticResource ManagersSource}}"/>
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                    <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <Border CornerRadius="5" Background="#ddd" Padding="15 7 10 7" Margin="0 3">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="{Binding Name}" VerticalAlignment="Center"/>
-                                                    <Button Grid.Column="1" Command="{Binding Path=DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" CommandParameter="{Binding .}" Foreground="{StaticResource DangerColor}" Style="{StaticResource TransparentButton2}" VerticalAlignment="Center">
-                                                        <icons:PackIconFontAwesome Kind="TrashAltRegular" />
-                                                    </Button>
-                                                </Grid>
-                                            </Border>
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}, Path=DataContext.CheckCommand, UpdateSourceTrigger=PropertyChanged}"  IsChecked="{Binding IsChecked}" Content="{Binding Name}" />
+
+                                            </StackPanel>
                                         </DataTemplate>
-                                    </ListBox.ItemTemplate>
-
-                                </ListBox>
-
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
 
                             </StackPanel>
 

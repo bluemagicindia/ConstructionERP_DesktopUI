@@ -109,7 +109,7 @@
                                 <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                 
                                 <TextBlock Style="{StaticResource FormTitle}">Material</TextBlock>
-                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Materials}"  SelectedItem="{Binding Material, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Material.Name}" SelectedIndex="0"  />
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Materials}"  SelectedItem="{Binding Material, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Material.Name}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
                                 
                                 <TextBlock Style="{StaticResource FormTitle}">Narration</TextBlock>
                                 <TextBox Style="{StaticResource BorderedTextBox}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Height="80" Text="{Binding Narration, UpdateSourceTrigger=PropertyChanged}"></TextBox>
