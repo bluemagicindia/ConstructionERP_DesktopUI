@@ -132,17 +132,30 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private StatusModel status;
+        private StatusModel selectedStatus;
 
-        public StatusModel Status
+        public StatusModel SelectedStatus
         {
-            get { return status; }
+            get { return selectedStatus; }
             set
             {
-                status = value;
-                OnPropertyChanged("Status");
+                selectedStatus = value;
+                OnPropertyChanged("SelectedStatus");
             }
         }
+
+        private string statusText;
+
+        public string StatusText
+        {
+            get { return statusText; }
+            set
+            {
+                statusText = value;
+                OnPropertyChanged("StatusText");
+            }
+        }
+
 
         //Teams
         private ObservableCollection<TypeModel> types;
@@ -157,17 +170,30 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private TypeModel type;
+        private TypeModel selectedType;
 
-        public TypeModel Type
+        public TypeModel SelectedType
         {
-            get { return type; }
+            get { return selectedType; }
             set
             {
-                type = value;
-                OnPropertyChanged("Type");
+                selectedType = value;
+                OnPropertyChanged("SelectedType");
             }
         }
+
+        private string typeText;
+
+        public string TypeText
+        {
+            get { return typeText; }
+            set
+            {
+                typeText = value;
+                OnPropertyChanged("TypeText");
+            }
+        }
+
 
         private ObservableCollection<TeamModel> teams;
 
@@ -317,8 +343,8 @@ namespace ConstructionERP_DesktopUI.Pages
                         DueDate = SelectedProject.DueDate;
                         Address = SelectedProject.Address;
                         Title = SelectedProject.Title;
-                        Type = SelectedProject.Type;
-                        Status = SelectedProject.Status;
+                        SelectedType = SelectedProject.Type;
+                        SelectedStatus = SelectedProject.Status;
                         Contractor = SelectedProject.Contractor;
                         Team = SelectedProject.Team;
 
@@ -497,6 +523,8 @@ namespace ConstructionERP_DesktopUI.Pages
                 List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Title", Title),
+                    new KeyValuePair<string, string>("Project Type", TypeText),
+                    new KeyValuePair<string, string>("Project Status", StatusText),
                     new KeyValuePair<string, string>("Address", Address)
 
                 };
@@ -508,8 +536,10 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         Title = Title,
                         Description = Description,
-                        ProjectTypeID = Type.ID,
-                        ProjectStatusID = Status.ID,
+                        ProjectTypeID = SelectedType?.ID,
+                        Type = SelectedType == null ? new TypeModel { Title = TypeText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                        ProjectStatusID = SelectedStatus?.ID,
+                        Status = SelectedStatus == null ? new StatusModel { Title = StatusText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
                         StartDate = StartDate,
                         DueDate = DueDate,
                         Address = Address,
@@ -563,11 +593,14 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 ID = 0;
-                Title = "";
-                Description = "";
-                Address = "";
+                Title = string.Empty;
+                Description = string.Empty;
+                Address = string.Empty;
                 StartDate = DateTime.Today;
                 DueDate = DateTime.Today;
+                SelectedStatus = null;
+                SelectedProject = null;
+                Team = null;
             }
             catch (Exception)
             {
