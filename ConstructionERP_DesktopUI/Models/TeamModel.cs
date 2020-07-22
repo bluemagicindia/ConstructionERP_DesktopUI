@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConstructionERP_DesktopUI.Models
 {
@@ -17,5 +18,7 @@ namespace ConstructionERP_DesktopUI.Models
         //public DateTime ModifiedOn { get; set; }
 
         //public string ModifiedBy { get; set; }
+
+        public IEnumerable<TeamSiteManagerLinkageModel> Linkages { get; set; }
     }
 }

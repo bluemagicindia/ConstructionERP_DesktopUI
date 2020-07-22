@@ -324,12 +324,20 @@ namespace ConstructionERP_DesktopUI.Pages
                     CanSaveTeam = false;
                     try
                     {
+                        List<TeamSiteManagerLinkageModel> teamLinkages = new List<TeamSiteManagerLinkageModel>();
+
+                        SiteManagers.Where(s => s.IsChecked).ToList().ForEach(s => teamLinkages.Add(
+                            new TeamSiteManagerLinkageModel
+                            {
+                                TeamID = ID,
+                                SiteManagerID = s.ID,
+                                CreatedBy = parentLayout.LoggedInUser.Name
+                            }));
                         TeamModel teamData = new TeamModel()
                         {
                             Name = Title,
+                            Linkages = teamLinkages
                         };
-
-                        long? teamID = 0;
 
                         HttpResponseMessage result = null;
                         if (isUpdate)
@@ -337,47 +345,24 @@ namespace ConstructionERP_DesktopUI.Pages
                             teamData.ID = ID;
                             teamData.CreatedBy = SelectedTeam.CreatedBy;
                             result = await apiHelper.PutTeam(ParentLayout.LoggedInUser.Token, teamData).ConfigureAwait(false);
-                            if (result.IsSuccessStatusCode)
-                            {
-                                result = await linkageApiHelper.DeleteTeamLinkagesByID(ParentLayout.LoggedInUser.Token, teamData.ID);
-                                if (result.IsSuccessStatusCode)
-                                    teamID = teamData.ID;
-                            }
+
                         }
                         else
                         {
                             teamData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                            teamID = await apiHelper.PostTeam(ParentLayout.LoggedInUser.Token, teamData).ConfigureAwait(false);
+                            result = await apiHelper.PostTeam(ParentLayout.LoggedInUser.Token, teamData).ConfigureAwait(false);
                         }
-                        if (teamID != null && teamID != 0)
+
+                        if (result.IsSuccessStatusCode)
                         {
+                            MessageBox.Show($"Team Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetTeams();
+                            ClearFields();
+                            await GetSiteManagers();
+                            IsUpdate = false;
 
-                            List<TeamSiteManagerLinkageModel> teamLinkages = new List<TeamSiteManagerLinkageModel>();
-
-                            SiteManagers.Where(s => s.IsChecked).ToList().ForEach(s => teamLinkages.Add(
-                                new TeamSiteManagerLinkageModel
-                                {
-                                    TeamID = teamID,
-                                    SiteManagerID = s.ID,
-                                    CreatedBy = parentLayout.LoggedInUser.Name
-                                }));
-
-                            result = await linkageApiHelper.PostTeamLinkage(ParentLayout.LoggedInUser.Token, teamLinkages);
-                            if (result.IsSuccessStatusCode)
-                            {
-                                MessageBox.Show($"Team Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                                await GetTeams();
-                                ClearFields();
-                                await GetSiteManagers();
-                                teamID = 0;
-                                IsUpdate = false;
-
-                            }
                         }
-                        else
-                        {
-                            MessageBox.Show("Error in saving Team", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+
                         CanSaveTeam = true;
                     }
                     catch (Exception ex)
@@ -394,7 +379,6 @@ namespace ConstructionERP_DesktopUI.Pages
             }
 
         }
-
 
         private void ClearFields()
         {
@@ -449,22 +433,18 @@ namespace ConstructionERP_DesktopUI.Pages
                 CanDeleteTeam = false;
                 try
                 {
-                    HttpResponseMessage result = await linkageApiHelper.DeleteTeamLinkagesByID(ParentLayout.LoggedInUser.Token, SelectedTeam.ID);
+                    HttpResponseMessage result = await apiHelper.DeleteTeam(ParentLayout.LoggedInUser.Token, SelectedTeam.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        result = await apiHelper.DeleteTeam(ParentLayout.LoggedInUser.Token, SelectedTeam.ID).ConfigureAwait(false);
-                        if (result.IsSuccessStatusCode)
-                        {
-                            await GetTeams();
-                            ClearFields();
-                            await GetSiteManagers();
-                        }
+                        await GetTeams();
+                        ClearFields();
+                        await GetSiteManagers();
                     }
                     else
                     {
                         MessageBox.Show("Error in deleting Team", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveTeam = true;
+                    canDeleteTeam = true;
                 }
                 catch (Exception ex)
                 {
@@ -474,7 +454,7 @@ namespace ConstructionERP_DesktopUI.Pages
             }
             else
             {
-                MessageBox.Show("Please select an team to be deleted", "Select Team", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please select a team to be deleted", "Select Team", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }

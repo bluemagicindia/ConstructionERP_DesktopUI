@@ -28,7 +28,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #region Post Team
 
-        public async Task<int> PostTeam(string token, TeamModel teamData)
+        public async Task<HttpResponseMessage> PostTeam(string token, TeamModel teamData)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
                 using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/Team", teamData))
                 {
-                    return await response.Content.ReadAsAsync<int>();
+                    return response;
                 }
             }
             catch (Exception ex)
@@ -82,7 +82,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Delete Material
+        #region Delete Team
 
         public async Task<HttpResponseMessage> DeleteTeam(string token, long id)
         {
