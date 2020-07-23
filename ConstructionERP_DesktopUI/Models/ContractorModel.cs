@@ -27,6 +27,7 @@ namespace ConstructionERP_DesktopUI.Models
 
         public bool Status { get; set; } = true;
 
+        public bool IsChecked { get; set; }
     }
 
 }

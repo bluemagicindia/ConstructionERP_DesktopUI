@@ -3,21 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ConstructionERP_DesktopUI.API
 {
-    public class TeamSiteManagerLinkageAPIHelper
+    public class TeamSiteManagersAPIHelper
     {
         #region Initialization
 
         private HttpClient httpClient;
 
-        public TeamSiteManagerLinkageAPIHelper()
+        public TeamSiteManagersAPIHelper()
         {
 
             httpClient = new HttpClient();
@@ -30,7 +28,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #region Post Team SiteManager Linkage
 
-        public async Task<HttpResponseMessage> PostTeamLinkage(string token, IEnumerable<TeamSiteManagerLinkageModel> linkageData)
+        public async Task<HttpResponseMessage> PostTeamSiteManagers(string token, IEnumerable<TeamSiteManagersModel> linkageData)
         {
             try
             {
@@ -38,7 +36,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/TeamSiteManagerLinkage", linkageData))
+                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/TeamSiteManagers", linkageData))
                 {
                     return response;
                 }
@@ -54,7 +52,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #region Get LInkages  
 
-        public async Task<ObservableCollection<TeamSiteManagerLinkageModel>> GetLinkages(string token)
+        public async Task<ObservableCollection<TeamSiteManagersModel>> GetTeamSiteManagers(string token)
         {
             try
             {
@@ -62,11 +60,11 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync("/api/TeamSiteManagerLinkage"))
+                using (HttpResponseMessage response = await httpClient.GetAsync("/api/TeamSiteManagers"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsAsync<ObservableCollection<TeamSiteManagerLinkageModel>>();
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<TeamSiteManagersModel>>();
                         return result;
                     }
                     else
@@ -83,7 +81,7 @@ namespace ConstructionERP_DesktopUI.API
         }
 
 
-        public async Task<ObservableCollection<TeamSiteManagerLinkageModel>> GetLinkagesByTeamID(string token, long teamID)
+        public async Task<ObservableCollection<TeamSiteManagersModel>> GetTeamSiteManagersByTeamID(string token, long teamID)
         {
             try
             {
@@ -91,11 +89,11 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/TeamSiteManagerLinkage/ByTeamID/{teamID}"))
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/TeamSiteManagers/ByTeamID/{teamID}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsAsync<ObservableCollection<TeamSiteManagerLinkageModel>>();
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<TeamSiteManagersModel>>();
                         return result;
                     }
                     else
@@ -115,7 +113,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #region Delete Team Linkages
 
-        public async Task<HttpResponseMessage> DeleteTeamLinkage(string token, long id)
+        public async Task<HttpResponseMessage> DeleteTeamSiteManagers(string token, long id)
         {
             try
             {
@@ -123,7 +121,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/TeamSiteManagerLinkage/{id}"))
+                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/TeamSiteManagers/{id}"))
                 {
                     return response;
                 }
@@ -135,7 +133,7 @@ namespace ConstructionERP_DesktopUI.API
 
         }
 
-        public async Task<HttpResponseMessage> DeleteTeamLinkagesByID(string token, long id)
+        public async Task<HttpResponseMessage> DeleteTeamSiteManagersByID(string token, long id)
         {
             try
             {
@@ -143,31 +141,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/TeamSiteManagerLinkage/ByTeamID/{id}"))
-                {
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
-
-        #endregion
-
-        #region Put Team
-
-        public async Task<HttpResponseMessage> PutTeam(string token, TeamModel teamData)
-        {
-            try
-            {
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PutAsJsonAsync("/api/TeamSiteManagerLinkage", teamData))
+                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/TeamSiteManagers/ByTeamID/{id}"))
                 {
                     return response;
                 }
@@ -180,5 +154,6 @@ namespace ConstructionERP_DesktopUI.API
         }
 
         #endregion
+
     }
 }

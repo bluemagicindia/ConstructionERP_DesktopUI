@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,9 @@ namespace ConstructionERP_DesktopUI.Pages
         private ProjectStatusAPIHelper statusAPIHelper;
         private ProjectTypeAPIHelper typeAPIHelper;
         private ContractorAPIHelper contractorAPIHelper;
+        private SupplierAPIHelper supplierAPIHelper;
+        private ProjectContractorsAPIHelper projectContractorsAPIHelper;
+        private ProjectSuppliersAPIHelper projectSuppliersAPIHelper;
 
         public Project(MainLayout mainLayout)
         {
@@ -43,6 +47,9 @@ namespace ConstructionERP_DesktopUI.Pages
             statusAPIHelper = new ProjectStatusAPIHelper();
             typeAPIHelper = new ProjectTypeAPIHelper();
             contractorAPIHelper = new ContractorAPIHelper();
+            supplierAPIHelper = new SupplierAPIHelper();
+            projectContractorsAPIHelper = new ProjectContractorsAPIHelper();
+            projectSuppliersAPIHelper = new ProjectSuppliersAPIHelper();
 
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetProjects())();
@@ -50,8 +57,11 @@ namespace ConstructionERP_DesktopUI.Pages
             new Action(async () => await GetStatuses())();
             new Action(async () => await GetTeams())();
             new Action(async () => await GetContractors())();
+            new Action(async () => await GetSuppliers())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateProject()); }, () => CanSaveProject);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteProject()); }, () => CanDeleteProject);
+            CheckContractorCommand = new RelayCommand(SetContractorsCheckedText);
+            CheckSupplierCommand = new RelayCommand(SetSuppliersCheckedText);
         }
 
         #endregion
@@ -233,17 +243,44 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private ContractorModel contractor;
+        private string contractorsText;
 
-        public ContractorModel Contractor
+        public string ContractorsText
         {
-            get { return contractor; }
+            get { return contractorsText; }
             set
             {
-                contractor = value;
-                OnPropertyChanged("Contractor");
+                contractorsText = value;
+                OnPropertyChanged("ContractorsText");
             }
         }
+
+        private ObservableCollection<SupplierModel> suppliers;
+
+        public ObservableCollection<SupplierModel> Suppliers
+        {
+            get { return suppliers; }
+            set
+            {
+                suppliers = value;
+                OnPropertyChanged("Suppliers");
+            }
+        }
+
+        private string suppliersText;
+
+        public string SuppliersText
+        {
+            get { return suppliersText; }
+            set
+            {
+                suppliersText = value;
+                OnPropertyChanged("SuppliersText");
+            }
+        }
+
+
+
 
         //Enquiry Date
         private DateTime startDate = DateTime.Today;
@@ -328,49 +365,80 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand ToggleOperationCommand { get; private set; }
 
-        private void OpenCloseOperations(object value)
+        private async void OpenCloseOperations(object value)
         {
-
-            switch (value.ToString())
+            try
             {
-                case "Edit":
-                    if (SelectedProject != null)
-                    {
-                        ID = SelectedProject.ID;
-                        Title = SelectedProject.Title;
-                        Description = SelectedProject.Description;
-                        StartDate = SelectedProject.StartDate;
-                        DueDate = SelectedProject.DueDate;
-                        Address = SelectedProject.Address;
-                        Title = SelectedProject.Title;
-                        SelectedType = SelectedProject.Type;
-                        SelectedStatus = SelectedProject.Status;
-                        Contractor = SelectedProject.Contractor;
-                        Team = SelectedProject.Team;
+                switch (value.ToString())
+                {
+                    case "Edit":
+                        if (SelectedProject != null)
+                        {
+                            await GetContractors();
+                            await GetSuppliers();
+                            ColSpan = 1;
+                            OperationsVisibility = "Visible";
 
+                            ID = SelectedProject.ID;
+                            Title = SelectedProject.Title;
+                            Description = SelectedProject.Description;
+                            StartDate = SelectedProject.StartDate;
+                            DueDate = SelectedProject.DueDate;
+                            Address = SelectedProject.Address;
+                            Title = SelectedProject.Title;
+                            SelectedType = SelectedProject.Type;
+                            SelectedStatus = SelectedProject.Status;
+                            Team = SelectedProject.Team;
+
+                            var projectContractors = await projectContractorsAPIHelper.GetProjectContractorsByProjectID(ParentLayout.LoggedInUser.Token, ID);
+                            var projectSuppliers = await projectSuppliersAPIHelper.GetProjectSuppliersByProjectID(ParentLayout.LoggedInUser.Token, ID);
+
+                            foreach (var pc in projectContractors)
+                            {
+                                pc.Contractor.IsChecked = true;
+                                Contractors.FirstOrDefault(c => c.ID == pc.Contractor.ID).IsChecked = true;
+                            }
+
+
+                            foreach (var ps in projectSuppliers)
+                            {
+                                ps.Supplier.IsChecked = true;
+                                Suppliers.FirstOrDefault(s => s.ID == ps.Supplier.ID).IsChecked = true;
+                            }
+
+                            SetContractorsCheckedText(null);
+                            SetSuppliersCheckedText(null);
+
+                            
+                            IsUpdate = true;
+                            return;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please select a record to edit", "Select Record", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                    case "Create":
+                        ID = 0;
+                        IsUpdate = false;
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
-                        IsUpdate = true;
-                        return;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please select a record to edit", "Select Record", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-                case "Create":
-                    ID = 0;
-                    IsUpdate = false;
-                    ColSpan = 1;
-                    OperationsVisibility = "Visible";
-                    ClearFields();
-                    break;
-                default:
-                    ColSpan = ColSpan == 1 ? 2 : 1;
-                    OperationsVisibility = OperationsVisibility == "Visible" ? "Collapsed" : "Visible";
-                    break;
+                        ClearFields();
+                        await GetSuppliers();
+                        await GetContractors();
+                        break;
+                    default:
+                        ColSpan = ColSpan == 1 ? 2 : 1;
+                        OperationsVisibility = OperationsVisibility == "Visible" ? "Collapsed" : "Visible";
+                        break;
 
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
 
         }
 
@@ -478,6 +546,24 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Get Suppliers
+
+        private async Task GetSuppliers()
+        {
+            try
+            {
+                Suppliers = await supplierAPIHelper.GetSuppliers(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
+
+        #endregion
+
         #region Create and Edit Project Command
 
         private bool isUpdate;
@@ -530,52 +616,85 @@ namespace ConstructionERP_DesktopUI.Pages
                 };
                 if (FieldValidation.ValidateFields(values))
                 {
-                    CanSaveProject = false;
-
-                    ProjectModel projectData = new ProjectModel()
+                    if (Contractors.Where(c => c.IsChecked).Count() <= 0)
                     {
-                        Title = Title,
-                        Description = Description,
-                        ProjectTypeID = SelectedType?.ID,
-                        Type = SelectedType == null ? new TypeModel { Title = TypeText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
-                        ProjectStatusID = SelectedStatus?.ID,
-                        Status = SelectedStatus == null ? new StatusModel { Title = StatusText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
-                        StartDate = StartDate,
-                        DueDate = DueDate,
-                        Address = Address,
-                        ContractorID = Contractor.ID,
-                        TeamID = Team.ID
-                    };
-                    HttpResponseMessage result = null;
-                    if (isUpdate)
+                        MessageBox.Show("Please add atleast 1 Contractor to the Project", "Add Contractor", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else if (Suppliers.Where(c => c.IsChecked).Count() <= 0)
                     {
-                        projectData.ID = ID;
-                        projectData.CreatedBy = SelectedProject.CreatedBy;
-                        projectData.CreatedOn = SelectedProject.CreatedOn;
-                        projectData.ModifiedBy = ParentLayout.LoggedInUser.Name;
-                        projectData.ModifiedOn = DateTime.Now;
-                        result = await apiHelper.PutProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
+                        MessageBox.Show("Please add atleast 1 Supplier to the Project", "Add Supplier", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     else
                     {
-                        projectData.CreatedBy = ParentLayout.LoggedInUser.Name;
-                        projectData.CreatedOn = DateTime.Now;
-                        result = await apiHelper.PostProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
-                    }
-                    if (result.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show($"Project Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetProjects();
-                        await ParentLayout.GetProjects();
-                        IsUpdate = false;
-                        ClearFields();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error in saving Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    CanSaveProject = true;
+                        CanSaveProject = false;
 
+                        List<ProjectContractorsModel> projectContractors = new List<ProjectContractorsModel>();
+                        List<ProjectSuppliersModel> projectSuppliers = new List<ProjectSuppliersModel>();
+
+                        Contractors.Where(s => s.IsChecked).ToList().ForEach(s => projectContractors.Add(
+                            new ProjectContractorsModel
+                            {
+                                ProjectID = ID,
+                                ContractorID = s.ID,
+                            }));
+
+                        Suppliers.Where(s => s.IsChecked).ToList().ForEach(s => projectSuppliers.Add(
+                            new ProjectSuppliersModel
+                            {
+                                ProjectID = ID,
+                                SupplierID = s.ID,
+                            }));
+
+                        ProjectModel projectData = new ProjectModel()
+                        {
+                            Title = Title,
+                            Description = Description,
+                            ProjectTypeID = SelectedType?.ID,
+                            Type = SelectedType == null ? new TypeModel { Title = TypeText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            ProjectStatusID = SelectedStatus?.ID,
+                            Status = SelectedStatus == null ? new StatusModel { Title = StatusText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            StartDate = StartDate,
+                            DueDate = DueDate,
+                            Address = Address,
+                            TeamID = Team.ID,
+                            Contractors = projectContractors,
+                            Suppliers = projectSuppliers
+                        };
+
+                        HttpResponseMessage result = null;
+                        if (isUpdate)
+                        {
+                            projectData.ID = ID;
+                            projectData.CreatedBy = SelectedProject.CreatedBy;
+                            projectData.CreatedOn = SelectedProject.CreatedOn;
+                            projectData.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                            projectData.ModifiedOn = DateTime.Now;
+                            result = await apiHelper.PutProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            projectData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                            projectData.CreatedOn = DateTime.Now;
+                            result = await apiHelper.PostProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
+                        }
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Project Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetProjects();
+                            await ParentLayout.GetProjects();
+                            IsUpdate = false;
+                            ClearFields();
+                            await GetContractors();
+                            await GetSuppliers();
+                            await GetTypes();
+                            await GetStatuses();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in saving Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        CanSaveProject = true;
+                    }
 
                 }
 
@@ -599,8 +718,13 @@ namespace ConstructionERP_DesktopUI.Pages
                 StartDate = DateTime.Today;
                 DueDate = DateTime.Today;
                 SelectedStatus = null;
+                SelectedType = null;
                 SelectedProject = null;
+                StatusText = string.Empty;
+                TypeText = string.Empty;
                 Team = null;
+                ContractorsText = string.Empty;
+                SuppliersText = string.Empty;
             }
             catch (Exception)
             {
@@ -650,6 +774,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         await GetProjects();
                         await ParentLayout.GetProjects();
+                        ClearFields();
                     }
                     else
                     {
@@ -666,6 +791,52 @@ namespace ConstructionERP_DesktopUI.Pages
             else
             {
                 MessageBox.Show("Please select a Project to be deleted", "Select Project", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+        }
+
+        #endregion
+
+        #region Check Contractor Command
+
+
+        public ICommand CheckContractorCommand { get; private set; }
+
+
+        private void SetContractorsCheckedText(object param)
+        {
+            try
+            {
+                List<string> checkedContractors = new List<string>();
+                Contractors.Where(s => s.IsChecked).Distinct().ToList().ForEach(s => checkedContractors.Add(s.Name));
+                ContractorsText = string.Join(", ", checkedContractors);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        #endregion
+
+        #region Check Supplier Command
+
+        public ICommand CheckSupplierCommand { get; private set; }
+
+        private void SetSuppliersCheckedText(object param)
+        {
+            try
+            {
+                List<string> checkedSuppliers = new List<string>();
+                Suppliers.Where(s => s.IsChecked).Distinct().ToList().ForEach(s => checkedSuppliers.Add(s.Name));
+                SuppliersText = string.Join(", ", checkedSuppliers);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

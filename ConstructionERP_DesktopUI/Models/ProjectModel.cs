@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConstructionERP_DesktopUI.Models
 {
@@ -21,10 +22,7 @@ namespace ConstructionERP_DesktopUI.Models
 
         public DateTime DueDate { get; set; }
 
-        public string Address { get; set; }    
-
-        public ContractorModel Contractor { get; set; }
-        public long? ContractorID { get; set; }
+        public string Address { get; set; }
 
         public TeamModel Team { get; set; }
         public long? TeamID { get; set; }
@@ -36,6 +34,9 @@ namespace ConstructionERP_DesktopUI.Models
         public DateTime? ModifiedOn { get; set; }
 
         public string ModifiedBy { get; set; }
+
+        public IEnumerable<ProjectContractorsModel> Contractors { get; set; }
+        public IEnumerable<ProjectSuppliersModel> Suppliers { get; set; }
 
     }
 }

@@ -2,6 +2,7 @@
 using ConstructionERP_DesktopUI.Models;
 using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -100,11 +101,18 @@ namespace ConstructionERP_DesktopUI.Pages
 
         private void SetProgress()
         {
-            int TotalDays = (int)(ParentLayout.SelectedProject.DueDate - ParentLayout.SelectedProject.StartDate).TotalDays;
-            int DaysConsumed = (int)(DateTime.Today - ParentLayout.SelectedProject.StartDate).TotalDays;
-            DaysLeft = DaysConsumed > TotalDays ? 0 : TotalDays - DaysConsumed;
-            Progress = DaysConsumed >= TotalDays ? 100 : (DaysConsumed * 100) / TotalDays;
-            DueDate = ParentLayout.SelectedProject.DueDate;
+            try
+            {
+                int TotalDays = (int)(ParentLayout.SelectedProject.DueDate - ParentLayout.SelectedProject.StartDate).TotalDays;
+                int DaysConsumed = (int)(DateTime.Today - ParentLayout.SelectedProject.StartDate).TotalDays;
+                DaysLeft = DaysConsumed > TotalDays ? 0 : TotalDays - DaysConsumed;
+                Progress = DaysConsumed >= TotalDays ? 100 : (DaysConsumed * 100) / TotalDays;
+                DueDate = ParentLayout.SelectedProject.DueDate;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 

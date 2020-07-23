@@ -118,7 +118,9 @@
     </ApplicationDefinition>
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\DocumentAPIHelper.cs" />
+    <Compile Include="API\ProjectSuppliersAPIHelper.cs" />
     <Compile Include="API\TaskAPIHelper.cs" />
+    <Compile Include="API\ProjectContractorsAPIHelper.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
@@ -133,7 +135,7 @@
     <Compile Include="API\ProjectStatusAPIHelper.cs" />
     <Compile Include="API\SupplierAPIHelper.cs" />
     <Compile Include="API\TeamAPIHelper.cs" />
-    <Compile Include="API\TeamSiteManagerLinkageAPIHelper.cs" />
+    <Compile Include="API\TeamSiteManagersAPIHelper.cs" />
     <Compile Include="API\SheetAPIHelper.cs" />
     <Compile Include="API\UnitAPIHelper.cs" />
     <Compile Include="App.xaml.cs">
@@ -151,6 +153,8 @@
     <Compile Include="Models\LoggedInUser.cs" />
     <Compile Include="Models\LoginErrorResponse.cs" />
     <Compile Include="Models\MaterialModel.cs" />
+    <Compile Include="Models\ProjectSuppliersModel.cs" />
+    <Compile Include="Models\ProjectContractorsModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
@@ -161,7 +165,7 @@
     <Compile Include="Models\SupplierModel.cs" />
     <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Models\TeamModel.cs" />
-    <Compile Include="Models\TeamSiteManagerLinkageModel.cs" />
+    <Compile Include="Models\TeamSiteManagersModel.cs" />
     <Compile Include="Models\TypeModel.cs" />
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">

@@ -23,7 +23,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private TeamAPIHelper apiHelper;
-        private TeamSiteManagerLinkageAPIHelper linkageApiHelper;
+        private TeamSiteManagersAPIHelper linkageApiHelper;
 
         public Team(MainLayout mainLayout)
         {
@@ -36,7 +36,7 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new TeamAPIHelper();
-            linkageApiHelper = new TeamSiteManagerLinkageAPIHelper();
+            linkageApiHelper = new TeamSiteManagersAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetTeams())();
             new Action(async () => await GetSiteManagers())();
@@ -168,7 +168,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             ColSpan = 1;
                             OperationsVisibility = "Visible";
 
-                            var linkages = await linkageApiHelper.GetLinkagesByTeamID(ParentLayout.LoggedInUser.Token, SelectedTeam.ID);
+                            var linkages = await linkageApiHelper.GetTeamSiteManagersByTeamID(ParentLayout.LoggedInUser.Token, SelectedTeam.ID);
 
                             foreach (var linkage in linkages)
                             {
@@ -313,21 +313,22 @@ namespace ConstructionERP_DesktopUI.Pages
 
         private async Task CreateTeam()
         {
-            List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
+            try
+            {
+                List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Title", Title)
                 };
-            if (FieldValidation.ValidateFields(values))
-            {
-                if (SiteManagers.Where(s => s.IsChecked).Count() > 0)
+                if (FieldValidation.ValidateFields(values))
                 {
-                    CanSaveTeam = false;
-                    try
+                    if (SiteManagers.Where(s => s.IsChecked).Count() > 0)
                     {
-                        List<TeamSiteManagerLinkageModel> teamLinkages = new List<TeamSiteManagerLinkageModel>();
+                        CanSaveTeam = false;
 
-                        SiteManagers.Where(s => s.IsChecked).ToList().ForEach(s => teamLinkages.Add(
-                            new TeamSiteManagerLinkageModel
+                        List<TeamSiteManagersModel> teamSiteManagers = new List<TeamSiteManagersModel>();
+
+                        SiteManagers.Where(s => s.IsChecked).ToList().ForEach(s => teamSiteManagers.Add(
+                            new TeamSiteManagersModel
                             {
                                 TeamID = ID,
                                 SiteManagerID = s.ID,
@@ -336,7 +337,7 @@ namespace ConstructionERP_DesktopUI.Pages
                         TeamModel teamData = new TeamModel()
                         {
                             Name = Title,
-                            Linkages = teamLinkages
+                            TeamSiteManagers = teamSiteManagers
                         };
 
                         HttpResponseMessage result = null;
@@ -362,20 +363,25 @@ namespace ConstructionERP_DesktopUI.Pages
                             IsUpdate = false;
 
                         }
+                        else
+                        {
+                            MessageBox.Show("Team Saving Failed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
 
                         CanSaveTeam = true;
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        CanSaveTeam = true;
-                    }
+
                 }
                 else
                 {
                     MessageBox.Show("Please add atleast 1 SiteManager to the Team", "Add Managers", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                CanSaveTeam = true;
             }
 
         }

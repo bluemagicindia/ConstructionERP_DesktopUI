@@ -19,6 +19,6 @@ namespace ConstructionERP_DesktopUI.Models
 
         //public string ModifiedBy { get; set; }
 
-        public IEnumerable<TeamSiteManagerLinkageModel> Linkages { get; set; }
+        public IEnumerable<TeamSiteManagersModel> TeamSiteManagers { get; set; }
     }
 }
