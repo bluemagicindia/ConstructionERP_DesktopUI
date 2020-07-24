@@ -73,7 +73,19 @@
                             <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
                             <DataGridTextColumn Header = "Watching Manager" Binding = "{Binding Watching.Name}"/>
                             <DataGridTextColumn Header = "Stamp" Binding = "{Binding Stamp.Title}"/>
-                            <DataGridTextColumn Header = "Sheet" Binding = "{Binding Sheet.Title}"/>
+                            <!--<DataGridTextColumn Header = "Sheet" Binding = "{Binding Sheet.Title}"/>-->
+                            <DataGridTemplateColumn Header="Sheet">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icons:PackIconFontAwesome Kind="DownloadSolid" />
+                                                <TextBlock Margin="5 0 0 0">Download</TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
                             <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
                             <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>

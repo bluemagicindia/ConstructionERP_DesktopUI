@@ -1,6 +1,7 @@
 ﻿using ConstructionERP_DesktopUI.API;
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -61,6 +62,7 @@ namespace ConstructionERP_DesktopUI.Pages
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateTask()); }, () => CanSaveTask);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTask()); }, () => CanDeleteTask);
             CheckCommand = new RelayCommand(SetCheckedText);
+            DownloadCommand = new RelayCommand(DownloadFile);
 
         }
 
@@ -821,6 +823,44 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+        }
+
+        #endregion
+
+        #region Download File Command
+
+        public ICommand DownloadCommand { get; private set; }
+
+
+        private void DownloadFile(object parameter)
+        {
+            try
+            {
+                if (parameter != null)
+                {
+                    var downloadingSheet = (parameter as TaskModel).Sheet;
+                    if (downloadingSheet.DocUrl != null)
+                    {
+                        FTPHelper.DownloadFile(downloadingSheet.DocUrl);
+                        MessageBox.Show($"Sheet has been downloaded to '{Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads")}'", "Download Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid FTP Path for the sheet download", "Invalid Path", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    ParentLayout.ShowMessageAsync("Error", ex.Message, MessageDialogStyle.Affirmative, new MetroDialogSettings() { ColorScheme = MetroDialogColorScheme.Accented });
+                });
+            }
+
+
 
         }
 
