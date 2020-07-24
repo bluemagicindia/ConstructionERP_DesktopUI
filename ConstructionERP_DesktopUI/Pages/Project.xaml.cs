@@ -745,7 +745,7 @@ namespace ConstructionERP_DesktopUI.Pages
             get { return canDeleteProject; }
             set
             {
-                canSaveProject = value;
+                canDeleteProject = value;
                 OnPropertyChanged("DeleteProject");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
@@ -780,7 +780,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show("Error in deleting Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveProject = true;
+                    canDeleteProject = true;
                 }
                 catch (Exception ex)
                 {

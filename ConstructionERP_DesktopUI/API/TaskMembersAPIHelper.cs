@@ -1,5 +1,6 @@
 ﻿using ConstructionERP_DesktopUI.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Net.Http;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ConstructionERP_DesktopUI.API
 {
-    class SiteManagerAPIHelper
+    public class TaskMembersAPIHelper
     {
         #region Initialization
 
         private HttpClient httpClient;
 
-        public SiteManagerAPIHelper()
+        public TaskMembersAPIHelper()
         {
 
             httpClient = new HttpClient();
@@ -25,9 +26,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Post SiteManager
+        #region Post Task Members
 
-        public async Task<HttpResponseMessage> PostSiteManager(string token, SiteManagerModel siteManagerData)
+        public async Task<HttpResponseMessage> PostTaskMembers(string token, IEnumerable<TaskMembersModel> taskMembers)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/SiteManager", siteManagerData))
+                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/TaskMembers", taskMembers))
                 {
                     return response;
                 }
@@ -49,9 +50,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Get SiteManagers
+        #region Get Task Members  
 
-        public async Task<ObservableCollection<SiteManagerModel>> GetSiteManagers(string token)
+        public async Task<ObservableCollection<TaskMembersModel>> GetTaskMembers(string token)
         {
             try
             {
@@ -59,11 +60,11 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync("/api/SiteManager"))
+                using (HttpResponseMessage response = await httpClient.GetAsync("/api/TaskMembers"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsAsync<ObservableCollection<SiteManagerModel>>();
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<TaskMembersModel>>();
                         return result;
                     }
                     else
@@ -79,7 +80,8 @@ namespace ConstructionERP_DesktopUI.API
 
         }
 
-        public async Task<ObservableCollection<SiteManagerModel>> GetSiteManagersByTeamID(string token)
+
+        public async Task<ObservableCollection<TaskMembersModel>> GetTaskMembersByTaskID(string token, long taskID)
         {
             try
             {
@@ -87,11 +89,11 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync("/api/SiteManager"))
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/TaskMembers/ByTaskID/{taskID}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsAsync<ObservableCollection<SiteManagerModel>>();
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<TaskMembersModel>>();
                         return result;
                     }
                     else
@@ -109,52 +111,5 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Delete SiteManager
-
-        public async Task<HttpResponseMessage> DeleteSiteManager(string token, long id)
-        {
-            try
-            {
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/SiteManager/{id}"))
-                {
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
-
-        #endregion
-
-        #region Put SiteManager
-
-        public async Task<HttpResponseMessage> PutSiteManager(string token, SiteManagerModel siteManagerData)
-        {
-            try
-            {
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PutAsJsonAsync("/api/SiteManager", siteManagerData))
-                {
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
-
-        #endregion
     }
 }

@@ -6,17 +6,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
@@ -32,8 +26,9 @@ namespace ConstructionERP_DesktopUI.Pages
         private TaskTypeAPIHelper typeAPIHelper;
         private TaskStatusAPIHelper statusAPIHelper;
         private StampAPIHelper stampAPIHelper;
-        private TeamAPIHelper teamAPIHelper;
         private SheetAPIHelper sheetAPIHelper;
+        private TeamSiteManagersAPIHelper teamSiteManagersAPIHelper;
+        private TaskMembersAPIHelper taskMembersAPIHelper;
 
         public TaskControl(MainLayout mainLayout)
         {
@@ -51,20 +46,22 @@ namespace ConstructionERP_DesktopUI.Pages
             typeAPIHelper = new TaskTypeAPIHelper();
             statusAPIHelper = new TaskStatusAPIHelper();
             stampAPIHelper = new StampAPIHelper();
-            teamAPIHelper = new TeamAPIHelper();
             sheetAPIHelper = new SheetAPIHelper();
-
+            teamSiteManagersAPIHelper = new TeamSiteManagersAPIHelper();
+            taskMembersAPIHelper = new TaskMembersAPIHelper();
 
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetTasks())();
             new Action(async () => await GetTypes())();
             new Action(async () => await GetStatuses())();
-            new Action(async () => await GetTeams())();
+            new Action(async () => await GetTeamMembers())();
             new Action(async () => await GetStamps())();
             new Action(async () => await GetSheets())();
 
-            //SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateProject()); }, () => CanSaveProject);
-            //DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteProject()); }, () => CanDeleteProject);
+            SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateTask()); }, () => CanSaveTask);
+            DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTask()); }, () => CanDeleteTask);
+            CheckCommand = new RelayCommand(SetCheckedText);
+
         }
 
         #endregion
@@ -145,15 +142,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private StatusModel status;
+        private StatusModel selectedStatus;
 
-        public StatusModel Status
+        public StatusModel SelectedStatus
         {
-            get { return status; }
+            get { return selectedStatus; }
             set
             {
-                status = value;
-                OnPropertyChanged("Status");
+                selectedStatus = value;
+                OnPropertyChanged("SelectedStatus");
             }
         }
 
@@ -183,15 +180,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private TypeModel type;
+        private TypeModel selectedType;
 
-        public TypeModel Type
+        public TypeModel SelectedType
         {
-            get { return type; }
+            get { return selectedType; }
             set
             {
-                type = value;
-                OnPropertyChanged("Type");
+                selectedType = value;
+                OnPropertyChanged("SelectedType");
             }
         }
 
@@ -207,69 +204,55 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private ObservableCollection<SiteManagerModel> teamMembers;
 
-        //Contractors
-        private ObservableCollection<TeamModel> teams;
-
-        public ObservableCollection<TeamModel> Teams
+        public ObservableCollection<SiteManagerModel> TeamMembers
         {
-            get { return teams; }
+            get { return teamMembers; }
             set
             {
-                teams = value;
-                OnPropertyChanged("Teams");
-            }
-        }
-
-        private TeamModel team;
-
-        public TeamModel Team
-        {
-            get { return team; }
-            set
-            {
-                team = value;
-                OnPropertyChanged("Team");
-            }
-        }
-
-        private string teamText;
-
-        public string TeamText
-        {
-            get { return teamText; }
-            set
-            {
-                teamText = value;
-                OnPropertyChanged("TeamText");
+                teamMembers = value;
+                OnPropertyChanged("TeamMembers");
             }
         }
 
 
+        private string teamMembersText;
 
-        private ObservableCollection<LoggedInUser> users;
-
-        public ObservableCollection<LoggedInUser> Users
+        public string TeamMembersText
         {
-            get { return users; }
+            get { return teamMembersText; }
             set
             {
-                users = value;
-                OnPropertyChanged("Users");
+                teamMembersText = value;
+                OnPropertyChanged("TeamMembersText");
             }
         }
 
-        private LoggedInUser user;
+        private ObservableCollection<SiteManagerModel> watchingMembers;
 
-        public LoggedInUser User
+        public ObservableCollection<SiteManagerModel> WatchingMembers
         {
-            get { return user; }
+            get { return watchingMembers; }
             set
             {
-                user = value;
-                OnPropertyChanged("User");
+                watchingMembers = value;
+                OnPropertyChanged("WatchingMembers");
             }
         }
+
+        private SiteManagerModel selectedWatchingMember;
+
+        public SiteManagerModel SelectedWatchingMember
+        {
+            get { return selectedWatchingMember; }
+            set
+            {
+                selectedWatchingMember = value;
+                OnPropertyChanged("SelectedWatchingMember");
+            }
+        }
+
 
 
         //Enquiry Date
@@ -308,15 +291,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private StampModel stamp;
+        private StampModel selectedStamp;
 
-        public StampModel Stamp
+        public StampModel SelectedStamp
         {
-            get { return stamp; }
+            get { return selectedStamp; }
             set
             {
-                stamp = value;
-                OnPropertyChanged("Stamp");
+                selectedStamp = value;
+                OnPropertyChanged("SelectedStamp");
             }
         }
 
@@ -345,15 +328,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private SheetModel sheet;
+        private SheetModel selectedSheet;
 
-        public SheetModel Sheet
+        public SheetModel SelectedSheet
         {
-            get { return sheet; }
+            get { return selectedSheet; }
             set
             {
-                sheet = value;
-                OnPropertyChanged("Sheet");
+                selectedSheet = value;
+                OnPropertyChanged("SelectedSheet");
             }
         }
 
@@ -402,7 +385,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand ToggleOperationCommand { get; private set; }
 
-        private void OpenCloseOperations(object value)
+        private async void OpenCloseOperations(object value)
         {
 
             switch (value.ToString())
@@ -410,20 +393,33 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Edit":
                     if (SelectedTask != null)
                     {
+                        await GetTeamMembers();
+                        ColSpan = 1;
+                        OperationsVisibility = "Visible";
+
                         ID = SelectedTask.ID;
                         Title = SelectedTask.Title;
                         Description = SelectedTask.Description;
-                        Status = SelectedTask.Status;
-                        Type = SelectedTask.Type;
-                        Team = SelectedTask.Team;
-                        User = SelectedTask.User;
+                        SelectedStatus = SelectedTask.Status;
+                        SelectedType = SelectedTask.Type;
+                      
                         StartDate = SelectedTask.StartDate;
                         DueDate = SelectedTask.DueDate;
-                        Stamp = SelectedTask.Stamp;
-                        Sheet = SelectedTask.Sheet;
-                        ColSpan = 1;
-                        OperationsVisibility = "Visible";
-                        //IsUpdate = true;
+                        SelectedStamp = SelectedTask.Stamp;
+                        SelectedSheet = SelectedTask.Sheet;
+
+                        var taskMembers = await taskMembersAPIHelper.GetTaskMembersByTaskID(ParentLayout.LoggedInUser.Token, ID);
+
+                        foreach (var tm in taskMembers)
+                        {
+                            tm.SiteManager.IsChecked = true;
+                            TeamMembers.FirstOrDefault(w => w.ID == tm.SiteManager.ID).IsChecked = true;
+                        }
+
+                        SetCheckedText(null);
+                        SelectedWatchingMember = SelectedTask.Watching;
+
+                        IsUpdate = true;
                         return;
                     }
                     else
@@ -433,10 +429,11 @@ namespace ConstructionERP_DesktopUI.Pages
                     }
                 case "Create":
                     ID = 0;
-                    //IsUpdate = false;
+                    IsUpdate = false;
                     ColSpan = 1;
                     OperationsVisibility = "Visible";
                     ClearFields();
+                    await GetTeamMembers();
                     break;
                 default:
                     ColSpan = ColSpan == 1 ? 2 : 1;
@@ -515,13 +512,16 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Get Teams
+        #region Get Team Members
 
-        private async Task GetTeams()
+        private async Task GetTeamMembers()
         {
             try
             {
-                Teams = await teamAPIHelper.GetTeams(ParentLayout.LoggedInUser.Token);
+                var teamSiteManagers = await teamSiteManagersAPIHelper.GetTeamSiteManagersByTeamID(ParentLayout.LoggedInUser.Token, ParentLayout.SelectedProject.Team.ID);
+                TeamMembers = new ObservableCollection<SiteManagerModel>();
+                teamSiteManagers.Distinct().ToList().ForEach(tm => TeamMembers.Add(tm.SiteManager));
+
             }
             catch (Exception ex)
             {
@@ -570,120 +570,161 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        //#region Create and Edit Project Command
+        #region Create and Edit Task Command
 
-        //private bool isUpdate;
+        private bool isUpdate;
 
-        //public bool IsUpdate
-        //{
-        //    get { return isUpdate; }
-        //    set
-        //    {
-        //        isUpdate = value;
-        //        OnPropertyChanged("IsUpdate");
-        //    }
-        //}
-
-
-        //public ICommand SaveCommand { get; private set; }
-
-        //private bool canSaveProject = true;
-
-        //public bool CanSaveProject
-        //{
-        //    get { return canSaveProject; }
-        //    set
-        //    {
-        //        canSaveProject = value;
-        //        OnPropertyChanged("CreateProject");
-        //        OnPropertyChanged("IsSaveSpinning");
-        //        OnPropertyChanged("SaveBtnText");
-        //        OnPropertyChanged("SaveBtnIcon");
-        //    }
-        //}
-
-        //public bool IsSaveSpinning => !canSaveProject;
-
-        //public string SaveBtnText => canSaveProject ? "Save" : "Saving...";
-
-        //public string SaveBtnIcon => canSaveProject ? "SaveRegular" : "SpinnerSolid";
-
-        //private async Task CreateProject()
-        //{
-        //    try
-        //    {
-        //        List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
-        //        {
-        //            new KeyValuePair<string, string>("Title", Title),
-        //            new KeyValuePair<string, string>("Address", Address)
-
-        //        };
-        //        if (FieldValidation.ValidateFields(values))
-        //        {
-        //            CanSaveProject = false;
-
-        //            ProjectModel projectData = new ProjectModel()
-        //            {
-        //                Title = Title,
-        //                Description = Description,
-        //                ProjectTypeID = Type.ID,
-        //                ProjectStatusID = Status.ID,
-        //                StartDate = StartDate,
-        //                DueDate = DueDate,
-        //                Address = Address,
-        //                ContractorID = Contractor.ID
-        //            };
-        //            HttpResponseMessage result = null;
-        //            if (isUpdate)
-        //            {
-        //                projectData.ID = ID;
-        //                projectData.CreatedBy = SelectedTask.CreatedBy;
-        //                projectData.CreatedOn = SelectedTask.CreatedOn;
-        //                projectData.ModifiedBy = ParentLayout.LoggedInUser.Name;
-        //                projectData.ModifiedOn = DateTime.Now;
-        //                result = await apiHelper.PutProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
-        //            }
-        //            else
-        //            {
-        //                projectData.CreatedBy = ParentLayout.LoggedInUser.Name;
-        //                projectData.CreatedOn = DateTime.Now;
-        //                result = await apiHelper.PostProject(ParentLayout.LoggedInUser.Token, projectData).ConfigureAwait(false);
-        //            }
-        //            if (result.IsSuccessStatusCode)
-        //            {
-        //                MessageBox.Show($"Project Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        //                await GetTasks();
-        //                await ParentLayout.GetProjects();
-        //                IsUpdate = false;
-        //                ClearFields();
-        //            }
-        //            else
-        //            {
-        //                MessageBox.Show("Error in saving Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //            CanSaveProject = true;
+        public bool IsUpdate
+        {
+            get { return isUpdate; }
+            set
+            {
+                isUpdate = value;
+                OnPropertyChanged("IsUpdate");
+            }
+        }
 
 
-        //        }
+        public ICommand SaveCommand { get; private set; }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        CanSaveProject = true;
-        //    }
+        private bool canSaveTask = true;
 
-        //}
+        public bool CanSaveTask
+        {
+            get { return canSaveTask; }
+            set
+            {
+                canSaveTask = value;
+                OnPropertyChanged("CreateTask");
+                OnPropertyChanged("IsSaveSpinning");
+                OnPropertyChanged("SaveBtnText");
+                OnPropertyChanged("SaveBtnIcon");
+            }
+        }
+
+        public bool IsSaveSpinning => !canSaveTask;
+
+        public string SaveBtnText => canSaveTask ? "Save" : "Saving...";
+
+        public string SaveBtnIcon => canSaveTask ? "SaveRegular" : "SpinnerSolid";
+
+        private async Task CreateTask()
+        {
+            try
+            {
+                List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("Title", Title),
+                    new KeyValuePair<string, string>("Task Type", TypeText),
+                    new KeyValuePair<string, string>("Task Status", StatusText),
+                    new KeyValuePair<string, string>("Task Stamp", StampText),
+                    new KeyValuePair<string, string>("Sheet", SelectedSheet?.Title),
+                    new KeyValuePair<string, string>("Watching", SelectedWatchingMember?.Name),
+
+                };
+                if (FieldValidation.ValidateFields(values))
+                {
+
+                    if (WatchingMembers.Count() <= 0)
+                    {
+                        MessageBox.Show("Please add atleast 1 Team Member to the Task", "Add Team Members", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else if (WatchingMembers.Where(w => w.ID == SelectedWatchingMember.ID).Count() <= 0)
+                    {
+                        MessageBox.Show("Please select watching member from the Selected Team Members", "Select Watching Members", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else
+                    {
+                        CanSaveTask = false;
+
+                        List<TaskMembersModel> taskMembers = new List<TaskMembersModel>();
+
+                        TeamMembers.Where(s => s.IsChecked).ToList().ForEach(s => taskMembers.Add(
+                            new TaskMembersModel
+                            {
+                                TaskID = ID,
+                                SiteManagerID = s.ID,
+                            }));
+
+
+                        TaskModel taskData = new TaskModel()
+                        {
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            Title = Title,
+                            Description = Description,
+                            TaskStatusID = SelectedStatus?.ID,
+                            Status = SelectedStatus == null ? new StatusModel { Title = StatusText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            TaskTypeID = SelectedType?.ID,
+                            Type = SelectedType == null ? new TypeModel { Title = TypeText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            StartDate = StartDate,
+                            DueDate = DueDate,
+                            Members = taskMembers,
+                            StampID = SelectedStamp?.ID,
+                            Stamp = SelectedStamp == null ? new StampModel { Title = StampText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            SheetID = SelectedSheet?.ID,
+                            SiteManagerID = SelectedWatchingMember?.ID,
+
+                        };
+
+                        HttpResponseMessage result = null;
+                        if (isUpdate)
+                        {
+                            taskData.ID = ID;
+                            taskData.CreatedBy = SelectedTask.CreatedBy;
+                            taskData.CreatedOn = SelectedTask.CreatedOn;
+                            taskData.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                            taskData.ModifiedOn = DateTime.Now;
+                            result = await apiHelper.PutTask(ParentLayout.LoggedInUser.Token, taskData).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            taskData.CreatedBy = ParentLayout.LoggedInUser.Name;
+                            taskData.CreatedOn = DateTime.Now;
+                            result = await apiHelper.PostTask(ParentLayout.LoggedInUser.Token, taskData).ConfigureAwait(false);
+                        }
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Task Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetTasks();
+                            IsUpdate = false;
+                            ClearFields();
+                            await GetStamps();
+                            await GetTypes();
+                            await GetStatuses();
+                            await GetTeamMembers();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in saving Task", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        CanSaveTask = true;
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                CanSaveTask = true;
+            }
+
+        }
 
         private void ClearFields()
         {
             try
             {
                 ID = 0;
-                Title = "";
-                Description = "";
+                Title = Description = StatusText = TypeText = StampText = TeamMembersText = string.Empty;
                 StartDate = DateTime.Today;
                 DueDate = DateTime.Today;
+                SelectedSheet = null;
+                SelectedStamp = null;
+                SelectedType = null;
+                SelectedWatchingMember = null;
+                SelectedStatus = null;
+                WatchingMembers = null;
             }
             catch (Exception)
             {
@@ -691,68 +732,98 @@ namespace ConstructionERP_DesktopUI.Pages
             }
 
         }
-        //#endregion
 
-        //#region Delete Project Command
+        #endregion
 
-        //public ICommand DeleteCommand { get; private set; }
+        #region Delete Project Command
 
-        //private bool canDeleteProject = true;
+        public ICommand DeleteCommand { get; private set; }
 
-        //public bool CanDeleteProject
-        //{
-        //    get { return canDeleteProject; }
-        //    set
-        //    {
-        //        canSaveProject = value;
-        //        OnPropertyChanged("DeleteProject");
-        //        OnPropertyChanged("IsDeleteSpinning");
-        //        OnPropertyChanged("DeleteBtnText");
-        //        OnPropertyChanged("DeleteBtnIcon");
-        //    }
-        //}
+        private bool canDeleteTask = true;
 
-        //public bool IsDeleteSpinning => !canDeleteProject;
+        public bool CanDeleteTask
+        {
+            get { return canDeleteTask; }
+            set
+            {
+                canDeleteTask = value;
+                OnPropertyChanged("DeleteTask");
+                OnPropertyChanged("IsDeleteSpinning");
+                OnPropertyChanged("DeleteBtnText");
+                OnPropertyChanged("DeleteBtnIcon");
+            }
+        }
 
-        //public string DeleteBtnText => canDeleteProject ? "Delete" : "Deleting...";
+        public bool IsDeleteSpinning => !canDeleteTask;
 
-        //public string DeleteBtnIcon => canDeleteProject ? "TrashAltRegular" : "SpinnerSolid";
+        public string DeleteBtnText => canDeleteTask ? "Delete" : "Deleting...";
 
-        //private async Task DeleteProject()
-        //{
+        public string DeleteBtnIcon => canDeleteTask ? "TrashAltRegular" : "SpinnerSolid";
 
-        //    if (SelectedTask != null)
-        //    {
-        //        if (MessageBox.Show($"Are you sure you want to delete {SelectedTask.Title} ?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
-        //            return;
-        //        CanDeleteProject = false;
-        //        try
-        //        {
-        //            HttpResponseMessage result = await apiHelper.DeleteProject(ParentLayout.LoggedInUser.Token, SelectedTask.ID).ConfigureAwait(false);
-        //            if (result.IsSuccessStatusCode)
-        //            {
-        //                await GetTasks();
-        //                await ParentLayout.GetProjects();
-        //            }
-        //            else
-        //            {
-        //                MessageBox.Show("Error in deleting Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //            CanSaveProject = true;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            CanDeleteProject = true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Please select a Project to be deleted", "Select Project", MessageBoxButton.OK, MessageBoxImage.Warning);
-        //    }
+        private async Task DeleteTask()
+        {
 
-        //}
+            if (SelectedTask != null)
+            {
+                if (MessageBox.Show($"Are you sure you want to delete {SelectedTask.Title} Task?", "Delete Record", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                    return;
+                CanDeleteTask = false;
+                try
+                {
+                    HttpResponseMessage result = await apiHelper.DeleteTask(ParentLayout.LoggedInUser.Token, SelectedTask.ID).ConfigureAwait(false);
+                    if (result.IsSuccessStatusCode)
+                    {
+                        await GetTasks();
+                        ClearFields();
+                        await GetTeamMembers();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error in deleting Task", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    CanDeleteTask = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CanDeleteTask = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a Task to be deleted", "Select Project", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
-        //#endregion
+        }
+
+        #endregion
+
+        #region Check Command
+
+        public ICommand CheckCommand { get; private set; }
+
+        private void SetCheckedText(object param)
+        {
+            try
+            {
+                WatchingMembers = new ObservableCollection<SiteManagerModel>();
+
+                List<string> checkedMembers = new List<string>();
+                foreach (var tm in TeamMembers.Where(t => t.IsChecked))
+                {
+                    checkedMembers.Add(tm.Name);
+                    WatchingMembers.Add(tm);
+                }
+                TeamMembersText = string.Join(", ", checkedMembers);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        #endregion
     }
 }

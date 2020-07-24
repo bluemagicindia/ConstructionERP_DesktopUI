@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConstructionERP_DesktopUI.Models
 {
@@ -16,10 +17,6 @@ namespace ConstructionERP_DesktopUI.Models
 
         public long? TaskTypeID { get; set; }
 
-        public long? TeamID { get; set; }
-
-        public int? UserID { get; set; }
-
         public DateTime StartDate { get; set; }
 
         public DateTime DueDate { get; set; }
@@ -27,6 +24,8 @@ namespace ConstructionERP_DesktopUI.Models
         public long? StampID { get; set; }
 
         public long? SheetID { get; set; }
+
+        public long? SiteManagerID { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -44,11 +43,11 @@ namespace ConstructionERP_DesktopUI.Models
 
         public StatusModel Status { get; set; }
 
-        public TeamModel Team { get; set; }
-
         public TypeModel Type { get; set; }
 
-        public LoggedInUser User { get; set; }
+        public SiteManagerModel Watching { get; set; }
+
+        public IEnumerable<TaskMembersModel> Members { get; set; }
 
 
 
