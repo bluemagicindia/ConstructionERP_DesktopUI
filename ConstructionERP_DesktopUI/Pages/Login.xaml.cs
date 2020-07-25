@@ -1,14 +1,12 @@
 ﻿using ConstructionERP_DesktopUI.API;
+using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using MahApps.Metro.IconPacks;
-using ConstructionERP_DesktopUI.Helpers;
-using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using MahApps.Metro.Controls.Dialogs;
 
 namespace ConstructionERP_DesktopUI.Pages
 {
@@ -121,10 +119,9 @@ namespace ConstructionERP_DesktopUI.Pages
                         Application.Current.Properties["LoggedInUser"] = loggedInUser;
                         Application.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            MainLayout adminLayoutView = new MainLayout();
-                            adminLayoutView.Show();
+                            ProjectSelection projectSelection = new ProjectSelection();
+                            projectSelection.Show();
                             this.Close();
-
                         });
 
                     }

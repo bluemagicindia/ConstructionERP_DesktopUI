@@ -32,6 +32,15 @@
                 <Setter Property="FontSize" Value="14"/>
             </Style>
 
+            <Style  x:Key="WatermarkTextBox2" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="#ccc"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="7" />
+                <Setter Property="Foreground" Value="#333"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
             <Style  x:Key="WatermarkPasswordBox" TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource {x:Type PasswordBox}}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="#ccc"/>
@@ -404,14 +413,35 @@
                 <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader}"/>
                 <Setter Property="CellStyle" Value="{DynamicResource GridCell}"/>
 
+            </Style>
+
+            <Style TargetType="DataGrid" x:Key="BasiGrid2" BasedOn="{StaticResource {x:Type DataGrid}}">
+                <Setter Property="Width" Value="auto"/>
+                <Setter Property="GridLinesVisibility" Value="Horizontal" />
+                <Setter Property="HorizontalGridLinesBrush" Value="#ddd"/>
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="BorderBrush" Value="#ddd" />
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader}"/>
+                <Setter Property="CellStyle" Value="{DynamicResource GridCellBig}"/>
 
             </Style>
+
 
             <Style x:Key="DataGridHeader" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
                 <Setter Property="FontSize" Value="15"/>
                 <Setter Property="Foreground" Value="#333"/>
                 <Setter Property="Background" Value="#eef"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Width" Value="auto"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
@@ -426,11 +456,28 @@
             <Style x:Key="GridCell" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
                 <Setter Property="FontSize" Value="13"/>
                 <Setter Property="Foreground" Value="#555"/>
+                <Setter Property="Width" Value="auto"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                             <Grid Background="{TemplateBinding Background}">
                                 <ContentPresenter VerticalAlignment="Center" Margin="10 12" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="GridCellBig" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="#555"/>
+                <Setter Property="Width" Value="auto"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center" Margin="12 16" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

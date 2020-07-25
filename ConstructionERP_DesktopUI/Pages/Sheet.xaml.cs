@@ -426,8 +426,10 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 App.Current.Dispatcher.Invoke((Action)delegate
                 {
-                    OpenFileDialog fileDialog = new OpenFileDialog();
-                    fileDialog.Filter = "Excel Sheets (*.xlsx)|*.xlsx|Excel Old(*.xls)|*xls";
+                    OpenFileDialog fileDialog = new OpenFileDialog
+                    {
+                        Filter = "Excel Sheets (*.xlsx)|*.xlsx|Excel Old(*.xls)|*xls"
+                    };
                     if (fileDialog.ShowDialog() == true)
                     {
                         FilePath = fileDialog.FileName;

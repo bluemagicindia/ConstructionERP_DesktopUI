@@ -79,6 +79,34 @@ namespace ConstructionERP_DesktopUI.API
 
         }
 
+        public async Task<ObservableCollection<ProjectModel>> GetProjects(string token, string searchText)
+        {
+            try
+            {
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/Project/BySearchTerm/{searchText}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<ProjectModel>>();
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception(response.ReasonPhrase);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
         #endregion
 
         #region Delete Project

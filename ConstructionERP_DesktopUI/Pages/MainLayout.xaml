@@ -42,7 +42,8 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
-                        <mah:SplitButton MinWidth="170" MaxWidth="200"  Background="#eee" HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="0" ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedItem="{Binding SelectedProject}"  >
+                        <mah:SplitButton MinWidth="170" MaxWidth="200"  Background="#eee" HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="0" ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProject, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedProject.Title}"  >
+
                             <mah:SplitButton.Icon>
                                 <icons:PackIconFontAwesome Margin="6" Kind="BuildingSolid" />
                             </mah:SplitButton.Icon>
@@ -204,7 +205,7 @@
                         </StackPanel>
                     </Button>
 
-                   
+
 
                 </StackPanel>
             </ScrollViewer>

@@ -1,0 +1,108 @@
+﻿<Window x:Class="ConstructionERP_DesktopUI.Pages.ProjectPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
+         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Window1" Height="650" Width="1000" WindowState="Maximized"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True">
+    <Window.Background>
+        <SolidColorBrush Color="#000" Opacity="0.4"/>
+    </Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="500" Width="400">
+            <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!--Header-->
+                    <Border BorderBrush="#ddd" Grid.Row="0" BorderThickness="0 0 0 1" >
+                        <Grid Margin="15 18">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource FormHeader}">New Project</TextBlock>
+                            </StackPanel>
+
+                            <Button Grid.Column="1"  Command="{Binding ClosePopupCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
+                                <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+
+                    <StackPanel Margin="15 0" Grid.Row="1" VerticalAlignment="Top">
+                        <TextBlock Style="{StaticResource FormTitle}">Title</TextBlock>
+                        <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title_,  UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource FormTitle}">Type</TextBlock>
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Types}"  SelectedItem="{Binding SelectedType, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedType.Title}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding TypeText}" />
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource FormTitle}">Status</TextBlock>
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Statuses}"  SelectedItem="{Binding SelectedStatus, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedStatus.Title}"  IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding StatusText}" />
+                            </StackPanel>
+
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource FormTitle}">Start Date</TextBlock>
+                                <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource FormTitle}">Due Date</TextBlock>
+                                <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding DueDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Style="{StaticResource FormTitle}">Address</TextBlock>
+                        <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                    </StackPanel>
+
+                    <!--Save Button-->
+                    <StackPanel  Grid.Row="2">
+                        <Border Padding="12" BorderBrush="#ddd" BorderThickness="0 1 0 0">
+                            <Button Width="200" Style="{StaticResource SquaredButton2}" Command="{Binding SaveCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" VerticalAlignment="Center" FontSize="15" Spin="{Binding IsSaveSpinning}" />
+                                    <TextBlock Text="{Binding SaveBtnText}" VerticalAlignment="Center" FontSize="14" Padding="10 0 0 0"/>
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

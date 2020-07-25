@@ -17,18 +17,19 @@ namespace ConstructionERP_DesktopUI.Pages
     {
         #region Initialization
 
-        public MainLayout()
+        public MainLayout(ProjectModel selectedProject)
         {
             InitializeComponent();
             DataContext = this;
-            SetValues();
+            SetValues(selectedProject);
         }
 
-        async void SetValues()
+        async void SetValues(ProjectModel selectedProject)
         {
             NavigationCommand = new RelayCommand(SetActiveControl);
             LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
             await GetProjects();
+            SelectedProject = selectedProject;
             NavigationCommand.Execute("Dashboard");
         }
 
@@ -173,10 +174,6 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 Projects = await new ProjectAPIHelper().GetProjects(LoggedInUser.Token);
-                if (Projects.Count > 0)
-                {
-                    SelectedProject = Projects[0];
-                }
             }
             catch (Exception ex)
             {
