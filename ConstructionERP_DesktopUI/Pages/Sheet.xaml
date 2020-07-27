@@ -49,12 +49,16 @@
                             <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
                         </StackPanel>
                     </Button>
+           
                     <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
                             <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
                         </StackPanel>
                     </Button>
+
+                    <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="350"  FontSize="14" HorizontalAlignment="Right" Style="{StaticResource WatermarkTextBox2}" mah:TextBoxHelper.Watermark="Enter Sheet Title" mah:ControlsHelper.CornerRadius="3" mah:ControlsHelper.FocusBorderBrush="{StaticResource PrimaryColor}" mah:ControlsHelper.FocusBorderThickness="2"  />
+
                 </StackPanel>
 
                 <!--Data Grid-->

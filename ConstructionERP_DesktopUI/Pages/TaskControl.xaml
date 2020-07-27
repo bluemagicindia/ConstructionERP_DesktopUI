@@ -60,6 +60,8 @@
                             <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
                         </StackPanel>
                     </Button>
+
+                    <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400"  FontSize="14" HorizontalAlignment="Right" Style="{StaticResource WatermarkTextBox2}" mah:TextBoxHelper.Watermark="Enter Task Title | Type | Status | Stamp | Sheet" mah:ControlsHelper.CornerRadius="3" mah:ControlsHelper.FocusBorderBrush="{StaticResource PrimaryColor}" mah:ControlsHelper.FocusBorderThickness="2"  />
                 </StackPanel>
 
                 <!--Data Grid-->

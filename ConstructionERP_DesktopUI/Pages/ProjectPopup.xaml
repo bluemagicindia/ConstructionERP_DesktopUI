@@ -18,7 +18,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="500" Width="400">
+        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="520" Width="450">
             <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -45,7 +45,7 @@
                     </Border>
 
 
-                    <StackPanel Margin="15 0" Grid.Row="1" VerticalAlignment="Top">
+                    <StackPanel Margin="25 0" Grid.Row="1" VerticalAlignment="Top">
                         <TextBlock Style="{StaticResource FormTitle}">Title</TextBlock>
                         <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title_,  UpdateSourceTrigger=PropertyChanged}"></TextBox>
 

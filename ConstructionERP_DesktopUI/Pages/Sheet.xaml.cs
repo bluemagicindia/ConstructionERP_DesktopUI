@@ -38,11 +38,12 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             apiHelper = new SheetAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
-            new Action(async () => await GetSheets())();
+            new Action(async () => await GetSheets(null))();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSheet()); }, () => CanSaveSheet);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSheet()); }, () => CanDeleteSheet);
             SelectFileCommand = new RelayCommand(SelectFile);
             DownloadCommand = new RelayCommand(DownloadFile);
+            SearchCommand = new RelayCommand(SearchSheet);
         }
 
         #endregion
@@ -118,6 +119,19 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 filePath = value;
                 OnPropertyChanged("FilePath");
+            }
+        }
+
+        private string searchText;
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set
+            {
+                searchText = value;
+                OnPropertyChanged("SearchText");
+                SearchCommand.Execute(null);
             }
         }
 
@@ -207,11 +221,11 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private async Task GetSheets()
+        private async Task GetSheets(string searchText)
         {
             try
             {
-                Sheets = await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token);
+                Sheets = string.IsNullOrWhiteSpace(searchText) ? await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token) : await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token, searchText);
             }
             catch (Exception ex)
             {
@@ -315,7 +329,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show($"Sheet Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetSheets();
+                        await GetSheets(null);
                         ClearFields();
                         
                         IsUpdate = false;
@@ -391,7 +405,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteSheet(ParentLayout.LoggedInUser.Token, SelectedSheet.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetSheets();
+                        await GetSheets(null);
                         FTPHelper.DeletFile(SelectedSheet.DocUrl);
                     }
                     else
@@ -485,6 +499,26 @@ namespace ConstructionERP_DesktopUI.Pages
             }
 
 
+
+        }
+
+        #endregion
+
+        #region Sheet Search Command
+
+        public ICommand SearchCommand { get; private set; }
+
+        private async void SearchSheet(object param)
+        {
+            try
+            {
+                await GetSheets(SearchText);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
         }
 

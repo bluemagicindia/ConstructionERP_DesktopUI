@@ -63,6 +63,7 @@ namespace ConstructionERP_DesktopUI.Pages
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTask()); }, () => CanDeleteTask);
             CheckCommand = new RelayCommand(SetCheckedText);
             DownloadCommand = new RelayCommand(DownloadFile);
+            SearchCommand = new RelayCommand(SearchTask);
 
         }
 
@@ -355,6 +356,18 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private string searchText;
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set
+            {
+                searchText = value;
+                OnPropertyChanged("SearchText");
+                SearchCommand.Execute(null);
+            }
+        }
 
 
         #endregion
@@ -462,11 +475,11 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private async Task GetTasks()
+        private async Task GetTasks(string searchText = null)
         {
             try
             {
-                Tasks = await apiHelper.GetTasks(ParentLayout.LoggedInUser.Token);
+                Tasks = string.IsNullOrWhiteSpace(searchText) ? await apiHelper.GetTasks(ParentLayout.LoggedInUser.Token) : await apiHelper.GetTasks(ParentLayout.LoggedInUser.Token, searchText);
             }
             catch (Exception ex)
             {
@@ -861,6 +874,26 @@ namespace ConstructionERP_DesktopUI.Pages
             }
 
 
+
+        }
+
+        #endregion
+
+        #region Task Search Command
+
+        public ICommand SearchCommand { get; private set; }
+
+        private async void SearchTask(object param)
+        {
+            try
+            {
+                await GetTasks(SearchText);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
         }
 
