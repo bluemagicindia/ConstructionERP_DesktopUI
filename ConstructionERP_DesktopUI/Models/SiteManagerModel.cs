@@ -25,6 +25,8 @@ namespace ConstructionERP_DesktopUI.Models
 
         public bool IsChecked { get; set; }
 
+        public bool IsWatcher { get; set; }
+
     }
 
 }

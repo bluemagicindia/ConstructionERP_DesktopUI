@@ -30,6 +30,7 @@ namespace ConstructionERP_DesktopUI.Pages
         private SheetAPIHelper sheetAPIHelper;
         private TeamSiteManagersAPIHelper teamSiteManagersAPIHelper;
         private TaskMembersAPIHelper taskMembersAPIHelper;
+        private TaskWatchersAPIHelper taskWatchersAPIHelper;
 
         public TaskControl(MainLayout mainLayout)
         {
@@ -50,6 +51,7 @@ namespace ConstructionERP_DesktopUI.Pages
             sheetAPIHelper = new SheetAPIHelper();
             teamSiteManagersAPIHelper = new TeamSiteManagersAPIHelper();
             taskMembersAPIHelper = new TaskMembersAPIHelper();
+            taskWatchersAPIHelper = new TaskWatchersAPIHelper();
 
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetTasks())();
@@ -64,6 +66,7 @@ namespace ConstructionERP_DesktopUI.Pages
             CheckCommand = new RelayCommand(SetCheckedText);
             DownloadCommand = new RelayCommand(DownloadFile);
             SearchCommand = new RelayCommand(SearchTask);
+            CheckWatcherCommand = new RelayCommand(SetWatchersCheckedText);
 
         }
 
@@ -244,15 +247,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private SiteManagerModel selectedWatchingMember;
+        private string watchersText;
 
-        public SiteManagerModel SelectedWatchingMember
+        public string WatchersText
         {
-            get { return selectedWatchingMember; }
+            get { return watchersText; }
             set
             {
-                selectedWatchingMember = value;
-                OnPropertyChanged("SelectedWatchingMember");
+                watchersText = value;
+                OnPropertyChanged("WatchersText");
             }
         }
 
@@ -409,6 +412,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (SelectedTask != null)
                     {
                         await GetTeamMembers();
+
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
 
@@ -432,7 +436,17 @@ namespace ConstructionERP_DesktopUI.Pages
                         }
 
                         SetCheckedText(null);
-                        SelectedWatchingMember = SelectedTask.Watching;
+
+
+                        var taskWatchers = await taskWatchersAPIHelper.GetTaskWatchersByTaskID(ParentLayout.LoggedInUser.Token, ID);
+
+                        foreach (var tw in taskWatchers)
+                        {
+                            tw.SiteManager.IsWatcher = true;
+                            WatchingMembers.FirstOrDefault(w => w.ID == tw.SiteManager.ID).IsWatcher = true;
+                        }
+
+                        SetWatchersCheckedText(null);
 
                         IsUpdate = true;
                         return;
@@ -634,7 +648,6 @@ namespace ConstructionERP_DesktopUI.Pages
                     new KeyValuePair<string, string>("Task Status", StatusText),
                     new KeyValuePair<string, string>("Task Stamp", StampText),
                     new KeyValuePair<string, string>("Sheet", SelectedSheet?.Title),
-                    new KeyValuePair<string, string>("Watching", SelectedWatchingMember?.Name),
 
                 };
                 if (FieldValidation.ValidateFields(values))
@@ -644,18 +657,26 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show("Please add atleast 1 Team Member to the Task", "Add Team Members", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
-                    else if (WatchingMembers.Where(w => w.ID == SelectedWatchingMember.ID).Count() <= 0)
+                    else if (WatchingMembers.Where(w => w.IsWatcher).Count() <= 0)
                     {
-                        MessageBox.Show("Please select watching member from the Selected Team Members", "Select Watching Members", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Please select watching members from the Selected Team Members", "Select Watching Members", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     else
                     {
                         CanSaveTask = false;
 
                         List<TaskMembersModel> taskMembers = new List<TaskMembersModel>();
+                        List<TaskWatchersModel> taskWatchers = new List<TaskWatchersModel>();
 
                         TeamMembers.Where(s => s.IsChecked).ToList().ForEach(s => taskMembers.Add(
                             new TaskMembersModel
+                            {
+                                TaskID = ID,
+                                SiteManagerID = s.ID,
+                            }));
+
+                        WatchingMembers.Where(s => s.IsWatcher).ToList().ForEach(s => taskWatchers.Add(
+                            new TaskWatchersModel
                             {
                                 TaskID = ID,
                                 SiteManagerID = s.ID,
@@ -674,10 +695,10 @@ namespace ConstructionERP_DesktopUI.Pages
                             StartDate = StartDate,
                             DueDate = DueDate,
                             Members = taskMembers,
+                            Watchers = taskWatchers,
                             StampID = SelectedStamp?.ID,
                             Stamp = SelectedStamp == null ? new StampModel { Title = StampText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
                             SheetID = SelectedSheet?.ID,
-                            SiteManagerID = SelectedWatchingMember?.ID,
 
                         };
 
@@ -731,13 +752,12 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 ID = 0;
-                Title = Description = StatusText = TypeText = StampText = TeamMembersText = string.Empty;
+                Title = Description = StatusText = TypeText = StampText = TeamMembersText = WatchersText = string.Empty;
                 StartDate = DateTime.Today;
                 DueDate = DateTime.Today;
                 SelectedSheet = null;
                 SelectedStamp = null;
                 SelectedType = null;
-                SelectedWatchingMember = null;
                 SelectedStatus = null;
                 WatchingMembers = null;
             }
@@ -830,6 +850,30 @@ namespace ConstructionERP_DesktopUI.Pages
                     WatchingMembers.Add(tm);
                 }
                 TeamMembersText = string.Join(", ", checkedMembers);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        #endregion
+
+        #region Check Watchers Command
+
+
+        public ICommand CheckWatcherCommand { get; private set; }
+
+
+        private void SetWatchersCheckedText(object param)
+        {
+            try
+            {
+                List<string> checkedWatchers = new List<string>();
+                WatchingMembers.Where(s => s.IsWatcher).Distinct().ToList().ForEach(s => checkedWatchers.Add(s.Name));
+                WatchersText = string.Join(", ", checkedWatchers);
 
             }
             catch (Exception ex)

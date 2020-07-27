@@ -127,6 +127,7 @@
     <Compile Include="API\ProjectSuppliersAPIHelper.cs" />
     <Compile Include="API\TaskAPIHelper.cs" />
     <Compile Include="API\ProjectContractorsAPIHelper.cs" />
+    <Compile Include="API\TaskWatchersAPIHelper.cs" />
     <Compile Include="API\TaskMembersAPIHelper.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
+    <Compile Include="Models\TaskWatchersModel.cs" />
     <Compile Include="Models\TaskMembersModel.cs" />
     <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Models\TeamModel.cs" />

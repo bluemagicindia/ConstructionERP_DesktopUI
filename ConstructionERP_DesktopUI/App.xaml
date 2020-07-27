@@ -16,6 +16,7 @@
 
             </ResourceDictionary.MergedDictionaries>
 
+            <!--Colors-->
             <SolidColorBrush x:Key="PrimaryColor" Color="#3393DF"/>
             <SolidColorBrush x:Key="SecondaryColor" Color="#ff9900"/>
             <SolidColorBrush x:Key="DangerColor" Color="#cc0000"/>
@@ -23,6 +24,9 @@
             <SolidColorBrush x:Key="SuccessColor" Color="#1f9f3c"/>
             <SolidColorBrush x:Key="FadeColor" Color="#999999"/>
 
+            
+            <!--Textboxes-->
+            
             <Style  x:Key="WatermarkTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="#ccc"/>
@@ -59,6 +63,9 @@
                 <Setter Property="FontSize" Value="14"/>
             </Style>
 
+            
+            <!--Buttons-->
+            
             <Style TargetType="Button" x:Key="SquaredButton" >
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="Hand" />
@@ -183,7 +190,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
 
             <Style TargetType="Button" x:Key="HoveredButtonDanger" >
                 <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -367,7 +373,6 @@
                 </Setter>
             </Style>
 
-
             <Style TargetType="Button" x:Key="NavigationButton" BasedOn="{StaticResource {x:Type Button}}" >
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="Hand" />
@@ -395,6 +400,9 @@
                 </Setter>
             </Style>
 
+            
+            <!--Data Grid-->
+            
             <Style TargetType="DataGrid" x:Key="BasicGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
                 <Setter Property="GridLinesVisibility" Value="Horizontal" />
                 <Setter Property="HorizontalGridLinesBrush" Value="#ddd"/>
@@ -435,24 +443,6 @@
 
             </Style>
 
-
-            <Style x:Key="DataGridHeader" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="Foreground" Value="#333"/>
-                <Setter Property="Background" Value="#eef"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Width" Value="auto"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                            <Grid Background="{TemplateBinding Background}">
-                                <ContentPresenter VerticalAlignment="Center" Margin="10 13" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style x:Key="GridCell" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
                 <Setter Property="FontSize" Value="13"/>
                 <Setter Property="Foreground" Value="#555"/>
@@ -484,6 +474,66 @@
                 </Setter>
             </Style>
 
+            <Style TargetType="{x:Type Thumb}" x:Key="ThumbStyle">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Rectangle Width="1" Stroke="Transparent" Cursor="SizeWE"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="Foreground" Value="#333"/>
+                <Setter Property="Background" Value="#eef"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Width" Value="auto"/>
+                <Setter Property="Cursor" Value="Hand"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}" >
+                            <Grid Background="{TemplateBinding Background}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter VerticalAlignment="Center" Margin="10 13" />
+
+                                <Path x:Name="SortArrow" Visibility="Collapsed" Data="M 0,0 L 1,0 0.5,1 z" Stretch="Fill"
+                     Grid.Column="1" Width="10.5" Height="7" Fill="Black" Margin="0,0,8,0"
+                      VerticalAlignment="Center" RenderTransformOrigin="0.5, 0.4"/>
+
+                            </Grid>
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="SortDirection" Value="Ascending">
+                                    <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="SortArrow" Property="RenderTransform">
+                                        <Setter.Value>
+                                            <RotateTransform Angle="180"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="SortDirection" Value="Descending">
+                                    <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+
+            
+            <!--Text Blocks-->
+            
             <Style x:Key="FormHeader" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontSize" Value="17"/>
                 <Setter Property="Foreground" Value="#888"/>
@@ -498,6 +548,13 @@
                 <Setter Property="Padding" Value="0 8"/>
                 <Setter Property="Margin" Value="0 10 0 0 "/>
             </Style>
+
+            <Style x:Key="ButtonText" TargetType="{x:Type TextBlock}">
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="Margin" Value="0 5 0 0"/>
+            </Style>
+
 
             <Style x:Key="FormSplitButton" TargetType="{x:Type Controls:SplitButton}" BasedOn="{StaticResource {x:Type Controls:SplitButton}}">
                 <Setter Property="Background" Value="Transparent"/>
@@ -525,12 +582,6 @@
                 <Setter Property="Padding" Value="7" />
                 <Setter Property="Foreground" Value="#333"/>
                 <Setter Property="FontSize" Value="14"/>
-            </Style>
-
-            <Style x:Key="ButtonText" TargetType="{x:Type TextBlock}">
-                <Setter Property="TextAlignment" Value="Center"/>
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="Margin" Value="0 5 0 0"/>
             </Style>
 
             <Style x:Key="ListBoxNoHighlight" TargetType="ListBox">

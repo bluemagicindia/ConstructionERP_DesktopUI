@@ -45,7 +45,7 @@ namespace ConstructionERP_DesktopUI.Models
 
         public TypeModel Type { get; set; }
 
-        public SiteManagerModel Watching { get; set; }
+        public IEnumerable<TaskWatchersModel> Watchers { get; set; }
 
         public IEnumerable<TaskMembersModel> Members { get; set; }
 
