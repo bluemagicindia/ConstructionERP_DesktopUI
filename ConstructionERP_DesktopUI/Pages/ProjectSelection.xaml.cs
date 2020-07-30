@@ -166,7 +166,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Project Popup Command
+        #region Project Selection Command
 
         public ICommand SelectionCommand { get; private set; }
 

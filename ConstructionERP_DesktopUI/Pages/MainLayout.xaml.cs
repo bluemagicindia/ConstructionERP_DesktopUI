@@ -21,15 +21,15 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             InitializeComponent();
             DataContext = this;
-            SetValues(selectedProject);
+            SelectedProject = selectedProject;
+            SetValues();
         }
 
-        async void SetValues(ProjectModel selectedProject)
+        async void SetValues()
         {
             NavigationCommand = new RelayCommand(SetActiveControl);
             LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
             await GetProjects();
-            SelectedProject = selectedProject;
             NavigationCommand.Execute("Dashboard");
         }
 
@@ -68,11 +68,14 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Contractor":
                     view = new Contractor(this);
                     break;
-                case "SuppliersMain":
-                    view = new SuppliersMain(this);
+                case "ProjectContractor":
+                    view = new ProjectContractor(this);
                     break;
                 case "Supplier":
                     view = new Supplier(this);
+                    break;
+                case "ProjectSupplier":
+                    view = new ProjectSupplier(this);
                     break;
                 case "Unit":
                     view = new Unit(this);
@@ -161,7 +164,6 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 selectedProject = value;
                 OnPropertyChanged("SelectedProject");
-                OnPropertyChanged("Progress");
             }
         }
 

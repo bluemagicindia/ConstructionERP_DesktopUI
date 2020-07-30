@@ -63,7 +63,16 @@
                 <Setter Property="FontSize" Value="14"/>
             </Style>
 
-            
+            <Style  x:Key="BorderedNumericBox" TargetType="{x:Type Controls:NumericUpDown}" BasedOn="{StaticResource {x:Type Controls:NumericUpDown}}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="#aaa"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="Padding" Value="7" />
+                <Setter Property="Foreground" Value="#333"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+
             <!--Buttons-->
             
             <Style TargetType="Button" x:Key="SquaredButton" >
@@ -134,6 +143,31 @@
                                     <Setter Property="Opacity" Value="0.8" />
                                     <Setter Property="Background" Value="#fff"/>
                                     <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button" x:Key="SolidButtonSuccess" >
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+                <Setter Property="Foreground" Value="#fff"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="border" BorderThickness="1" BorderBrush="{StaticResource SuccessColor}" Padding="8 7" CornerRadius="2" Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.8" />
+                                    <Setter Property="Background" Value="#fff"/>
+                                    <Setter Property="Foreground" Value="{StaticResource SuccessColor}"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -258,6 +292,31 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Opacity" Value="0.8" />
                                     <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+                                    <Setter Property="Foreground" Value="#fff"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button" x:Key="HoveredButtonPrimary" >
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Background" Value="#fff"/>
+                <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="border" BorderThickness="1" BorderBrush="{StaticResource PrimaryColor}" Padding="8 7" CornerRadius="2" Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.8" />
+                                    <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
                                     <Setter Property="Foreground" Value="#fff"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>

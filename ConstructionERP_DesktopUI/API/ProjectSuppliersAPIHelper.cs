@@ -36,7 +36,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ProjectSuppliers/ByTeamID/{projectID}"))
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ProjectSuppliers/ByProjectID/{projectID}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {

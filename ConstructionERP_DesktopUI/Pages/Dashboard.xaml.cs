@@ -24,7 +24,7 @@ namespace ConstructionERP_DesktopUI.Pages
             DataContext = this;
             ParentLayout = mainLayout;
             SetValues();
-           
+
         }
 
         void SetValues()
@@ -56,7 +56,6 @@ namespace ConstructionERP_DesktopUI.Pages
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        //public MainLayout ParentLayout { get; set; }
 
         private int progress;
         public int Progress
@@ -118,9 +117,13 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Unload
+
         private void UserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
         {
             ParentLayout.PropertyChanged -= ParentLayout_PropertyChanged;
         }
+
+        #endregion
     }
 }

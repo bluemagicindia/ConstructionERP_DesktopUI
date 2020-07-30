@@ -42,7 +42,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
-                        <mah:SplitButton MinWidth="170" MaxWidth="200"  Background="#eee" HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="0" ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProject, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedProject.Title}"  >
+                        <mah:SplitButton MinWidth="170" MaxWidth="200"  Background="#eee" HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="0" ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedProject.Title}"  >
 
                             <mah:SplitButton.Icon>
                                 <icons:PackIconFontAwesome Margin="6" Kind="BuildingSolid" />
@@ -142,14 +142,14 @@
                     </Button>
 
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Contractor" >
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectContractor" >
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTieSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Contractors</TextBlock>
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SuppliersMain">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectSupplier">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserTagSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Suppliers</TextBlock>
