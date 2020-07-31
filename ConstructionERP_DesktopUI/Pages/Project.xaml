@@ -72,9 +72,10 @@
                             <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
                             <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
                             <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
+                            <DataGridTextColumn Header = "Team" Binding = "{Binding Team.Name}"/>
+                            <DataGridTextColumn Header = "Firm" Binding = "{Binding Firm.Name}"/>
                             <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
                             <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
-                            <DataGridTextColumn Header = "Team" Binding = "{Binding Team.Name}"/>
                             <DataGridTextColumn Header = "Address" Binding = "{Binding Address}"/>
                             <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
                             <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
@@ -118,10 +119,13 @@
 
                                 <TextBlock Style="{StaticResource FormTitle}">Status</TextBlock>
                                 <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Statuses}"  SelectedItem="{Binding SelectedStatus, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedStatus.Title}"  IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding StatusText}" />
+                                
+                                <TextBlock Style="{StaticResource FormTitle}">Firm</TextBlock>
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Firms}"  SelectedItem="{Binding SelectedFirm, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding SelectedFirm.Name}"  IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding FirmText}" />
 
                                 <TextBlock Style="{StaticResource FormTitle}">Team</TextBlock>
-                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Teams}" SelectedItem="{Binding Team, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Team.Name}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
-
+                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Teams}" SelectedItem="{Binding SelectedTeam, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding SelectedTeam.Name}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
+                                
                                 <TextBlock Style="{StaticResource FormTitle}">Start Date</TextBlock>
                                 <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
 

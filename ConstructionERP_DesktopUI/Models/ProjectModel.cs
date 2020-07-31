@@ -12,11 +12,11 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Description { get; set; }
 
-        public StatusModel Status { get; set; }
         public long? ProjectStatusID { get; set; }
+        public StatusModel Status { get; set; }
 
-        public TypeModel Type { get; set; }
         public long? ProjectTypeID { get; set; }
+        public TypeModel Type { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -24,8 +24,11 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Address { get; set; }
 
-        public TeamModel Team { get; set; }
         public long? TeamID { get; set; }
+        public TeamModel Team { get; set; }
+
+        public long? FirmID { get; set; }
+        public FirmModel Firm { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 

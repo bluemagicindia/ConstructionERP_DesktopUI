@@ -131,6 +131,7 @@
                             <DataGridTextColumn Header = "Address" Binding = "{Binding Address}"/>
                             <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
                             <DataGridTextColumn Header = "Team" Binding = "{Binding Team.Name}"/>
+                            <DataGridTextColumn Header = "Firm" Binding = "{Binding Firm.Name}"/>
                             <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
                             <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
                             <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>

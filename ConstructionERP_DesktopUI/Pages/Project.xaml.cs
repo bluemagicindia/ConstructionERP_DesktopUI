@@ -30,6 +30,7 @@ namespace ConstructionERP_DesktopUI.Pages
         private SupplierAPIHelper supplierAPIHelper;
         private ProjectContractorsAPIHelper projectContractorsAPIHelper;
         private ProjectSuppliersAPIHelper projectSuppliersAPIHelper;
+        private FirmAPIHelper firmAPIHelper;
 
         public Project(MainLayout mainLayout)
         {
@@ -50,12 +51,14 @@ namespace ConstructionERP_DesktopUI.Pages
             supplierAPIHelper = new SupplierAPIHelper();
             projectContractorsAPIHelper = new ProjectContractorsAPIHelper();
             projectSuppliersAPIHelper = new ProjectSuppliersAPIHelper();
+            firmAPIHelper = new FirmAPIHelper();
 
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetProjects())();
             new Action(async () => await GetTypes())();
             new Action(async () => await GetStatuses())();
             new Action(async () => await GetTeams())();
+            new Action(async () => await GetFirms())();
             new Action(async () => await GetContractors())();
             new Action(async () => await GetSuppliers())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateProject()); }, () => CanSaveProject);
@@ -217,17 +220,54 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private TeamModel team;
+        private TeamModel selectedTeam;
 
-        public TeamModel Team
+        public TeamModel SelectedTeam
         {
-            get { return team; }
+            get { return selectedTeam; }
             set
             {
-                team = value;
-                OnPropertyChanged("Team");
+                selectedTeam = value;
+                OnPropertyChanged("SelectedTeam");
             }
         }
+
+        private ObservableCollection<FirmModel> firms;
+
+        public ObservableCollection<FirmModel> Firms
+        {
+            get { return firms; }
+            set
+            {
+                firms = value;
+                OnPropertyChanged("Firms");
+            }
+        }
+
+        private FirmModel selectedFirm;
+
+        public FirmModel SelectedFirm
+        {
+            get { return selectedFirm; }
+            set
+            {
+                selectedFirm = value;
+                OnPropertyChanged("SelectedFirm");
+            }
+        }
+
+        private string firmText;
+
+        public string FirmText
+        {
+            get { return firmText; }
+            set
+            {
+                firmText = value;
+                OnPropertyChanged("FirmText");
+            }
+        }
+
 
 
         //Contractors
@@ -388,7 +428,8 @@ namespace ConstructionERP_DesktopUI.Pages
                             Title = SelectedProject.Title;
                             SelectedType = SelectedProject.Type;
                             SelectedStatus = SelectedProject.Status;
-                            Team = SelectedProject.Team;
+                            SelectedFirm = SelectedProject.Firm;
+                            SelectedTeam = SelectedProject.Team;
 
                             var projectContractors = await projectContractorsAPIHelper.GetProjectContractorsByProjectID(ParentLayout.LoggedInUser.Token, ID);
                             var projectSuppliers = await projectSuppliersAPIHelper.GetProjectSuppliersByProjectID(ParentLayout.LoggedInUser.Token, ID);
@@ -409,7 +450,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             SetContractorsCheckedText(null);
                             SetSuppliersCheckedText(null);
 
-                            
+
                             IsUpdate = true;
                             return;
                         }
@@ -528,6 +569,24 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Get Firms
+
+        private async Task GetFirms()
+        {
+            try
+            {
+                Firms = await firmAPIHelper.GetFirms(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
+
+        #endregion
+
         #region Get Contractors
 
         private async Task GetContractors()
@@ -611,6 +670,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     new KeyValuePair<string, string>("Title", Title),
                     new KeyValuePair<string, string>("Project Type", TypeText),
                     new KeyValuePair<string, string>("Project Status", StatusText),
+                    new KeyValuePair<string, string>("Firm", FirmText),
                     new KeyValuePair<string, string>("Address", Address)
 
                 };
@@ -653,10 +713,12 @@ namespace ConstructionERP_DesktopUI.Pages
                             Type = SelectedType == null ? new TypeModel { Title = TypeText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
                             ProjectStatusID = SelectedStatus?.ID,
                             Status = SelectedStatus == null ? new StatusModel { Title = StatusText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
+                            FirmID = SelectedFirm?.ID,
+                            Firm = SelectedFirm == null ? new FirmModel { Name = FirmText, CreatedBy = ParentLayout.LoggedInUser.Name } : null,
                             StartDate = StartDate,
                             DueDate = DueDate,
                             Address = Address,
-                            TeamID = Team.ID,
+                            TeamID = SelectedTeam?.ID,
                             Contractors = projectContractors,
                             Suppliers = projectSuppliers
                         };
@@ -688,6 +750,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             await GetSuppliers();
                             await GetTypes();
                             await GetStatuses();
+                            await GetFirms();
                         }
                         else
                         {
@@ -712,19 +775,13 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 ID = 0;
-                Title = string.Empty;
-                Description = string.Empty;
-                Address = string.Empty;
-                StartDate = DateTime.Today;
-                DueDate = DateTime.Today;
+                Title = Description = Address = StatusText = TypeText = ContractorsText = SuppliersText = FirmText = string.Empty;
+                StartDate = DueDate = DateTime.Today;
                 SelectedStatus = null;
                 SelectedType = null;
                 SelectedProject = null;
-                StatusText = string.Empty;
-                TypeText = string.Empty;
-                Team = null;
-                ContractorsText = string.Empty;
-                SuppliersText = string.Empty;
+                SelectedTeam = null;
+                SelectedFirm = null;
             }
             catch (Exception)
             {
@@ -780,7 +837,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show("Error in deleting Project", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    canDeleteProject = true;
+                    CanDeleteProject = true;
                 }
                 catch (Exception ex)
                 {

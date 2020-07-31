@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="ConstructionERP_DesktopUI.Pages.Firm"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+   xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
+       xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      mc:Ignorable="d"  d:DesignHeight="820" d:DesignWidth="1100" Background="#fefefe" >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Title Bar-->
+        <Grid Margin="10 0" Grid.Row="0">
+            <Border BorderThickness="0 0 0 2" BorderBrush="#ccc" Padding="0 18">
+                <TextBlock FontSize="20" FontWeight="SemiBold" Foreground="#0c9c07">Firms</TextBlock>
+            </Border>
+        </Grid>
+
+        <!--Data Section-->
+        <Grid Background="#f6f6f6" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7.5*"/>
+                <ColumnDefinition Width="2.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Data Grid Section-->
+            <Grid Grid.Column="0" Grid.ColumnSpan="{Binding ColSpan}" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!--Buttons-->
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="120" Style="{StaticResource SquaredButton2}">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Create Firm</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome Kind="EditRegular"  />
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!--Data Grid-->
+                <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Firms}"
+                        SelectedItem="{Binding SelectedFirm, Mode=TwoWay}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                            <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
+                            <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
+                            <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
+
+            </Grid>
+
+            <!--Operations-->
+            <Grid Grid.Column="1" Background="#fcfcfc" Visibility="{Binding OperationsVisibility}">
+                <Border BorderThickness="1 0 0 0" VerticalAlignment="Stretch" BorderBrush="#ddd">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <!--Header-->
+                        <Border BorderBrush="#ddd" BorderThickness="0 0 0 1" Grid.Row="0" >
+                            <StackPanel Margin="10 14" Orientation="Horizontal">
+
+                                <Button  Command="{Binding ToggleOperationCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
+                                    <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
+                                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource FormHeader}">Firm #</TextBlock>
+                                    <TextBlock Style="{StaticResource FormHeader}" Text="{Binding ID}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!--Controls-->
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                            <StackPanel Margin="15 0">
+                                <TextBlock Style="{StaticResource FormTitle}">Unit Title</TextBlock>
+                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title}" ></TextBox>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!--Save Button-->
+                        <StackPanel Background="#eee" Grid.Row="2">
+                            <Border Padding="12 8" BorderBrush="#ddd" BorderThickness="0 1 0 0">
+                                <Button Style="{StaticResource SquaredButton2}" Command="{Binding SaveCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" Spin="{Binding IsSaveSpinning}" />
+                                        <TextBlock Text="{Binding SaveBtnText}" Padding="10 0 0 0"/>
+                                    </StackPanel>
+                                </Button>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>
+
+    
