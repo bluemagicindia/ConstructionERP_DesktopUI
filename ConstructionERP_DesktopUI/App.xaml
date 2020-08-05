@@ -24,9 +24,9 @@
             <SolidColorBrush x:Key="SuccessColor" Color="#1f9f3c"/>
             <SolidColorBrush x:Key="FadeColor" Color="#999999"/>
 
-            
+
             <!--Textboxes-->
-            
+
             <Style  x:Key="WatermarkTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="#ccc"/>
@@ -74,7 +74,7 @@
 
 
             <!--Buttons-->
-            
+
             <Style TargetType="Button" x:Key="SquaredButton" >
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="Hand" />
@@ -459,9 +459,9 @@
                 </Setter>
             </Style>
 
-            
+
             <!--Data Grid-->
-            
+
             <Style TargetType="DataGrid" x:Key="BasicGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
                 <Setter Property="GridLinesVisibility" Value="Horizontal" />
                 <Setter Property="HorizontalGridLinesBrush" Value="#ddd"/>
@@ -479,6 +479,7 @@
                 <Setter Property="RowHeaderWidth" Value="30"/>
                 <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader}"/>
                 <Setter Property="CellStyle" Value="{DynamicResource GridCell}"/>
+                <Setter Property="RowStyle" Value="{DynamicResource GridRow}"/>
 
             </Style>
 
@@ -499,7 +500,20 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader}"/>
                 <Setter Property="CellStyle" Value="{DynamicResource GridCellBig}"/>
+                <Setter Property="RowStyle" Value="{DynamicResource GridRow}"/>
 
+            </Style>
+
+            <Style x:Key="GridRow" TargetType="{x:Type DataGridRow}">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True" >
+                        <Setter Property="Background" Value="#eee" />
+                        <Setter Property="Foreground" Value="#000" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True" >
+                        <Setter Property="Background" Value="#eee" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="GridCell" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
@@ -510,11 +524,23 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                             <Grid Background="{TemplateBinding Background}">
-                                <ContentPresenter VerticalAlignment="Center" Margin="10 12" />
+                                <ContentPresenter VerticalAlignment="Center" Margin="10" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+
+                <Style.Triggers>    
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#eee"/>
+                        <Setter Property="Foreground" Value="#000"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#eee"/>
+                    </Trigger>
+
+                </Style.Triggers>
+
             </Style>
 
             <Style x:Key="GridCellBig" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
@@ -590,9 +616,9 @@
 
             </Style>
 
-            
+
             <!--Text Blocks-->
-            
+
             <Style x:Key="FormHeader" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontSize" Value="17"/>
                 <Setter Property="Foreground" Value="#888"/>
@@ -608,12 +634,19 @@
                 <Setter Property="Margin" Value="0 10 0 0 "/>
             </Style>
 
+            <Style x:Key="CheckboxText" TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontWeight" Value="DemiBold"/>
+                <Setter Property="Foreground" Value="#666"/>
+                <Setter Property="Padding" Value="5 0"/>
+            </Style>
+
+
             <Style x:Key="ButtonText" TargetType="{x:Type TextBlock}">
                 <Setter Property="TextAlignment" Value="Center"/>
                 <Setter Property="FontSize" Value="15"/>
                 <Setter Property="Margin" Value="0 5 0 0"/>
             </Style>
-
 
             <Style x:Key="FormSplitButton" TargetType="{x:Type Controls:SplitButton}" BasedOn="{StaticResource {x:Type Controls:SplitButton}}">
                 <Setter Property="Background" Value="Transparent"/>

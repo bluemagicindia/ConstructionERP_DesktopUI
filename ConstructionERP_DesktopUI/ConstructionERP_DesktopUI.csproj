@@ -122,6 +122,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\ContractorPaymentAPIHelper.cs" />
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\DocumentAPIHelper.cs" />
     <Compile Include="API\ProjectSuppliersAPIHelper.cs" />
@@ -253,8 +254,8 @@
     <Compile Include="Pages\Team.xaml.cs">
       <DependentUpon>Team.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TentativePaymentPopup.xaml.cs">
-      <DependentUpon>TentativePaymentPopup.xaml</DependentUpon>
+    <Compile Include="Pages\ContractorPaymentPopup.xaml.cs">
+      <DependentUpon>ContractorPaymentPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Firm.xaml.cs">
       <DependentUpon>Firm.xaml</DependentUpon>
@@ -392,7 +393,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TentativePaymentPopup.xaml">
+    <Page Include="Pages\ContractorPaymentPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

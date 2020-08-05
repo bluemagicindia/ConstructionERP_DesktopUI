@@ -19,6 +19,7 @@ namespace ConstructionERP_DesktopUI.Pages
     /// </summary>
     public partial class ProjectContractor : UserControl, INotifyPropertyChanged
     {
+
         #region Initialization
 
         private ContractorAPIHelper apiHelper;
@@ -41,7 +42,7 @@ namespace ConstructionERP_DesktopUI.Pages
             new Action(async () => await GetContractors())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateContractor()); }, () => CanSaveContractor);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteContractor()); }, () => CanDeleteContractor);
-            TentativeCommand = new RelayCommand(ShowPopup);
+            PaymentCommand = new RelayCommand(ShowPopup);
 
             ParentLayout.PropertyChanged += ParentLayout_PropertyChanged;
         }
@@ -399,7 +400,7 @@ namespace ConstructionERP_DesktopUI.Pages
             get { return canDeleteContractor; }
             set
             {
-                canSaveContractor = value;
+                canDeleteContractor = value;
                 OnPropertyChanged("DeleteContractor");
                 OnPropertyChanged("IsDeleteSpinning");
                 OnPropertyChanged("DeleteBtnText");
@@ -432,7 +433,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show("Error in deleting Contractor", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    CanSaveContractor = true;
+                    CanDeleteContractor = true;
                 }
                 catch (Exception ex)
                 {
@@ -449,9 +450,9 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Tentative Popup Command
+        #region ContractorPayment Popup Command
 
-        public ICommand TentativeCommand { get; private set; }
+        public ICommand PaymentCommand { get; private set; }
 
         private void ShowPopup(object param)
         {
@@ -459,7 +460,7 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 if (SelectedContractor != null)
                 {
-                    TentativePaymentPopup popup = new TentativePaymentPopup(ParentLayout.SelectedProject, SelectedContractor);
+                    ContractorPaymentPopup popup = new ContractorPaymentPopup(ParentLayout, SelectedContractor);
                     popup.Show();
                 }
                 else
@@ -485,7 +486,6 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
         #endregion
-
 
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ConstructionERP_DesktopUI.Models
 {
-    class ContractorPaymentModel
+    public class ContractorPaymentModel
     {
         public long ID { get; set; }
 
@@ -10,9 +10,9 @@ namespace ConstructionERP_DesktopUI.Models
 
         public long? ContractorID { get; set; }
 
-        public decimal TentativeAmount { get; set; }
+        public long TentativeAmount { get; set; }
 
-        public decimal PaidAmount { get; set; }
+        public long PaidAmount { get; set; }
 
         public string Remarks { get; set; }
 
@@ -31,5 +31,7 @@ namespace ConstructionERP_DesktopUI.Models
         public ContractorModel Contractor { get; set; }
 
         public ProjectModel Project { get; set; }
+
+        public long Cumulative { get; set; }
     }
 }
