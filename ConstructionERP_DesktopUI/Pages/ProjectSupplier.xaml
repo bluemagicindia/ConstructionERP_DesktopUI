@@ -58,17 +58,10 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Grid.Column="3" Margin="0 0 10 0"  Style="{StaticResource HoveredButtonSuccess}" Command="{Binding AddBillCommand}" >
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome Kind="FileInvoiceDollarSolid"  />
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Add Bill"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Grid.Column="4" Margin="0 0 10 0"  Style="{StaticResource SolidButtonSuccess }" Command="{Binding PaymentCommand}" >
+                    <Button Grid.Column="4" Margin="0 0 10 0"  Style="{StaticResource SolidButtonSuccess }" Command="{Binding BillPopupCommand}" >
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="RupeeSignSolid"  />
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Pay Bill"/>
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Add / Pay Bill"/>
                         </StackPanel>
                     </Button>
 

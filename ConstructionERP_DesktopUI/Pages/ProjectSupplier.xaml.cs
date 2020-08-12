@@ -41,6 +41,8 @@ namespace ConstructionERP_DesktopUI.Pages
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSupplier()); }, () => CanSaveSupplier);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteSupplier()); }, () => CanDeleteSupplier);
 
+            BillPopupCommand = new RelayCommand(ShowPopup);
+
             ParentLayout.PropertyChanged += ParentLayout_PropertyChanged;
         }
 
@@ -444,6 +446,34 @@ namespace ConstructionERP_DesktopUI.Pages
             else
             {
                 MessageBox.Show("Please select a Supplier to be deleted", "Select Enquiry", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+        }
+
+        #endregion
+
+        #region ContractorPayment Popup Command
+
+        public ICommand BillPopupCommand { get; private set; }
+
+        private void ShowPopup(object param)
+        {
+            try
+            {
+                if (SelectedSupplier != null)
+                {
+                    SupplierBillPopup popup = new SupplierBillPopup(ParentLayout, SelectedSupplier);
+                    popup.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Please select a supplier first", "Select Supplier", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

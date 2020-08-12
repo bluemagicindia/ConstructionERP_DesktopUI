@@ -122,6 +122,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\SupplierPaymentAPIHelper.cs" />
+    <Compile Include="API\SupplierBillAPIHelper.cs" />
     <Compile Include="API\ContractorPaymentAPIHelper.cs" />
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\DocumentAPIHelper.cs" />
@@ -174,7 +176,9 @@
     <Compile Include="Models\SiteManagerModel.cs" />
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
+    <Compile Include="Models\SupplierBillModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
+    <Compile Include="Models\SupplierPaymentModel.cs" />
     <Compile Include="Models\TaskWatchersModel.cs" />
     <Compile Include="Models\TaskMembersModel.cs" />
     <Compile Include="Models\TaskModel.cs" />
@@ -184,6 +188,9 @@
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">
       <DependentUpon>Contractor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SupplierBillPopup.xaml.cs">
+      <DependentUpon>SupplierBillPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
@@ -300,6 +307,10 @@
     <Page Include="Pages\Contractor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SupplierBillPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dashboard.xaml">
       <SubType>Designer</SubType>
