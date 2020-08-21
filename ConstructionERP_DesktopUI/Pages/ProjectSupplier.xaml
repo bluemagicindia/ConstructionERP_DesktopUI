@@ -37,8 +37,8 @@
                 <!--Buttons-->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2.5*"/>
+                        <ColumnDefinition Width="2.5*"/>
                         <ColumnDefinition Width="6*"/>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="3*"/>

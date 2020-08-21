@@ -21,6 +21,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private SupplierBillAPIHelper apiHelper;
+        private SupplierPaymentAPIHelper paymentApiHelper;
 
         public SupplierBillPopup(MainLayout parentLayout, SupplierModel supplier)
         {
@@ -34,6 +35,7 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new SupplierBillAPIHelper();
+            paymentApiHelper = new SupplierPaymentAPIHelper();
             new Action(async () => await GetBills())();
             BillCommand = new RelayCommand(async delegate { await Task.Run(() => CreateBill()); }, () => CanBill);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
@@ -214,8 +216,9 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (MessageBox.Show($"Are you sure you want to pay for Bill No '{SelectedBill.BillNo}'", "Pay Bill", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
                         BillNo = SelectedBill.BillNo;
-                        BillDate = SelectedBill.BillDate;
                         Amount = SelectedBill.Amount;
+                        IsPayment = true;
+                        IsBill = false;
                     }
                 }
                 else
@@ -277,36 +280,61 @@ namespace ConstructionERP_DesktopUI.Pages
                 else
                 {
                     CanBill = false;
-
-                    SupplierBillModel billData = new SupplierBillModel
+                    if (IsBill)
                     {
-                        SupplierID = Supplier.ID,
-                        ProjectID = ParentLayout.SelectedProject.ID,
-                        BillNo = BillNo,
-                        BillDate = BillDate,
-                        Amount = Amount,
-                        Remarks = Remarks,
-                        Status = true,
-                        CreatedOn = DateTime.Now,
-                        CreatedBy = ParentLayout.LoggedInUser.Name
-                    };
+                        SupplierBillModel billData = new SupplierBillModel
+                        {
+                            SupplierID = Supplier.ID,
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            BillNo = BillNo,
+                            BillDate = BillDate,
+                            Amount = Amount,
+                            Remarks = Remarks,
+                            Status = true,
+                            CreatedOn = DateTime.Now,
+                            CreatedBy = ParentLayout.LoggedInUser.Name
+                        };
 
 
-                    HttpResponseMessage result = await apiHelper.PostSupplierBill(ParentLayout.LoggedInUser.Token, billData).ConfigureAwait(false);
+                        HttpResponseMessage result = await apiHelper.PostSupplierBill(ParentLayout.LoggedInUser.Token, billData).ConfigureAwait(false);
 
-                    if (result.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show($"Bill Added Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        // await GetTransactions();
-                        ClearFields();
-                        //Application.Current.Dispatcher.Invoke((Action)delegate
-                        //{
-                        //    ClearFields();
-                        //});
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Bill Added Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetBills();
+                            ClearFields();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
-                    else
+                    else if(IsPayment)
                     {
-                        MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        SupplierPaymentModel paymentData = new SupplierPaymentModel
+                        {
+                            SupplierBillID = SelectedBill.ID,
+                            PaidOn = BillDate,
+                            Amount = Amount,
+                            Remarks = "" + Remarks,
+                            Status = true,
+                            CreatedOn = DateTime.Now,
+                            CreatedBy = ParentLayout.LoggedInUser.Name
+                        };
+
+
+                        HttpResponseMessage result = await paymentApiHelper.PostSupplierPayment(ParentLayout.LoggedInUser.Token, paymentData).ConfigureAwait(false);
+
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Payment Added Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetBills();
+                            ClearFields();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                     CanBill = true;
                 }
@@ -327,7 +355,8 @@ namespace ConstructionERP_DesktopUI.Pages
                 BillNo = Remarks = string.Empty;
                 Amount = 0;
                 BillDate = DateTime.Today;
-                IsPayment = IsBill = false;
+                IsPayment = false;
+                IsBill = true;
             }
             catch (Exception)
             {

@@ -109,12 +109,12 @@
 
                                 <StackPanel Grid.Column="2" Margin="0 30 0 0">
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0 0 0 10">
-                                        <RadioButton IsChecked="{Binding IsBill, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" />
+                                        <RadioButton IsChecked="{Binding IsBill, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" IsEnabled="{Binding IsBill, UpdateSourceTrigger=PropertyChanged}" />
                                         <TextBlock Style="{StaticResource CheckboxText}" Text="Bill" />
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" >
-                                        <RadioButton IsChecked="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" IsEnabled="False"/>
+                                        <RadioButton IsChecked="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" IsEnabled="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Style="{StaticResource CheckboxText}" Text="Payment" />
                                     </StackPanel>
                                 </StackPanel>
@@ -166,7 +166,7 @@
                             <!--Data Grid-->
                             <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
                                 <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding SupplierBills}"
-                        SelectedItem="{Binding SelectedSupplier, Mode=TwoWay}" IsReadOnly="True">
+                        SelectedItem="{Binding SelectedBill, Mode=TwoWay}" IsReadOnly="True">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header = "Bill Date" Binding = "{Binding BillDate, StringFormat='dd-MM-yyyy'}"/>
                                         <DataGridTextColumn Header = "Bill No" Binding = "{Binding BillNo}"/>
