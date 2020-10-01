@@ -156,6 +156,13 @@
                         </StackPanel>
                     </Button>
 
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectCustomer">
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserSolid" Height="18" Width="18" />
+                            <TextBlock Padding="10 0 0 0" Grid.Column="1">Customers</TextBlock>
+                        </StackPanel>
+                    </Button>
+
                     <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="SalesEnquiry">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="ChartBarSolid" Height="18" Width="18" />

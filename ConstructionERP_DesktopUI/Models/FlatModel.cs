@@ -6,8 +6,6 @@
 
         public string Number { get; set; }
 
-        public long? ProjectID { get; set; }
-
         public decimal EstimatedAmount { get; set; }
 
         public decimal AverageTotal { get; set; }
@@ -16,6 +14,12 @@
 
         public int Days { get; set; }
 
+        public long ProjectId { get; set; }
+
+        public long CustomerId { get; set; }
+
         public ProjectModel Project { get; set; }
+
+        public CustomerModel Customer { get; set; }
     }
 }

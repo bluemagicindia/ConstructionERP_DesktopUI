@@ -77,6 +77,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "ProjectSupplier":
                     view = new ProjectSupplier(this);
                     break;
+                case "Customer":
+                    view = new Customer(this);
+                    break;
                 case "Unit":
                     view = new Unit(this);
                     break;

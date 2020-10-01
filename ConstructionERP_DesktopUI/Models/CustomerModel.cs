@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConstructionERP_DesktopUI.Models
 {
@@ -10,9 +11,9 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Email { get; set; }
 
-        public string PhonePrimary { get; set; }
+        public string GSTN { get; set; }
 
-        public string PhoneSecondary { get; set; }
+        public string PhoneNumbers { get; set; }
 
         public string CurrentAddress { get; set; }
 
@@ -21,6 +22,16 @@ namespace ConstructionERP_DesktopUI.Models
         public string Aadhaar { get; set; }
 
         public string ReferredBy { get; set; }
+
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
+
+        public string CreatedBy { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
+        public string ModifiedBy { get; set; }
+
+        public bool Status { get; set; } = true;
 
         public IEnumerable<FlatModel> Flats { get; set; }
     }
