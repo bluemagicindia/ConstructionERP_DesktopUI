@@ -9,143 +9,326 @@
       mc:Ignorable="d" d:DesignHeight="950" d:DesignWidth="1100"
              d:DataContext="{d:DesignInstance local:Customer, IsDesignTimeCreatable=False}"
               Background="#fefefe" >
-
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Popup Placement="Relative" IsOpen="{Binding IsPopupOpen}" AllowsTransparency="True" Height="{Binding PopupHeight}" Width="{Binding PopupWidth}"  >
+            <!--<Popup Placement="Relative" IsOpen="True" AllowsTransparency="True" Height="500" Width="1000"  >-->
+            <Grid>
+                <Grid.Background>
+                    <SolidColorBrush Color="#000" Opacity="0.5"/>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="470" Width="1000">
+                    <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!--Header-->
+                            <Border BorderBrush="#ddd" Grid.Row="0" BorderThickness="0 0 0 1" >
+                                <Grid Margin="15 18">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
 
-        <!--Title Bar-->
-        <Grid Margin="10 0" Grid.Row="0">
-            <Border BorderThickness="0 0 0 2" BorderBrush="#ccc" Padding="0 18">
-                <TextBlock FontSize="20" FontWeight="SemiBold" Foreground="#0c9c07">Customer</TextBlock>
-            </Border>
-        </Grid>
-
-        <!--Data Section-->
-        <Grid Background="#f6f6f6" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7.5*"/>
-                <ColumnDefinition Width="2.5*"/>
-            </Grid.ColumnDefinitions>
-
-            <!--Data Grid Section-->
-            <Grid Grid.Column="0" Grid.ColumnSpan="{Binding ColSpan}" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <!--Buttons-->
-                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="140" Style="{StaticResource SquaredButton2}">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Create Customer</TextBlock>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome Kind="EditRegular"  />
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-
-                <!--Data Grid-->
-                <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Customers}"
-                        SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                            <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
-                            <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
-                            <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
-                            <DataGridTextColumn Header = "Phone" Binding = "{Binding PhoneNumbers}"/>
-                            <DataGridTextColumn Header = "Current Address" Binding = "{Binding CurrentAddress}"/>
-                            <DataGridTextColumn Header = "PAN" Binding = "{Binding PAN}"/>
-                            <DataGridTextColumn Header = "Aadhaar" Binding = "{Binding Aadhaar}"/>
-                            <DataGridTextColumn Header = "Referred By" Binding = "{Binding ReferredBy}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </ScrollViewer>
-
-            </Grid>
-
-            <!--Operations-->
-            <Grid Grid.Column="1" Background="#fcfcfc" Visibility="{Binding OperationsVisibility}">
-                <Border BorderThickness="1 0 0 0" VerticalAlignment="Stretch" BorderBrush="#ddd">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <!--Header-->
-                        <Border BorderBrush="#ddd" BorderThickness="0 0 0 1" Grid.Row="0" >
-                            <StackPanel Margin="10 14" Orientation="Horizontal">
-
-                                <Button  Command="{Binding ToggleOperationCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
-                                    <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
-                                </Button>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource FormHeader}">Customer #</TextBlock>
-                                    <TextBlock Style="{StaticResource FormHeader}" Text="{Binding ID}"></TextBlock>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <!--Controls-->
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-                            <StackPanel Margin="15 0">
-                                <TextBlock Style="{StaticResource FormTitle}">Name *</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding CustomerName,  UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Email</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">GSTN *</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding GSTN, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Phone Numbers *</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding PhoneNumbers, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Current Address</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding CurrentAddress,  UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Height="60"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">PAN</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding PAN, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Aadhaar</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Aadhaar, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Referred By</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding ReferredBy, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                            </StackPanel>
-                        </ScrollViewer>
-
-                        <!--Save Button-->
-                        <StackPanel Background="#eee" Grid.Row="2">
-                            <Border Padding="12 8" BorderBrush="#ddd" BorderThickness="0 1 0 0">
-                                <Button Style="{StaticResource SquaredButton2}" Command="{Binding SaveCommand}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" Spin="{Binding IsSaveSpinning}" />
-                                        <TextBlock Text="{Binding SaveBtnText}" Padding="10 0 0 0"/>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FormHeader}">Customer Flats</TextBlock>
                                     </StackPanel>
-                                </Button>
+
+                                    <Button Grid.Column="1"  Command="{Binding ToggleFlatPopupCommand}" CommandParameter="Close" Style="{StaticResource TransparentButton}">
+                                        <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
+                                    </Button>
+                                </Grid>
                             </Border>
-                        </StackPanel>
+
+                            <!--Content-->
+                            <Grid Grid.Row="1" VerticalAlignment="Top" Margin="20 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Row="1" VerticalAlignment="Top">
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormTitle}">Flat Number</TextBlock>
+                                            <TextBox Style="{StaticResource BorderedTextBox}" FontSize="12" Text="{Binding FlatNumber, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormTitle}">Project</TextBlock>
+                                            <ComboBox Style="{StaticResource BorderedComboBox}" FontSize="12" ItemsSource="{Binding ParentLayout.Projects}"  SelectedItem="{Binding SelectedProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormTitle}">Estimated Amount</TextBlock>
+                                            <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding EstimatedAmount, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormTitle}">Average Total</TextBlock>
+                                            <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding AverageTotal, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormTitle}">EMI</TextBlock>
+                                            <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding EMI, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormTitle}">Days</TextBlock>
+                                            <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding Days, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <Button Width="180" Margin="0 40 0 0" Style="{StaticResource SquaredButton2}" Command="{Binding SaveFlatCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icons:PackIconFontAwesome Kind="SaveRegular" VerticalAlignment="Center" FontSize="15" />
+                                            <TextBlock Text="Add Flat" VerticalAlignment="Center" FontSize="14" Padding="10 0 0 0"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                </StackPanel>
+
+                                <Grid Grid.Column="2" Grid.ColumnSpan="{Binding ColSpan}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Buttons-->
+                                    <Grid  Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="{Binding ErrorMessage}" Visibility="{Binding ErrorVisibility}" Foreground="{StaticResource DangerColor}" VerticalAlignment="Center"/>
+
+                                        <Button Grid.Column="1" Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteFlatCommand}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icons:PackIconFontAwesome Kind="TrashAltRegular" />
+                                                <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Delete"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                    <!--Data Grid-->
+                                    <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Flats}"
+                        SelectedItem="{Binding SelectedFlat, Mode=TwoWay}" IsReadOnly="True">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header = "Flat Number" Binding = "{Binding Number}"/>
+                                                <DataGridTextColumn Header = "Project" Binding = "{Binding Project.Title}"/>
+                                                <DataGridTextColumn Header = "Estimated Amount" Binding = "{Binding EstimatedAmount, StringFormat='₹ {0}'}"  />
+                                                <DataGridTextColumn Header = "Average Total" Binding = "{Binding AverageTotal, StringFormat='₹ {0}'}" />
+                                                <DataGridTextColumn Header = "EMI" Binding = "{Binding EMI, StringFormat='₹ {0}'}"  />
+                                                <DataGridTextColumn Header = "Days" Binding = "{Binding Days}" />
+
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </ScrollViewer>
+
+                                </Grid>
+
+                            </Grid>
+
+                            <!-- Popup Footer -->
+                            <StackPanel  Grid.Row="2">
+                                <Border Padding="30" BorderBrush="#ddd" BorderThickness="0 1 0 0">
+                                </Border>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
+            </Grid>
+        </Popup>
+
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--Title Bar-->
+            <Grid Margin="10 0" Grid.Row="0">
+                <Border BorderThickness="0 0 0 2" BorderBrush="#ccc" Padding="0 18">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Foreground="#0c9c07">Customer</TextBlock>
+                </Border>
+            </Grid>
+
+            <!--Data Section-->
+            <Grid Background="#f6f6f6" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7.5*"/>
+                    <ColumnDefinition Width="2.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Data Grid Section-->
+                <Grid Grid.Column="0" Grid.ColumnSpan="{Binding ColSpan}" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!--Buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                        <Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="140" Style="{StaticResource SquaredButton2}">
+                            <StackPanel Orientation="Horizontal">
+                                <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
+                                <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Create Customer</TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
+                            <StackPanel Orientation="Horizontal">
+                                <icons:PackIconFontAwesome Kind="EditRegular"  />
+                                <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
+                                <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <!--Data Grid-->
+                    <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Customers}"
+                        SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
+                                <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
+                                <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
+                                <DataGridTextColumn Header = "Phone" Binding = "{Binding PhoneNumbers}"/>
+                                <DataGridTextColumn Header = "Current Address" Binding = "{Binding CurrentAddress}"/>
+                                <DataGridTextColumn Header = "PAN" Binding = "{Binding PAN}"/>
+                                <DataGridTextColumn Header = "Aadhaar" Binding = "{Binding Aadhaar}"/>
+                                <DataGridTextColumn Header = "Referred By" Binding = "{Binding ReferredBy}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </ScrollViewer>
+
+                </Grid>
+
+                <!--Operations-->
+                <Grid Grid.Column="1" Background="#fcfcfc" Visibility="{Binding OperationsVisibility}">
+                    <Border BorderThickness="1 0 0 0" VerticalAlignment="Stretch" BorderBrush="#ddd">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!--Header-->
+                            <Border BorderBrush="#ddd" BorderThickness="0 0 0 1" Grid.Row="0" >
+                                <StackPanel Margin="10 14" Orientation="Horizontal">
+
+                                    <Button  Command="{Binding ToggleOperationCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
+                                        <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
+                                    </Button>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource FormHeader}">Customer #</TextBlock>
+                                        <TextBlock Style="{StaticResource FormHeader}" Text="{Binding ID}"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!--Controls-->
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                                <StackPanel Margin="15 0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Name *</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding CustomerName,  UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">Email</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">GSTN *</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding GSTN, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">Phone Numbers *</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding PhoneNumbers, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">Current Address</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding CurrentAddress,  UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">PAN</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding PAN, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">Aadhaar</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Aadhaar, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+                                    <TextBlock Style="{StaticResource FormTitle}">Referred By</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding ReferredBy, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <!--Save Button-->
+                            <StackPanel Background="#eee" Grid.Row="2">
+                                <Border Padding="12 12" BorderBrush="#ddd" BorderThickness="0 1 0 0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <mah:Badged Grid.Column="0" Badge="{Binding Flats.Count, FallbackValue=0}">
+                                            <Button Style="{StaticResource BorderedSquaredButton}" Content="Manage Flats" Command="{Binding ToggleFlatPopupCommand}" CommandParameter="Open" />
+                                        </mah:Badged>
+
+                                        <Button Grid.Column="2" Style="{StaticResource SquaredButton2}" Command="{Binding SaveCommand}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" Spin="{Binding IsSaveSpinning}" />
+                                                <TextBlock Text="{Binding SaveBtnText}" Padding="10 0 0 0"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

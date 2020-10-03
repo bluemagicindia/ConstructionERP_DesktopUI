@@ -193,5 +193,38 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Window Dimensions
+
+        private double layoutMaxHeight;
+
+        public double LayoutMaxHeight
+        {
+            get { return layoutMaxHeight; }
+            set
+            {
+                layoutMaxHeight = value;
+                OnPropertyChanged("LayoutMaxHeight");
+            }
+        }
+
+        private double layoutMaxWidth;
+
+        public double LayoutMaxWidth
+        {
+            get { return layoutMaxWidth; }
+            set
+            {
+                layoutMaxWidth = value;
+                OnPropertyChanged("LayoutMaxWidth");
+            }
+        }
+
+        void SetDimensions()
+        {
+            LayoutMaxHeight = SystemParameters.WorkArea.Width;
+            LayoutMaxWidth = SystemParameters.WorkArea.Height;
+        }
+
+        #endregion
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,6 +40,9 @@ namespace ConstructionERP_DesktopUI.Pages
             new Action(async () => await GetCustomers())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateCustomer()); }, () => CanSaveCustomer);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteCustomer()); }, () => CanDeleteCustomer);
+            ToggleFlatPopupCommand = new RelayCommand(ToggleFlatPopup);
+            SaveFlatCommand = new RelayCommand(SaveFlat);
+            DeleteFlatCommand = new RelayCommand(DeleteFlat);
         }
 
         #endregion
@@ -177,53 +181,6 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private decimal estimatedAmount;
-
-        public decimal EstimatedAmount
-        {
-            get { return estimatedAmount; }
-            set
-            {
-                estimatedAmount = value;
-                OnPropertyChanged("EstimatedAmount");
-            }
-        }
-
-        private decimal averageAmountTotal;
-
-        public decimal AverageAmountTotal
-        {
-            get { return averageAmountTotal; }
-            set
-            {
-                averageAmountTotal = value;
-                OnPropertyChanged("AverageAmountTotal");
-            }
-        }
-
-        private int eMI;
-
-        public int EMI
-        {
-            get { return eMI; }
-            set
-            {
-                eMI = value;
-                OnPropertyChanged("EMI");
-            }
-        }
-
-        private int days;
-
-        public int Days
-        {
-            get { return days; }
-            set
-            {
-                days = value;
-                OnPropertyChanged("Days");
-            }
-        }
 
         private CustomerModel customerModel;
 
@@ -284,6 +241,10 @@ namespace ConstructionERP_DesktopUI.Pages
                         PAN = SelectedCustomer.PAN;
                         Aadhaar = SelectedCustomer.Aadhaar;
                         ReferredBy = SelectedCustomer.ReferredBy;
+                        if (SelectedCustomer.Flats != null)
+                        {
+                            Flats = new ObservableCollection<FlatModel>(SelectedCustomer.Flats);
+                        }
                         ColSpan = 1;
                         OperationsVisibility = "Visible";
                         IsUpdate = true;
@@ -305,7 +266,6 @@ namespace ConstructionERP_DesktopUI.Pages
                     ColSpan = ColSpan == 1 ? 2 : 1;
                     OperationsVisibility = OperationsVisibility == "Visible" ? "Collapsed" : "Visible";
                     break;
-
             }
 
         }
@@ -376,7 +336,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public bool IsSaveSpinning => !canSaveCustomer;
 
-        public string SaveBtnText => canSaveCustomer ? "Save" : "Saving...";
+        public string SaveBtnText => canSaveCustomer ? "Save Customer" : "Saving...";
 
         public string SaveBtnIcon => canSaveCustomer ? "SaveRegular" : "SpinnerSolid";
 
@@ -385,16 +345,20 @@ namespace ConstructionERP_DesktopUI.Pages
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Name", CustomerName),
-                    new KeyValuePair<string, string>("Email", Email),
                     new KeyValuePair<string, string>("Phone Numbers", PhoneNumbers),
                     new KeyValuePair<string, string>("GSTN", GSTN),
 
                 };
             if (FieldValidation.ValidateFields(values))
             {
-                CanSaveCustomer = false;
+
                 try
                 {
+                    if (Flats == null && MessageBox.Show("Are you sure you want to proceed without adding flats?", "Add Flats", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+                    CanSaveCustomer = false;
                     CustomerModel customerData = new CustomerModel()
                     {
                         Name = CustomerName,
@@ -404,12 +368,14 @@ namespace ConstructionERP_DesktopUI.Pages
                         CurrentAddress = CurrentAddress,
                         PAN = PAN,
                         Aadhaar = Aadhaar,
-                        ReferredBy = ReferredBy
+                        ReferredBy = ReferredBy,
+                        Flats = Flats
                     };
                     HttpResponseMessage result = null;
                     if (isUpdate)
                     {
                         customerData.ID = ID;
+                        customerData.Flats = customerData.Flats.Select(f => { f.CustomerId = customerData.ID; return f; }).ToList();
                         customerData.CreatedBy = SelectedCustomer.CreatedBy;
                         customerData.ModifiedOn = DateTime.Now;
                         customerData.ModifiedBy = ParentLayout.LoggedInUser.Name;
@@ -448,6 +414,7 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 ID = 0;
                 CustomerName = Email = GSTN = PhoneNumbers = CurrentAddress = PAN = Aadhaar = ReferredBy = String.Empty;
+                Flats = null;
             }
             catch (Exception)
             {
@@ -496,6 +463,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (result.IsSuccessStatusCode)
                     {
                         await GetCustomers();
+                        ClearFields();
                     }
                     else
                     {
@@ -517,5 +485,302 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
         #endregion
+
+        #region Flat Popup Open / Dimensions
+
+        private bool isPopupOpen;
+
+        public bool IsPopupOpen
+        {
+            get { return isPopupOpen; }
+            set
+            {
+                isPopupOpen = value;
+                OnPropertyChanged("IsPopupOpen");
+            }
+        }
+
+        private double popupHeight;
+
+        public double PopupHeight
+        {
+            get { return popupHeight; }
+            set
+            {
+                popupHeight = value;
+                OnPropertyChanged("PopupHeight");
+            }
+        }
+
+        private double popupWidth;
+
+        public double PopupWidth
+        {
+            get { return popupWidth; }
+            set
+            {
+                popupWidth = value;
+                OnPropertyChanged("PopupWidth");
+            }
+        }
+
+        public ICommand ToggleFlatPopupCommand { get; private set; }
+
+        void ToggleFlatPopup(object param)
+        {
+            if (param?.ToString() == "Open")
+            {
+                PopupHeight = this.ActualHeight;
+                PopupWidth = this.ActualWidth;
+                IsPopupOpen = true;
+            }
+            else
+            {
+                IsPopupOpen = false;
+            }
+        }
+
+
+        #endregion
+
+        #region Flat Operations
+
+        private string flatNumber;
+
+        public string FlatNumber
+        {
+            get { return flatNumber; }
+            set
+            {
+                flatNumber = value;
+                OnPropertyChanged("FlatNumber");
+            }
+        }
+
+        private ProjectModel selectedProject;
+
+        public ProjectModel SelectedProject
+        {
+            get { return selectedProject; }
+            set
+            {
+                selectedProject = value;
+                OnPropertyChanged("SelectedProject");
+            }
+        }
+
+        private decimal estimatedAmount;
+
+        public decimal EstimatedAmount
+        {
+            get { return estimatedAmount; }
+            set
+            {
+                estimatedAmount = value;
+                OnPropertyChanged("EstimatedAmount");
+            }
+        }
+
+        private decimal averageTotal;
+
+        public decimal AverageTotal
+        {
+            get { return averageTotal; }
+            set
+            {
+                averageTotal = value;
+                OnPropertyChanged("AverageTotal");
+            }
+        }
+
+        private int eMI;
+
+        public int EMI
+        {
+            get { return eMI; }
+            set
+            {
+                eMI = value;
+                OnPropertyChanged("EMI");
+            }
+        }
+
+        private int days;
+
+        public int Days
+        {
+            get { return days; }
+            set
+            {
+                days = value;
+                OnPropertyChanged("Days");
+            }
+        }
+
+
+        private ObservableCollection<FlatModel> flats;
+
+        public ObservableCollection<FlatModel> Flats
+        {
+            get { return flats; }
+            set
+            {
+                flats = value;
+                OnPropertyChanged("Flats");
+            }
+        }
+
+        private FlatModel selectedFlat;
+
+        public FlatModel SelectedFlat
+        {
+            get { return selectedFlat; }
+            set
+            {
+                selectedFlat = value;
+                OnPropertyChanged("SelectedFlat");
+            }
+        }
+
+        private string errorVisibility;
+
+        public string ErrorVisibility
+        {
+            get { return errorVisibility; }
+            set
+            {
+                errorVisibility = value;
+                OnPropertyChanged("ErrorVisibility");
+            }
+        }
+
+        private string errorMessage;
+
+        public string ErrorMessage
+        {
+            get { return errorMessage; }
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged("ErrorMessage");
+            }
+        }
+
+        public ICommand SaveFlatCommand { get; private set; }
+
+        void SaveFlat(object param)
+        {
+            try
+            {
+                ErrorVisibility = "Collapsed";
+
+                if (validateFlat())
+                {
+                    if (Flats == null)
+                    {
+                        Flats = new ObservableCollection<FlatModel>();
+                    }
+                    Flats.Add(new FlatModel
+                    {
+                        Number = FlatNumber,
+                        ProjectId = SelectedProject.ID,
+                        EstimatedAmount = EstimatedAmount,
+                        AverageTotal = AverageTotal,
+                        EMI = EMI,
+                        Days = Days
+                    });
+                    ClearFlatFields();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+                ErrorVisibility = "Visible";
+            }
+        }
+
+
+        public ICommand DeleteFlatCommand { get; private set; }
+
+        void DeleteFlat(object param)
+        {
+            try
+            {
+                ErrorVisibility = "Collapsed";
+                if (SelectedFlat != null)
+                {
+                    Flats.Remove(SelectedFlat);
+                }
+                else
+                {
+                    ErrorMessage = "Please select a flat to be deleted";
+                    ErrorVisibility = "Visible";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+                ErrorVisibility = "Visible";
+            }
+
+        }
+
+        bool validateFlat()
+        {
+            if (string.IsNullOrEmpty(FlatNumber))
+            {
+                ErrorMessage = "Please enter flat number";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (SelectedProject == null)
+            {
+                ErrorMessage = "Please select a project";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (EstimatedAmount <= 0)
+            {
+                ErrorMessage = "Please enter Estimated Amount";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (AverageTotal <= 0)
+            {
+                ErrorMessage = "Please enter Average Total";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (EMI <= 0)
+            {
+                ErrorMessage = "Please enter EMI";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (Days <= 0)
+            {
+                ErrorMessage = "Please enter Days";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else
+            {
+                ErrorMessage = string.Empty;
+                ErrorVisibility = "Collapsed";
+                return true;
+            }
+        }
+
+        void ClearFlatFields()
+        {
+            FlatNumber = string.Empty;
+            SelectedProject = null;
+            EstimatedAmount = AverageTotal = EMI = Days = 0;
+        }
+
+
+        #endregion
+
     }
 }

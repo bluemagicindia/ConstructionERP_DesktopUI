@@ -1,4 +1,6 @@
-﻿namespace ConstructionERP_DesktopUI.Models
+﻿using Newtonsoft.Json;
+
+namespace ConstructionERP_DesktopUI.Models
 {
     public class FlatModel
     {
@@ -20,6 +22,6 @@
 
         public ProjectModel Project { get; set; }
 
-        public CustomerModel Customer { get; set; }
+        //public CustomerModel Customer { get; set; }
     }
 }

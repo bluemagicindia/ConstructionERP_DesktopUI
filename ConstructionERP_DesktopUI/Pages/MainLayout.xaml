@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-          xmlns:local="clr-namespace:ConstructionERP_DesktopUI"
+          xmlns:local="clr-namespace:ConstructionERP_DesktopUI" MaxHeight="{Binding MaxHeight}" MaxWidth="{Binding MaxWidth}"
                     
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-                  xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        mc:Ignorable="d"  WindowStartupLocation="CenterScreen" WindowState="Maximized" ShowMaxRestoreButton="False" TitleCharacterCasing="Normal" Name="AdminWindow" Title="Construction ERP" Height="720" Width="1000">
+                  xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks" WindowStyle="None"
+        mc:Ignorable="d"  WindowStartupLocation="CenterScreen" WindowState="Maximized" 
+                 ShowMaxRestoreButton="False" TitleCharacterCasing="Normal" Name="AdminWindow" Title="Construction ERP" >
 
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
