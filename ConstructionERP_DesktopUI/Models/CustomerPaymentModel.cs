@@ -2,23 +2,29 @@
 
 namespace ConstructionERP_DesktopUI.Models
 {
-    public class ContractorPaymentModel
+    public class CustomerPaymentModel
     {
         public long ID { get; set; }
 
-        public long? ProjectID { get; set; }
+        public long? CustomerID { get; set; }
 
-        public long? ContractorID { get; set; }
+        public long? FlatID { get; set; }
 
-        public long TentativeAmount { get; set; }
+        public decimal AggregateAmountReceived { get; set; }
 
-        public long PaidAmount { get; set; }
+        public decimal ExtraWorkTotal { get; set; }
 
-        public string Remarks { get; set; }
+        public decimal ExtraWorkReceived { get; set; }
+
+        public decimal GSTReceived { get; set; }
+
+        public string StampDutyBalance { get; set; }
 
         public DateTime PaymentDate { get; set; }
 
-        public DateTime CreatedOn { get; set; }
+        public string Remarks { get; set; }
+
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         public string CreatedBy { get; set; }
 
@@ -28,10 +34,8 @@ namespace ConstructionERP_DesktopUI.Models
 
         public bool Status { get; set; }
 
-        public ContractorModel Contractor { get; set; }
+        public CustomerModel Customer { get; set; }
 
-        public ProjectModel Project { get; set; }
-
-        public long Cumulative { get; set; }
+        public FlatModel Flat { get; set; }
     }
 }

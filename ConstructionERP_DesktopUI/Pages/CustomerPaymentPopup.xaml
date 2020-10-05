@@ -1,0 +1,249 @@
+﻿<Window x:Class="ConstructionERP_DesktopUI.Pages.CustomerPaymentPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ConstructionERP_DesktopUI.Pages"
+         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance local:CustomerPaymentPopup, IsDesignTimeCreatable=False}"
+        Title="TentativePaymentPopup"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks" d:DesignWidth="1366"
+        d:DesignHeight="700" Height="{Binding ParentLayout.Height}" Width="{Binding ParentLayout.Width}"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True"
+           WindowState="Maximized" 
+                 
+        >
+    <Window.Background>
+        <SolidColorBrush Color="#000" Opacity="0.4"/>
+    </Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="700" Width="1250">
+            <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!--Header-->
+                    <Border BorderBrush="#ddd" Grid.Row="0" BorderThickness="0 0 0 1" >
+                        <Grid Margin="15 18">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource FormHeader}">Customer Payments</TextBlock>
+                            </StackPanel>
+
+                            <Button Grid.Column="1"  Command="{Binding ClosePopupCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
+                                <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!--Content-->
+                    <Grid Grid.Row="1" VerticalAlignment="Top" Margin="20 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="25"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Customer</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" IsEnabled="False" Background="#eee" FontSize="12" Text="{Binding Customer.Name}"></TextBox>
+
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">Flat Number</TextBlock>
+
+                                    <ComboBox Style="{StaticResource BorderedComboBox}" FontSize="12" ItemsSource="{Binding Customer.Flats}"  SelectedItem="{Binding SelectedFlat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Number" SelectedValuePath="Number" />
+                                </StackPanel>
+
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Agg. Amount Total</TextBlock>
+                                    <TextBox IsEnabled="False" Style="{StaticResource BorderedTextBox}" Text="{Binding  SelectedFlat.AggregateAmountTotal, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">Agg. Amount Received</TextBlock>
+                                    <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding AggregateAmountReceived, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                </StackPanel>
+
+
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Extra Work Total</TextBlock>
+                                    <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding ExtraWorkTotal, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">Extra Work Received</TextBlock>
+                                    <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding ExtraWorkReceived, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                </StackPanel>
+
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96*"/>
+                                    <ColumnDefinition Width="74*"/>
+                                    <ColumnDefinition Width="21*"/>
+                                    <ColumnDefinition Width="171*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">GST Received</TextBlock>
+                                    <mah:NumericUpDown Style="{StaticResource BorderedNumericBox}" Value="{Binding GSTReceived, UpdateSourceTrigger=PropertyChanged}" Minimum="0" />
+
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3">
+                                    <TextBlock Style="{StaticResource FormTitle}">Stamp Duty Balance</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding StampDutyBalance, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </StackPanel>
+
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Payment Date</TextBlock>
+
+                                    <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding PaymentDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">Remarks</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Remarks, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="100" ></TextBox>
+                                </StackPanel>
+
+                            </Grid>
+
+
+
+
+                            <Button Width="180" Margin="0 40 0 0" Style="{StaticResource SquaredButton2}" Command="{Binding PaymentCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" VerticalAlignment="Center" FontSize="15" Spin="{Binding IsSaveSpinning}" />
+                                    <TextBlock Text="{Binding SaveBtnText}" VerticalAlignment="Center" FontSize="14" Padding="10 0 0 0"/>
+                                </StackPanel>
+                            </Button>
+
+                        </StackPanel>
+
+                        <Grid Grid.Column="2" Grid.ColumnSpan="{Binding ColSpan}" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!--Buttons-->
+                            <Grid  Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="{Binding ErrorMessage}" Visibility="{Binding ErrorVisibility}" Foreground="{StaticResource DangerColor}" VerticalAlignment="Center"/>
+                                <!--<Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="120" Style="{StaticResource SquaredButton2}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
+                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Payment</TextBlock>
+                                    </StackPanel>
+                                </Button>-->
+
+                                <!--<Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:PackIconFontAwesome Kind="EditRegular"  />
+                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
+                                    </StackPanel>
+                                </Button>-->
+                                <Button Grid.Column="2" Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
+                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!--Data Grid-->
+                            <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding CustomerTransactions}"
+                        SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header = "Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
+                                        <DataGridTextColumn Header = "Flat" Binding = "{Binding Flat.Number }"/>
+
+                                        <DataGridTextColumn Header = "Agg. Total" Binding = "{Binding Flat.AggregateAmountTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+
+                                        <DataGridTextColumn Header = "Agg. Rec." Binding = "{Binding AggregateAmountReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+
+                                        <DataGridTextColumn Header = "Extra Total" Binding = "{Binding ExtraWorkTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+
+                                        <DataGridTextColumn Header = "Extra Rec." Binding = "{Binding ExtraWorkReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+
+                                        <DataGridTextColumn Header = "GST Rec." Binding = "{Binding GSTReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+
+                                        <DataGridTextColumn Header = "Stamp Duty Bal." Binding = "{Binding StampDutyBalance}"/>
+
+                                        <DataGridTextColumn Header = "Remarks" Binding = "{Binding Remarks}"/>
+
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+
+                        </Grid>
+
+                    </Grid>
+
+                    <!-- Popup Footer -->
+                    <StackPanel  Grid.Row="2">
+                        <Border Padding="30" BorderBrush="#ddd" BorderThickness="0 1 0 0">
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

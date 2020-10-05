@@ -43,6 +43,7 @@ namespace ConstructionERP_DesktopUI.Pages
             ToggleFlatPopupCommand = new RelayCommand(ToggleFlatPopup);
             SaveFlatCommand = new RelayCommand(SaveFlat);
             DeleteFlatCommand = new RelayCommand(DeleteFlat);
+            PaymentCommand = new RelayCommand(ShowPopup);
         }
 
         #endregion
@@ -581,15 +582,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private decimal averageTotal;
+        private decimal aggregateAmountTotal;
 
-        public decimal AverageTotal
+        public decimal AggregateAmountTotal
         {
-            get { return averageTotal; }
+            get { return aggregateAmountTotal; }
             set
             {
-                averageTotal = value;
-                OnPropertyChanged("AverageTotal");
+                aggregateAmountTotal = value;
+                OnPropertyChanged("AggregateAmountTotal");
             }
         }
 
@@ -684,8 +685,9 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         Number = FlatNumber,
                         ProjectId = SelectedProject.ID,
+                        Project = SelectedProject,
                         EstimatedAmount = EstimatedAmount,
-                        AverageTotal = AverageTotal,
+                        AggregateAmountTotal = AggregateAmountTotal,
                         EMI = EMI,
                         Days = Days
                     });
@@ -746,7 +748,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 ErrorVisibility = "Visible";
                 return false;
             }
-            else if (AverageTotal <= 0)
+            else if (AggregateAmountTotal <= 0)
             {
                 ErrorMessage = "Please enter Average Total";
                 ErrorVisibility = "Visible";
@@ -776,9 +778,37 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             FlatNumber = string.Empty;
             SelectedProject = null;
-            EstimatedAmount = AverageTotal = EMI = Days = 0;
+            EstimatedAmount = AggregateAmountTotal = EMI = Days = 0;
         }
 
+
+        #endregion
+
+        #region ContractorPayment Popup Command
+
+        public ICommand PaymentCommand { get; private set; }
+
+        private void ShowPopup(object param)
+        {
+            try
+            {
+                if (SelectedCustomer != null)
+                {
+                    CustomerPaymentPopup popup = new CustomerPaymentPopup(ParentLayout, SelectedCustomer);
+                    popup.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Please select a Customer first", "Select Customer", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
 
         #endregion
 

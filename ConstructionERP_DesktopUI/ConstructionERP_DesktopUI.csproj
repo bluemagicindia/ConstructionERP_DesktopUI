@@ -129,6 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\CustomerPaymentAPIHelper.cs" />
     <Compile Include="API\CustomerAPIHelper.cs" />
     <Compile Include="API\SupplierPaymentAPIHelper.cs" />
     <Compile Include="API\SupplierBillAPIHelper.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="API\TaskWatchersAPIHelper.cs" />
     <Compile Include="API\TaskMembersAPIHelper.cs" />
     <Compile Include="API\FirmAPIHelper.cs" />
+    <Compile Include="Models\CustomerPaymentModel.cs" />
     <Compile Include="Models\ContractorPaymentModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
@@ -198,6 +200,9 @@
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">
       <DependentUpon>Contractor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CustomerPaymentPopup.xaml.cs">
+      <DependentUpon>CustomerPaymentPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Customer.xaml.cs">
       <DependentUpon>Customer.xaml</DependentUpon>
@@ -320,6 +325,10 @@
     <Page Include="Pages\Contractor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\CustomerPaymentPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Customer.xaml">
       <SubType>Designer</SubType>

@@ -3,12 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-          xmlns:local="clr-namespace:ConstructionERP_DesktopUI" MaxHeight="{Binding MaxHeight}" MaxWidth="{Binding MaxWidth}"
-                    
+          xmlns:local="clr-namespace:ConstructionERP_DesktopUI.Pages" 
+                 mc:Ignorable="d"
+                
+                 Height="{Binding MaxHeight}" Width="{Binding MaxWidth}"
+                                d:DataContext="{d:DesignInstance local:MainLayout, IsDesignTimeCreatable=False}"
+ d:DesignHeight="800" d:DesignWidth="1366"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks" WindowStyle="None"
-        mc:Ignorable="d"  WindowStartupLocation="CenterScreen" WindowState="Maximized" 
+          WindowStartupLocation="CenterScreen" WindowState="Maximized" 
                  ShowMaxRestoreButton="False" TitleCharacterCasing="Normal" Name="AdminWindow" Title="Construction ERP" >
 
     <mah:MetroWindow.LeftWindowCommands>
@@ -157,7 +161,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="ProjectCustomer">
+                    <Button Background="Transparent" Style="{StaticResource NavigationButton}" Command="{Binding NavigationCommand}" CommandParameter="Customer">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome VerticalAlignment="Center" Kind="UserSolid" Height="18" Width="18" />
                             <TextBlock Padding="10 0 0 0" Grid.Column="1">Customers</TextBlock>

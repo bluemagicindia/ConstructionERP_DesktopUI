@@ -10,7 +10,7 @@ namespace ConstructionERP_DesktopUI.Models
 
         public decimal EstimatedAmount { get; set; }
 
-        public decimal AverageTotal { get; set; }
+        public decimal AggregateAmountTotal { get; set; }
 
         public decimal EMI { get; set; }
 
