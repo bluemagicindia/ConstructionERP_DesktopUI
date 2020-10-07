@@ -159,9 +159,9 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #region Get Bills
 
-        private ObservableCollection<SupplierBillModel> supplierBills;
+        private ObservableCollection<SupplierBillPaymentModel> supplierBills;
 
-        public ObservableCollection<SupplierBillModel> SupplierBills
+        public ObservableCollection<SupplierBillPaymentModel> SupplierBills
         {
             get { return supplierBills; }
             set
@@ -171,9 +171,9 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private SupplierBillModel selectedBill;
+        private SupplierBillPaymentModel selectedBill;
 
-        public SupplierBillModel SelectedBill
+        public SupplierBillPaymentModel SelectedBill
         {
             get { return selectedBill; }
             set
@@ -186,17 +186,26 @@ namespace ConstructionERP_DesktopUI.Pages
 
         private async Task GetBills()
         {
-            //long cumulative = 0;
             try
             {
-                SupplierBills = await apiHelper.GetSupplierBills(supplier.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
-                //SupplierBills.ToList().ForEach(ct => ct.Cumulative = cumulative = cumulative + ct.TentativeAmount - ct.PaidAmount);
+                var bills = await apiHelper.GetSupplierBills(supplier.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
+                SupplierBills = new ObservableCollection<SupplierBillPaymentModel>();
+                foreach (var bill in bills)
+                {
+                    long pending = bill.Amount;
+                    SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending });
+
+                    foreach (var supplierPayment in bill.SupplierPayments)
+                    {
+                        pending = pending - supplierPayment.Amount;
+                        SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = supplierPayment.PaidOn, BillNo = bill.BillNo, PaymentAmount = supplierPayment.Amount, IsBill = false, Pending = pending });
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
 
         }
 
@@ -211,12 +220,12 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                if (SelectedBill != null)
+                if (SelectedBill?.IsBill == true)
                 {
                     if (MessageBox.Show($"Are you sure you want to pay for Bill No '{SelectedBill.BillNo}'", "Pay Bill", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
                         BillNo = SelectedBill.BillNo;
-                        Amount = SelectedBill.Amount;
+                        Amount = SelectedBill.BillAmount;
                         IsPayment = true;
                         IsBill = false;
                     }
@@ -274,7 +283,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 }
                 else if (BillNo.Trim().Length == 0)
                 {
-                    MessageBox.Show("Please enter Bill No", "Bill No Required", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Please enter Bill Number", "Bill Number Required", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
                 else
@@ -309,14 +318,14 @@ namespace ConstructionERP_DesktopUI.Pages
                             MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
-                    else if(IsPayment)
+                    else if (IsPayment)
                     {
                         SupplierPaymentModel paymentData = new SupplierPaymentModel
                         {
                             SupplierBillID = SelectedBill.ID,
                             PaidOn = BillDate,
                             Amount = Amount,
-                            Remarks = "" + Remarks,
+                            Remarks = Remarks,
                             Status = true,
                             CreatedOn = DateTime.Now,
                             CreatedBy = ParentLayout.LoggedInUser.Name

@@ -168,12 +168,11 @@
                                 <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding SupplierBills}"
                         SelectedItem="{Binding SelectedBill, Mode=TwoWay}" IsReadOnly="True">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header = "Bill Date" Binding = "{Binding BillDate, StringFormat='dd-MM-yyyy'}"/>
+                                        <DataGridTextColumn Header = "Date" Binding = "{Binding Date, StringFormat='dd-MM-yyyy'}"/>
                                         <DataGridTextColumn Header = "Bill No" Binding = "{Binding BillNo}"/>
-                                        <DataGridTextColumn Header = "CreatedBy" Binding = "{Binding CreatedBy, StringFormat='dd-MM-yyyy'}"/>
-                                        <DataGridTextColumn Header = "Amount" Binding = "{Binding Amount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
-                                        <DataGridTextColumn Header = "Pending" Binding = "{Binding PendingAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold"/>
-                                        <!--<DataGridTextColumn Header = "Cumulative Amout" Binding = "{Binding Cumulative, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="15" FontWeight="SemiBold"/>-->
+                                        <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
+                                        <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
+                                        <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
 
                                     </DataGrid.Columns>
                                 </DataGrid>

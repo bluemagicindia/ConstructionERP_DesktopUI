@@ -2,6 +2,7 @@
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -149,9 +150,6 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-
-
-
         private DateTime paymentDate = DateTime.Today;
         public DateTime PaymentDate
         {
@@ -159,7 +157,7 @@ namespace ConstructionERP_DesktopUI.Pages
             set
             {
                 paymentDate = value;
-                OnPropertyChanged("AmountDate");
+                OnPropertyChanged("PaymentDate");
             }
         }
 
@@ -352,7 +350,7 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                AggregateAmountReceived = ExtraWorkReceived = GSTReceived = 0;
+                AggregateAmountReceived = ExtraWorkReceived = GSTReceived = ExtraWorkTotal = 0;
                 PaymentDate = DateTime.Today;
                 Remarks = StampDutyBalance = string.Empty;
             }

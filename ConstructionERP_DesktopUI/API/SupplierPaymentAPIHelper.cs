@@ -50,9 +50,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Get Contractors
+        #region Get Supplier Payments
 
-        public async Task<ObservableCollection<ContractorPaymentModel>> GetContractorPayments(long? ContractorID, long? ProjectID, string token)
+        public async Task<ObservableCollection<ContractorPaymentModel>> GetSupplierPayments(long? ContractorID, long? ProjectID, string token)
         {
             try
             {

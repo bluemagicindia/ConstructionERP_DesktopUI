@@ -189,6 +189,7 @@
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SupplierBillModel.cs" />
+    <Compile Include="Models\SupplierBillPaymentModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
     <Compile Include="Models\SupplierPaymentModel.cs" />
     <Compile Include="Models\TaskWatchersModel.cs" />

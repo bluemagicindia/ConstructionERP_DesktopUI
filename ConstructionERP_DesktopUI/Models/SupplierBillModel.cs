@@ -19,7 +19,7 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Remarks { get; set; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         public string CreatedBy { get; set; }
 
