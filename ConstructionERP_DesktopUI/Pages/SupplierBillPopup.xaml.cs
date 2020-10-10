@@ -4,7 +4,6 @@ using ConstructionERP_DesktopUI.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -198,7 +197,7 @@ namespace ConstructionERP_DesktopUI.Pages
                     foreach (var supplierPayment in bill.SupplierPayments)
                     {
                         pending = pending - supplierPayment.Amount;
-                        SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = supplierPayment.PaidOn, BillNo = bill.BillNo, PaymentAmount = supplierPayment.Amount, IsBill = false, Pending = pending });
+                        SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, PaymentID = supplierPayment.ID, Date = supplierPayment.PaidOn, PaymentAmount = supplierPayment.Amount, IsBill = false, Pending = pending });
                     }
                 }
             }
@@ -354,7 +353,6 @@ namespace ConstructionERP_DesktopUI.Pages
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 CanBill = true;
             }
-
         }
 
         private void ClearFields()
@@ -375,7 +373,7 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Transaction Command
+        #region Delete Transaction Bill / Payment
 
         public ICommand DeleteCommand { get; private set; }
 
@@ -405,21 +403,44 @@ namespace ConstructionERP_DesktopUI.Pages
 
             if (SelectedBill != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete this transaction?", "Delete Transaction", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
-                    return;
-                CanDeleteTransaction = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteContractorPayment(ParentLayout.LoggedInUser.Token, SelectedBill.ID).ConfigureAwait(false);
-                    if (result.IsSuccessStatusCode)
+                    if (SelectedBill.IsBill)
                     {
-                        await GetBills();
+                        if (MessageBox.Show($"Are you sure you want to delete the bill and its related transactions?", "Delete Bill and Transactions", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            CanDeleteTransaction = false;
+                            HttpResponseMessage result = await apiHelper.DeleteSupplierBill(ParentLayout.LoggedInUser.Token, SelectedBill.ID).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in deleting bill and its related payments", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            CanDeleteTransaction = true;
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Transaction", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (MessageBox.Show($"Are you sure you want to delete this bill payment?", "Delete Bill Payment", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            CanDeleteTransaction = false;
+                            HttpResponseMessage result = await paymentApiHelper.DeleteSupplierPayment(ParentLayout.LoggedInUser.Token, SelectedBill.PaymentID).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in deleting bill payment", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            CanDeleteTransaction = true;
+
+                        }
                     }
-                    CanDeleteTransaction = true;
+
                 }
                 catch (Exception ex)
                 {

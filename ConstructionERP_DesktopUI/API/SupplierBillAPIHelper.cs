@@ -83,9 +83,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Delete Contractor
+        #region Delete Bill
 
-        public async Task<HttpResponseMessage> DeleteContractorPayment(string token, long id)
+        public async Task<HttpResponseMessage> DeleteSupplierBill(string token, long id)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/ContractorPayment/{id}"))
+                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/SupplierBills/{id}"))
                 {
                     return response;
                 }
