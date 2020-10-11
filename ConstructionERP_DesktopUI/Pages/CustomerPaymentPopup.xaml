@@ -209,28 +209,31 @@
 
                             <!--Data Grid-->
                             <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                                <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding CustomerTransactions}"
+                                <Grid>
+                                    <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding CustomerTransactions}"
                         SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}" IsReadOnly="True">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header = "Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
-                                        <DataGridTextColumn Header = "Flat" Binding = "{Binding Flat.Number }"/>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header = "Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
+                                            <DataGridTextColumn Header = "Flat" Binding = "{Binding Flat.Number }"/>
 
-                                        <DataGridTextColumn Header = "Agg. Total" Binding = "{Binding Flat.AggregateAmountTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Agg. Total" Binding = "{Binding Flat.AggregateAmountTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
-                                        <DataGridTextColumn Header = "Agg. Rec." Binding = "{Binding AggregateAmountReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Agg. Rec." Binding = "{Binding AggregateAmountReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
-                                        <DataGridTextColumn Header = "Extra Total" Binding = "{Binding ExtraWorkTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Extra Total" Binding = "{Binding ExtraWorkTotal, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
-                                        <DataGridTextColumn Header = "Extra Rec." Binding = "{Binding ExtraWorkReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Extra Rec." Binding = "{Binding ExtraWorkReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
-                                        <DataGridTextColumn Header = "GST Rec." Binding = "{Binding GSTReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "GST Rec." Binding = "{Binding GSTReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
-                                        <DataGridTextColumn Header = "Stamp Duty Bal." Binding = "{Binding StampDutyBalance}"/>
+                                            <DataGridTextColumn Header = "Stamp Duty Bal." Binding = "{Binding StampDutyBalance}"/>
 
-                                        <DataGridTextColumn Header = "Remarks" Binding = "{Binding Remarks}"/>
+                                            <DataGridTextColumn Header = "Remarks" Binding = "{Binding Remarks}"/>
 
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
                             </ScrollViewer>
 
                         </Grid>

@@ -124,21 +124,24 @@
             <!--Data Grid Section-->
             <Grid Grid.ColumnSpan="{Binding ColSpan}" Margin="20 12">
                 <ScrollViewer Margin="0 10 0 0"  CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasiGrid2}" ItemsSource="{Binding Projects}"
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                        <DataGrid Style="{StaticResource BasiGrid2}" ItemsSource="{Binding Projects}"
                         SelectedItem="{Binding SelectedProject, Mode=TwoWay}" IsReadOnly="True" >
-                        <DataGrid.Columns>
-                            <DataGridTextColumn FontWeight="Bold" Header = "Title" Binding = "{Binding Title}"/>
-                            <DataGridTextColumn Header = "Address" Binding = "{Binding Address}"/>
-                            <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
-                            <DataGridTextColumn Header = "Team" Binding = "{Binding Team.Name}"/>
-                            <DataGridTextColumn Header = "Firm" Binding = "{Binding Firm.Name}"/>
-                            <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
-                            <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
-                            <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
-                            <DataGridTextColumn Header = "Last Updated" Binding = "{Binding ModifiedOn, StringFormat='dd-MM-yyyy'}"/>
-                        </DataGrid.Columns>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn FontWeight="Bold" Header = "Title" Binding = "{Binding Title}"/>
+                                <DataGridTextColumn Header = "Address" Binding = "{Binding Address}"/>
+                                <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
+                                <DataGridTextColumn Header = "Team" Binding = "{Binding Team.Name}"/>
+                                <DataGridTextColumn Header = "Firm" Binding = "{Binding Firm.Name}"/>
+                                <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
+                                <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
+                                <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
+                                <DataGridTextColumn Header = "Last Updated" Binding = "{Binding ModifiedOn, StringFormat='dd-MM-yyyy'}"/>
+                            </DataGrid.Columns>
 
-                    </DataGrid>
+                        </DataGrid>
+                    </Grid>
                 </ScrollViewer>
 
             </Grid>

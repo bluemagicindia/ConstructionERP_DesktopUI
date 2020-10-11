@@ -13,7 +13,7 @@ namespace ConstructionERP_DesktopUI.API
     {
         #region Initialization
 
-        private HttpClient httpClient;
+        private readonly HttpClient httpClient;
 
         public SupplierBillAPIHelper()
         {

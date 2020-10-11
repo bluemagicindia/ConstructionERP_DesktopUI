@@ -287,18 +287,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetCustomers()
         {
             try
             {
+                IsProgressing = true;
                 Customers = await apiHelper.GetCustomers(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
-
+            finally
+            {
+                IsProgressing = false;
+            }
         }
 
         #endregion
@@ -675,7 +690,7 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 ErrorVisibility = "Collapsed";
 
-                if (validateFlat())
+                if (ValidateFlat())
                 {
                     if (Flats == null)
                     {
@@ -728,7 +743,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         }
 
-        bool validateFlat()
+        bool ValidateFlat()
         {
             if (string.IsNullOrEmpty(FlatNumber))
             {

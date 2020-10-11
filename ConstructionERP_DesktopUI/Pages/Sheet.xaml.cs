@@ -221,15 +221,31 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
         private async Task GetSheets(string searchText)
         {
             try
             {
+                IsProgressing = true;
                 Sheets = string.IsNullOrWhiteSpace(searchText) ? await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token) : await apiHelper.GetSheets(ParentLayout.LoggedInUser.Token, searchText);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
             }
 
 

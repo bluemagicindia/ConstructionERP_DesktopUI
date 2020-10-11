@@ -489,17 +489,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetTasks(string searchText = null)
         {
             try
             {
+                IsProgressing = true;
                 Tasks = string.IsNullOrWhiteSpace(searchText) ? await apiHelper.GetTasks(ParentLayout.LoggedInUser.Token) : await apiHelper.GetTasks(ParentLayout.LoggedInUser.Token, searchText);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
+            finally
+            {
+                IsProgressing = false;
+            }
 
         }
 

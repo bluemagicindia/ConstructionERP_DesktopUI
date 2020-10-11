@@ -195,18 +195,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetTypes()
         {
             try
             {
+                IsProgressing = true;
                 Types = await apiHelper.GetTypes(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
-
+            finally
+            {
+                IsProgressing = false;
+            }
         }
 
         #endregion

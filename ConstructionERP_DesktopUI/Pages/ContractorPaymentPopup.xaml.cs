@@ -169,18 +169,37 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
 
         private async Task GetTransactions()
         {
             long cumulative = 0;
             try
             {
+                IsProgressing = true;
                 ContractorTransactions = await apiHelper.GetContractorPayments(Contractor.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
-                ContractorTransactions.ToList().ForEach(ct => ct.Cumulative = cumulative = cumulative + ct.TentativeAmount - ct.PaidAmount);
+                await Task.Run(() =>
+                {
+                    ContractorTransactions.ToList().ForEach(ct => ct.Cumulative = cumulative = cumulative + ct.TentativeAmount - ct.PaidAmount);
+                });
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
             }
 
 

@@ -254,10 +254,23 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetSuppliers()
         {
             try
             {
+                IsProgressing = true;
                 Suppliers = new ObservableCollection<SupplierModel>();
                 var projectSuppliers = await projectSuppliersAPIHelper.GetProjectSuppliersByProjectID(ParentLayout.LoggedInUser.Token, ParentLayout.SelectedProject.ID);
                 projectSuppliers.ToList().ForEach(ps => Suppliers.Add(ps.Supplier));
@@ -266,7 +279,10 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
+            finally
+            {
+                IsProgressing = false;
+            }
 
         }
 

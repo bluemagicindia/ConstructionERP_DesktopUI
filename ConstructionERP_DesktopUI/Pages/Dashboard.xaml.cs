@@ -16,7 +16,7 @@ namespace ConstructionERP_DesktopUI.Pages
     {
         #region Initialization
 
-        MainLayout ParentLayout = null;
+        private MainLayout ParentLayout = null;
 
         public Dashboard(MainLayout mainLayout)
         {

@@ -182,11 +182,23 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
 
         private async Task GetBills()
         {
             try
             {
+                IsProgressing = true;
                 var bills = await apiHelper.GetSupplierBills(supplier.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
                 SupplierBills = new ObservableCollection<SupplierBillPaymentModel>();
                 foreach (var bill in bills)
@@ -196,7 +208,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
                     foreach (var supplierPayment in bill.SupplierPayments)
                     {
-                        pending = pending - supplierPayment.Amount;
+                        pending -= supplierPayment.Amount;
                         SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, PaymentID = supplierPayment.ID, Date = supplierPayment.PaidOn, PaymentAmount = supplierPayment.Amount, IsBill = false, Pending = pending });
                     }
                 }
@@ -205,7 +217,10 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
+            finally
+            {
+                IsProgressing = false;
+            }
         }
 
 

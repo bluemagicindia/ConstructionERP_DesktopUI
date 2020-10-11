@@ -165,17 +165,20 @@
 
                             <!--Data Grid-->
                             <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                                <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding SupplierBills}"
+                                <Grid>
+                                    <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding SupplierBills}"
                         SelectedItem="{Binding SelectedBill, Mode=TwoWay}" IsReadOnly="True">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header = "Date" Binding = "{Binding Date, StringFormat='dd-MM-yyyy'}"/>
-                                        <DataGridTextColumn Header = "Bill No" FontWeight="SemiBold" Binding = "{Binding BillNo}"/>
-                                        <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
-                                        <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
-                                        <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header = "Date" Binding = "{Binding Date, StringFormat='dd-MM-yyyy'}"/>
+                                            <DataGridTextColumn Header = "Bill No" FontWeight="SemiBold" Binding = "{Binding BillNo}"/>
+                                            <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
 
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
                             </ScrollViewer>
 
                         </Grid>

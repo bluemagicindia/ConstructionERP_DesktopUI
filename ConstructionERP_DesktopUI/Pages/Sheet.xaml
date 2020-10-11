@@ -49,7 +49,7 @@
                             <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
                         </StackPanel>
                     </Button>
-           
+
                     <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
@@ -63,30 +63,33 @@
 
                 <!--Data Grid-->
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Sheets}"
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Sheets}"
                         SelectedItem="{Binding SelectedSheet, Mode=TwoWay}" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                            <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
-                            <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
-                            <!--<DataGridHyperlinkColumn Header="Sheet" Binding="{Binding DocUrl}"  />-->
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
+                                <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
+                                <!--<DataGridHyperlinkColumn Header="Sheet" Binding="{Binding DocUrl}"  />-->
 
-                            <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
+                                <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
 
-                            <DataGridTemplateColumn Header="Download Sheet">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <icons:PackIconFontAwesome Kind="DownloadSolid" />
-                                                <TextBlock Margin="5 0 0 0">Download</TextBlock>
-                                            </StackPanel>
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                                <DataGridTemplateColumn Header="Download Sheet">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <icons:PackIconFontAwesome Kind="DownloadSolid" />
+                                                    <TextBlock Margin="5 0 0 0">Download</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </ScrollViewer>
 
             </Grid>

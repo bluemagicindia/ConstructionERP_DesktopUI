@@ -245,20 +245,23 @@
 
                     <!--Data Grid-->
                     <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Customers}"
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                            <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Customers}"
                         SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" IsReadOnly="True">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                                <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
-                                <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
-                                <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
-                                <DataGridTextColumn Header = "Phone" Binding = "{Binding PhoneNumbers}"/>
-                                <DataGridTextColumn Header = "Current Address" Binding = "{Binding CurrentAddress}"/>
-                                <DataGridTextColumn Header = "PAN" Binding = "{Binding PAN}"/>
-                                <DataGridTextColumn Header = "Aadhaar" Binding = "{Binding Aadhaar}"/>
-                                <DataGridTextColumn Header = "Referred By" Binding = "{Binding ReferredBy}"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                    <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
+                                    <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
+                                    <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
+                                    <DataGridTextColumn Header = "Phone" Binding = "{Binding PhoneNumbers}"/>
+                                    <DataGridTextColumn Header = "Current Address" Binding = "{Binding CurrentAddress}"/>
+                                    <DataGridTextColumn Header = "PAN" Binding = "{Binding PAN}"/>
+                                    <DataGridTextColumn Header = "Aadhaar" Binding = "{Binding Aadhaar}"/>
+                                    <DataGridTextColumn Header = "Referred By" Binding = "{Binding ReferredBy}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
                     </ScrollViewer>
 
                 </Grid>

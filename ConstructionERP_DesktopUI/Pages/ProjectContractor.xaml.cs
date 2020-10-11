@@ -254,10 +254,23 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetContractors()
         {
             try
             {
+                IsProgressing = true;
                 Contractors = new ObservableCollection<ContractorModel>();
                 var projectContractors = await projectContractorsAPIHelper.GetProjectContractorsByProjectID(ParentLayout.LoggedInUser.Token, ParentLayout.SelectedProject.ID);
                 projectContractors.ToList().ForEach(pc => Contractors.Add(pc.Contractor));
@@ -265,6 +278,10 @@ namespace ConstructionERP_DesktopUI.Pages
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
             }
 
 

@@ -12,7 +12,7 @@
         <CollectionViewSource x:Key="TeamMembersSource" Source="{Binding TeamMembers}"/>
         <CollectionViewSource x:Key="WatchersSource" Source="{Binding WatchingMembers}"/>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -67,33 +67,36 @@
 
                 <!--Data Grid-->
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Tasks}"
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Tasks}"
                         SelectedItem="{Binding SelectedTask, Mode=TwoWay}" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                            <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
-                            <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
-                            <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
-                            <DataGridTextColumn Header = "Stamp" Binding = "{Binding Stamp.Title}"/>
-                            <!--<DataGridTextColumn Header = "Sheet" Binding = "{Binding Sheet.Title}"/>-->
-                            <DataGridTemplateColumn Header="Sheet">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <icons:PackIconFontAwesome Kind="DownloadSolid" />
-                                                <TextBlock Margin="5 0 0 0">Download</TextBlock>
-                                            </StackPanel>
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
-                            <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
-                            <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
-                            <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
+                                <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
+                                <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
+                                <DataGridTextColumn Header = "Stamp" Binding = "{Binding Stamp.Title}"/>
+                                <!--<DataGridTextColumn Header = "Sheet" Binding = "{Binding Sheet.Title}"/>-->
+                                <DataGridTemplateColumn Header="Sheet">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <icons:PackIconFontAwesome Kind="DownloadSolid" />
+                                                    <TextBlock Margin="5 0 0 0">Download</TextBlock>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
+                                <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
+                                <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
+                                <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </ScrollViewer>
 
             </Grid>
@@ -149,7 +152,7 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                
+
 
                                 <TextBlock Style="{StaticResource FormTitle}">Watchers</TextBlock>
                                 <ComboBox Style="{StaticResource BorderedComboBox}" FontSize="14" MinHeight="35" FontFamily="Calibri" IsEditable="True" Text="{Binding WatchersText}" >
@@ -167,7 +170,7 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                
+
 
                                 <TextBlock Style="{StaticResource FormTitle}">Start Date</TextBlock>
                                 <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>

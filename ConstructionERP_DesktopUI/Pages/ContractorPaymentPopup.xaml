@@ -158,17 +158,20 @@
 
                             <!--Data Grid-->
                             <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                                <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding ContractorTransactions}"
+                                <Grid>
+                                    <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding ContractorTransactions}"
                         SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}" IsReadOnly="True">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header = "Transaction Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
-                                        <DataGridTextColumn Header = "Allocated By" Binding = "{Binding CreatedBy}"/>
-                                        <DataGridTextColumn Header = "Tentative Amount" Binding = "{Binding TentativeAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
-                                        <DataGridTextColumn Header = "Payment" Binding = "{Binding PaidAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold"/>
-                                        <DataGridTextColumn Header = "Cumulative Amout" Binding = "{Binding Cumulative, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="15" FontWeight="SemiBold"/>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header = "Transaction Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
+                                            <DataGridTextColumn Header = "Allocated By" Binding = "{Binding CreatedBy}"/>
+                                            <DataGridTextColumn Header = "Tentative Amount" Binding = "{Binding TentativeAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Payment" Binding = "{Binding PaidAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold"/>
+                                            <DataGridTextColumn Header = "Cumulative Amout" Binding = "{Binding Cumulative, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="15" FontWeight="SemiBold"/>
 
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
                             </ScrollViewer>
 
                         </Grid>

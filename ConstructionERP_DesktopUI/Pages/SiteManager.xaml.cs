@@ -213,17 +213,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetSiteManagers()
         {
             try
             {
+                IsProgressing = true;
                 SiteManagers = await apiHelper.GetSiteManagers(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
+            finally
+            {
+                IsProgressing = false;
+            }
 
         }
 
@@ -269,7 +285,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         private async Task CreateSiteManager()
         {
-           
+
             List<KeyValuePair<string, string>> values = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("Name", SiteManagerName),
@@ -322,7 +338,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 }
 
             }
-          
+
         }
 
         private void ClearFields()

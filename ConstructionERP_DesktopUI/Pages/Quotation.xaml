@@ -60,18 +60,21 @@
 
                 <!--Data Grid-->
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Quotations}"
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Quotations}"
                         SelectedItem="{Binding SelectedQuotation, Mode=TwoWay}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                            <DataGridTextColumn Header = "Vendor" Binding = "{Binding Vendor}"/>
-                            <DataGridTextColumn Header = "Material" Binding = "{Binding Material.Name}"/>
-                            <DataGridTextColumn Header = "Cost" Binding = "{Binding Cost}"/>
-                            <DataGridTextColumn Header = "Narration" Binding = "{Binding Narration}"/>
-                            <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
-                            <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                <DataGridTextColumn Header = "Vendor" Binding = "{Binding Vendor}"/>
+                                <DataGridTextColumn Header = "Material" Binding = "{Binding Material.Name}"/>
+                                <DataGridTextColumn Header = "Cost" Binding = "{Binding Cost}"/>
+                                <DataGridTextColumn Header = "Narration" Binding = "{Binding Narration}"/>
+                                <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
+                                <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </ScrollViewer>
 
             </Grid>
@@ -104,13 +107,13 @@
                             <StackPanel Margin="15 0">
                                 <TextBlock Style="{StaticResource FormTitle}">Vendor</TextBlock>
                                 <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Vendor, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                
+
                                 <TextBlock Style="{StaticResource FormTitle}">Cost</TextBlock>
                                 <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                
+
                                 <TextBlock Style="{StaticResource FormTitle}">Material</TextBlock>
                                 <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Materials}"  SelectedItem="{Binding Material, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Material.Name}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
-                                
+
                                 <TextBlock Style="{StaticResource FormTitle}">Narration</TextBlock>
                                 <TextBox Style="{StaticResource BorderedTextBox}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Height="80" Text="{Binding Narration, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 

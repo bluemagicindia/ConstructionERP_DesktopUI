@@ -201,18 +201,34 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
 
         private async Task GetTransactions()
         {
-            long cumulative = 0;
+            //long cumulative = 0;
             try
             {
+                IsProgressing = true;
                 CustomerTransactions = await apiHelper.GetCustomerPayments(Customer.ID, ParentLayout.LoggedInUser.Token);
                 //CustomerTransactions.ToList().ForEach(ct => ct.Cumulative = cumulative = cumulative + ct.TentativeAmount - ct.PaidAmount);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
             }
 
 
@@ -276,7 +292,7 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 ErrorMessage = "";
                 ErrorVisibility = "Collapsed";
-                if (validatePayment())
+                if (ValidatePayment())
                 {
 
                     CanPay = false;
@@ -326,7 +342,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         }
 
-        bool validatePayment()
+        bool ValidatePayment()
         {
             if (SelectedFlat == null)
             {
@@ -468,12 +484,6 @@ namespace ConstructionERP_DesktopUI.Pages
                 popupMaxWidth = value;
                 OnPropertyChanged("PopupMaxWidth");
             }
-        }
-
-        void SetDimensions()
-        {
-            PopupMaxHeight = SystemParameters.WorkArea.Width;
-            PopupMaxWidth = SystemParameters.WorkArea.Height;
         }
 
         #endregion

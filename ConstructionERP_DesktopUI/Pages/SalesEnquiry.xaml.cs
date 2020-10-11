@@ -239,15 +239,32 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         private async Task GetEnquiries()
         {
             try
             {
+                IsProgressing = true;
                 SalesEnquiries = await apiHelper.GetSalesEnquiries(ParentLayout.LoggedInUser.Token);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
             }
 
 
@@ -350,7 +367,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 }
 
             }
-           
+
 
         }
 

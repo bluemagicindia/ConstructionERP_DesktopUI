@@ -69,19 +69,22 @@
 
                 <!--Data Grid-->
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Suppliers}"
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Suppliers}"
                         SelectedItem="{Binding SelectedSupplier, Mode=TwoWay}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                            <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
-                            <DataGridTextColumn Header = "Phone" Binding = "{Binding Phone}"/>
-                            <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
-                            <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
-                            <DataGridTextColumn Header = "WorkDescription" Binding = "{Binding WorkDescription}"/>
-                            <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
-                            <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
+                                <DataGridTextColumn Header = "Name" Binding = "{Binding Name}"/>
+                                <DataGridTextColumn Header = "Phone" Binding = "{Binding Phone}"/>
+                                <DataGridTextColumn Header = "Email" Binding = "{Binding Email}"/>
+                                <DataGridTextColumn Header = "GSTN" Binding = "{Binding GSTN}"/>
+                                <DataGridTextColumn Header = "WorkDescription" Binding = "{Binding WorkDescription}"/>
+                                <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
+                                <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </ScrollViewer>
 
             </Grid>

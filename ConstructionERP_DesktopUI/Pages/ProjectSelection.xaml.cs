@@ -107,19 +107,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
         public async Task GetProjects(string searchText)
         {
             try
             {
-
+                IsProgressing = true;
                 Projects = string.IsNullOrWhiteSpace(searchText) ? await apiHelper.GetProjects(loggedInUser.Token) : await apiHelper.GetProjects(LoggedInUser.Token, searchText);
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
+            finally
+            {
+                IsProgressing = false;
+            }
 
         }
 
@@ -170,7 +184,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         public ICommand SelectionCommand { get; private set; }
 
-        private async void SelectProject(object param)
+        private void SelectProject(object param)
         {
             try
             {
