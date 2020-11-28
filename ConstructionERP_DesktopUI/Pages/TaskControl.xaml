@@ -76,9 +76,9 @@
                                 <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
                                 <DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>
                                 <DataGridTextColumn Header = "Status" Binding = "{Binding Status.Title}"/>
-                                <DataGridTextColumn Header = "Stamp" Binding = "{Binding Stamp.Title}"/>
+                                <DataGridTextColumn Header = "Category" Binding = "{Binding Stamp.Title}"/>
                                 <!--<DataGridTextColumn Header = "Sheet" Binding = "{Binding Sheet.Title}"/>-->
-                                <DataGridTemplateColumn Header="Sheet">
+                                <DataGridTemplateColumn Header="Photo">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
@@ -90,6 +90,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridTextColumn Header = "Description" Binding = "{Binding Description}"/>
                                 <DataGridTextColumn Header = "StartDate" Binding = "{Binding StartDate, StringFormat='dd-MM-yyyy'}"/>
                                 <DataGridTextColumn Header = "DueDate" Binding = "{Binding DueDate, StringFormat='dd-MM-yyyy'}"/>
                                 <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
@@ -178,10 +179,10 @@
                                 <TextBlock Style="{StaticResource FormTitle}">Due Date</TextBlock>
                                 <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding DueDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
 
-                                <TextBlock Style="{StaticResource FormTitle}">Stamp</TextBlock>
+                                <TextBlock Style="{StaticResource FormTitle}">Category</TextBlock>
                                 <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Stamps}"  SelectedItem="{Binding SelectedStamp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedStamp.Title}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True" Text="{Binding StampText}" />
 
-                                <TextBlock Style="{StaticResource FormTitle}">Sheet</TextBlock>
+                                <TextBlock Style="{StaticResource FormTitle}">Photo</TextBlock>
                                 <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Sheets}"  SelectedItem="{Binding SelectedSheet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedSheet.Title}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
 
                                 <TextBlock Style="{StaticResource FormTitle}">Description</TextBlock>

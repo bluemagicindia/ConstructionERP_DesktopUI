@@ -259,8 +259,8 @@
     <Compile Include="Pages\SiteManager.xaml.cs">
       <DependentUpon>SiteManager.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Stamp.xaml.cs">
-      <DependentUpon>Stamp.xaml</DependentUpon>
+    <Compile Include="Pages\TaskCategory.xaml.cs">
+      <DependentUpon>TaskCategory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ProjectSupplier.xaml.cs">
       <DependentUpon>ProjectSupplier.xaml</DependentUpon>
@@ -403,7 +403,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Stamp.xaml">
+    <Page Include="Pages\TaskCategory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

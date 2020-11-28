@@ -56,8 +56,8 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "TaskType":
                     view = new TaskType(this);
                     break;
-                case "TaskStamp":
-                    view = new Stamp(this);
+                case "TaskCategory":
+                    view = new TaskCategory(this);
                     break;
                 case "Sheet":
                     view = new Sheet(this);

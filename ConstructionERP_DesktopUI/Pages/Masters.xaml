@@ -49,14 +49,14 @@
             </Grid>
         </Button>
 
-        <Button Grid.Column="2" Grid.Row="0" Margin="15" Padding="10" Command="{Binding NavigationCommand}" CommandParameter="TaskStamp">
+        <Button Grid.Column="2" Grid.Row="0" Margin="15" Padding="10" Command="{Binding NavigationCommand}" CommandParameter="TaskCategory">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="8*" />
                     <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
                 <Image Source="/Resources/Images/stamp.png" Grid.Row="0" />
-                <TextBlock Grid.Row="1" Style="{StaticResource ButtonText}">Task Stamp</TextBlock>
+                <TextBlock Grid.Row="1" Style="{StaticResource ButtonText}">Task Category</TextBlock>
             </Grid>
         </Button>
 

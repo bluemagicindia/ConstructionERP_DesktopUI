@@ -5,6 +5,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +21,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private ProjectAPIHelper apiHelper;
+        private ProjectStatusAPIHelper statusAPIHelper;
 
         public ProjectSelection()
         {
@@ -31,9 +33,11 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new ProjectAPIHelper();
+            statusAPIHelper = new ProjectStatusAPIHelper();
 
             LoggedInUser = Application.Current.Properties["LoggedInUser"] as LoggedInUser;
-            new Action(async () => await GetProjects(null))();
+            new Action(async () => await GetProjects("In Progress"))();
+            new Action(async () => await GetStatuses())();
 
             ProjectPopupCommand = new RelayCommand(PopupWindow);
             SearchCommand = new RelayCommand(SearchProject);
@@ -90,6 +94,33 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        //Statuses
+        private ObservableCollection<StatusModel> statuses;
+
+        public ObservableCollection<StatusModel> Statuses
+        {
+            get { return statuses; }
+            set
+            {
+                statuses = value;
+                OnPropertyChanged("Statuses");
+            }
+        }
+
+        private StatusModel selectedStatus;
+
+        public StatusModel SelectedStatus
+        {
+            get { return selectedStatus; }
+            set
+            {
+                selectedStatus = value;
+                OnPropertyChanged("SelectedStatus");
+                new Action(async () => await GetProjects(value.Title))();
+            }
+        }
+
+
 
         #endregion
 
@@ -134,6 +165,25 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 IsProgressing = false;
             }
+
+        }
+
+        #endregion
+
+        #region Get Project Statuses
+
+        private async Task GetStatuses()
+        {
+            try
+            {
+                Statuses = await statusAPIHelper.GetStatuses(LoggedInUser.Token);
+                SelectedStatus = Statuses.Where(s => s.Title == "In Progress").FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
 
         }
 

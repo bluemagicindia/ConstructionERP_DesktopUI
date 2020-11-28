@@ -16,14 +16,14 @@ namespace ConstructionERP_DesktopUI.Pages
     /// <summary>
     /// Interaction logic for Stamp.xaml
     /// </summary>
-    public partial class Stamp : UserControl, INotifyPropertyChanged
+    public partial class TaskCategory : UserControl, INotifyPropertyChanged
     {
 
         #region Initialization
 
         private StampAPIHelper apiHelper;
 
-        public Stamp(MainLayout mainLayout)
+        public TaskCategory(MainLayout mainLayout)
         {
             InitializeComponent();
             DataContext = this;
