@@ -1,10 +1,13 @@
 ﻿using ConstructionERP_DesktopUI.API;
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,6 +43,8 @@ namespace ConstructionERP_DesktopUI.Pages
             new Action(async () => await GetMaterials())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateQuotation()); }, () => CanSaveQuotation);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteQuotation()); }, () => CanDeleteQuotation);
+            SelectFileCommand = new RelayCommand(SelectFile);
+            DownloadCommand = new RelayCommand(DownloadFile);
         }
 
         #endregion
@@ -151,6 +156,19 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 narration = value;
                 OnPropertyChanged("Narration");
+            }
+        }
+
+
+        private string filePath;
+
+        public string FilePath
+        {
+            get { return filePath; }
+            set
+            {
+                filePath = value;
+                OnPropertyChanged("FilePath");
             }
         }
 
@@ -347,6 +365,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 if (FieldValidation.ValidateFields(values))
                 {
                     CanSaveQuotation = false;
+                    string UploadPath = "";
 
                     QuotationModel quotationData = new QuotationModel()
                     {
@@ -363,10 +382,22 @@ namespace ConstructionERP_DesktopUI.Pages
                         quotationData.CreatedBy = SelectedQuotation.CreatedBy;
                         quotationData.ModifiedOn = DateTime.Now;
                         quotationData.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                        if (!string.IsNullOrEmpty(FilePath))
+                        {
+                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Documents/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
+                            FTPHelper.UploadFile(FilePath, UploadPath);
+                            quotationData.DocUrl = UploadPath;
+                        }
                         result = await apiHelper.PutQuotation(ParentLayout.LoggedInUser.Token, quotationData).ConfigureAwait(false);
                     }
                     else
                     {
+                        if (!string.IsNullOrEmpty(FilePath))
+                        {
+                            UploadPath = $"{ConfigurationManager.AppSettings["FTPUrl"]}/Documents/{Guid.NewGuid()}.{FilePath.Substring(FilePath.IndexOf(".") + 1, FilePath.Length - FilePath.IndexOf(".") - 1)}";
+                            FTPHelper.UploadFile(FilePath, UploadPath);
+                        }
+                        quotationData.DocUrl = UploadPath;
                         quotationData.CreatedBy = ParentLayout.LoggedInUser.Name;
                         result = await apiHelper.PostQuotation(ParentLayout.LoggedInUser.Token, quotationData).ConfigureAwait(false);
                     }
@@ -402,7 +433,7 @@ namespace ConstructionERP_DesktopUI.Pages
                 Vendor = "";
                 Cost = 0;
                 Narration = "";
-
+                FilePath = "";
             }
             catch (Exception)
             {
@@ -451,6 +482,11 @@ namespace ConstructionERP_DesktopUI.Pages
                     if (result.IsSuccessStatusCode)
                     {
                         await GetQuotations();
+                        if (string.IsNullOrEmpty(SelectedQuotation.DocUrl))
+                        {
+                            FTPHelper.DeletFile(SelectedQuotation.DocUrl);
+                        }
+                        FTPHelper.DeletFile(selectedQuotation.DocUrl);
                     }
                     else
                     {
@@ -473,5 +509,76 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
+        #region Select File Command
+
+        public ICommand SelectFileCommand { get; private set; }
+
+        private void SelectFile(object parameter)
+        {
+
+            try
+            {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    OpenFileDialog fileDialog = new OpenFileDialog();
+                    //fileDialog.Filter = "Excel Sheets (*.xlsx)|*.xlsx|Excel Old(*.xls)|*xls";
+                    if (fileDialog.ShowDialog() == true)
+                    {
+                        FilePath = fileDialog.FileName;
+                    }
+
+                });
+
+            }
+            catch (Exception ex)
+            {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    ParentLayout.ShowMessageAsync("Error", ex.Message, MessageDialogStyle.Affirmative, new MetroDialogSettings() { ColorScheme = MetroDialogColorScheme.Accented });
+                });
+            }
+
+
+
+        }
+
+        #endregion
+
+        #region Download File Command
+
+        public ICommand DownloadCommand { get; private set; }
+
+        private void DownloadFile(object parameter)
+        {
+            try
+            {
+                if (parameter != null)
+                {
+                    var downloadingDocument = parameter as QuotationModel;
+                    if (!string.IsNullOrEmpty(downloadingDocument.DocUrl))
+                    {
+                        FTPHelper.DownloadFile(downloadingDocument.DocUrl);
+                        MessageBox.Show($"Document has been downloaded to '{Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads")}'", "Download Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No file found to download for this Quotation", "No file", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    ParentLayout.ShowMessageAsync("Error", ex.Message, MessageDialogStyle.Affirmative, new MetroDialogSettings() { ColorScheme = MetroDialogColorScheme.Accented });
+                });
+            }
+
+
+
+        }
+
+        #endregion
     }
 }

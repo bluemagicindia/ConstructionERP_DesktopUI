@@ -82,6 +82,17 @@
             </Grid>
         </Button>
 
+        <Button Grid.Column="5" Grid.Row="0" Margin="15" Padding="10" Command="{Binding NavigationCommand}" CommandParameter="PaymentMode">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <Image Source="/Resources/Images/payments.png" Grid.Row="0" />
+                <TextBlock Grid.Row="1" Style="{StaticResource ButtonText}">Payment Modes</TextBlock>
+            </Grid>
+        </Button>
+
 
         <Button Grid.Column="0" Grid.Row="1" Margin="15" Padding="10" Command="{Binding NavigationCommand}" CommandParameter="ProjectType">
             <Grid>

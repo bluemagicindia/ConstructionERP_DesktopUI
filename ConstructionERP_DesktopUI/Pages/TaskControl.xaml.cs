@@ -767,15 +767,16 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                ID = 0;
-                Title = Description = StatusText = TypeText = StampText = TeamMembersText = WatchersText = string.Empty;
-                StartDate = DateTime.Today;
-                DueDate = DateTime.Today;
-                SelectedSheet = null;
-                SelectedStamp = null;
-                SelectedType = null;
-                SelectedStatus = null;
-                WatchingMembers = null;
+                //ID = 0;
+                //Title = Description = StatusText = TypeText = StampText = TeamMembersText = WatchersText = string.Empty;
+                //StartDate = DateTime.Today;
+                //DueDate = DateTime.Today;
+                //SelectedSheet = null;
+                //SelectedStamp = null;
+                //SelectedType = null;
+                //SelectedStatus = null;
+                //WatchingMembers = null;
+                Title = Description = string.Empty;
             }
             catch (Exception)
             {

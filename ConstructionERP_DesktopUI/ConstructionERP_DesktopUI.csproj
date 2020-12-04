@@ -142,6 +142,7 @@
     <Compile Include="API\TaskWatchersAPIHelper.cs" />
     <Compile Include="API\TaskMembersAPIHelper.cs" />
     <Compile Include="API\FirmAPIHelper.cs" />
+    <Compile Include="API\PaymentModeAPIHelper.cs" />
     <Compile Include="Models\CustomerPaymentModel.cs" />
     <Compile Include="Models\ContractorPaymentModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Models\TeamModel.cs" />
     <Compile Include="Models\TeamSiteManagersModel.cs" />
     <Compile Include="Models\TypeModel.cs" />
+    <Compile Include="Models\PaymentModeModel.cs" />
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">
       <DependentUpon>Contractor.xaml</DependentUpon>
@@ -285,6 +287,9 @@
     </Compile>
     <Compile Include="Pages\Firm.xaml.cs">
       <DependentUpon>Firm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PaymentMode.xaml.cs">
+      <DependentUpon>PaymentMode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Unit.xaml.cs">
       <DependentUpon>Unit.xaml</DependentUpon>
@@ -436,6 +441,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Firm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\PaymentMode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

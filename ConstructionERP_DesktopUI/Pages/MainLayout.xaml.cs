@@ -116,6 +116,9 @@ namespace ConstructionERP_DesktopUI.Pages
                 case "Settings":
                     view = new Settings(this);
                     break;
+                case "PaymentMode":
+                    view = new PaymentMode(this);
+                    break;
                 default:
                     view = new Dashboard(this);
                     break;

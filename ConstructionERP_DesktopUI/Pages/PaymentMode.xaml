@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ConstructionERP_DesktopUI.Pages.Quotation"
+﻿<UserControl x:Class="ConstructionERP_DesktopUI.Pages.PaymentMode"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
         <!--Title Bar-->
         <Grid Margin="10 0" Grid.Row="0">
             <Border BorderThickness="0 0 0 2" BorderBrush="#ccc" Padding="0 18">
-                <TextBlock FontSize="20" FontWeight="SemiBold" Foreground="#0c9c07">Quotations</TextBlock>
+                <TextBlock FontSize="20" FontWeight="SemiBold" Foreground="#0c9c07">Payment Modes</TextBlock>
             </Border>
         </Grid>
 
@@ -39,7 +39,7 @@
                     <Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="120" Style="{StaticResource SquaredButton2}">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Create New</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Create</TextBlock>
                         </StackPanel>
                     </Button>
 
@@ -49,7 +49,6 @@
                             <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
                         </StackPanel>
                     </Button>
-
                     <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
@@ -62,26 +61,11 @@
                 <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
                     <Grid>
                         <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
-                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding Quotations}"
-                        SelectedItem="{Binding SelectedQuotation, Mode=TwoWay}">
+                        <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding PaymentModes}"
+                        SelectedItem="{Binding SelectedPaymentMode, Mode=TwoWay}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header = "ID" Binding = "{Binding ID}" />
-                                <DataGridTextColumn Header = "Vendor" Binding = "{Binding Vendor}"/>
-                                <DataGridTextColumn Header = "Material" Binding = "{Binding Material.Name}"/>
-                                <DataGridTextColumn Header = "Cost" Binding = "{Binding Cost}"/>
-                                <DataGridTemplateColumn Header="Download Document">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Style="{StaticResource SquaredButton2}" Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding .}">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <icons:PackIconFontAwesome Kind="DownloadSolid" />
-                                                    <TextBlock Margin="5 0 0 0">Download</TextBlock>
-                                                </StackPanel>
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header = "Narration" Binding = "{Binding Narration}"/>
+                                <DataGridTextColumn Header = "Title" Binding = "{Binding Title}"/>
                                 <DataGridTextColumn Header = "Created By" Binding = "{Binding CreatedBy}"/>
                                 <DataGridTextColumn Header = "Created On" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yyyy'}"/>
                             </DataGrid.Columns>
@@ -108,7 +92,7 @@
                                     <icons:PackIconFontAwesome Kind="TimesSolid" Height="14" Width="14" Foreground="#888" VerticalAlignment="Center" FontWeight="Regular"/>
                                 </Button>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource FormHeader}">Material #</TextBlock>
+                                    <TextBlock Style="{StaticResource FormHeader}">Payment Mode #</TextBlock>
                                     <TextBlock Style="{StaticResource FormHeader}" Text="{Binding ID}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -117,32 +101,8 @@
                         <!--Controls-->
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
                             <StackPanel Margin="15 0">
-                                <TextBlock Style="{StaticResource FormTitle}">Vendor</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Vendor, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Cost</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Material</TextBlock>
-                                <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding Materials}"  SelectedItem="{Binding Material, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Material.Name}" IsEditable="True" IsTextSearchEnabled="True" StaysOpenOnEdit="True"  />
-
-                                <TextBlock Style="{StaticResource FormTitle}">Select Document</TextBlock>
-                                <!--<TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title}" ></TextBox>-->
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox IsReadOnly="True" Style="{StaticResource BorderedTextBox}" Text="{Binding FilePath}"/>
-                                    <Button Grid.Column="1" Style="{StaticResource BorderedSquaredButton2}" Command="{Binding SelectFileCommand}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <icons:PackIconFontAwesome Kind="UploadSolid" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-
-                                <TextBlock Style="{StaticResource FormTitle}">Narration</TextBlock>
-                                <TextBox Style="{StaticResource BorderedTextBox}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Height="80" Text="{Binding Narration, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                <TextBlock Style="{StaticResource FormTitle}">Payment Mode Title</TextBlock>
+                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Title}" ></TextBox>
 
                             </StackPanel>
                         </ScrollViewer>
@@ -162,7 +122,8 @@
                 </Border>
             </Grid>
         </Grid>
+
     </Grid>
 </UserControl>
 
-
+    

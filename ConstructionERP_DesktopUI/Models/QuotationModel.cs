@@ -11,6 +11,8 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string Vendor { get; set; }
 
+        public string DocUrl { get; set; }
+
         public MaterialModel Material { get; set; }
 
         public long? MaterialID { get; set; }
