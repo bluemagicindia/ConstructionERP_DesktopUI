@@ -15,6 +15,9 @@ namespace ConstructionERP_DesktopUI.Models
         public long Amount { get; set; }
 
         public string Remarks { get; set; }
+        public long? PaymentModeID { get; set; }
+
+        public PaymentModeModel PaymentMode { get; set; }
 
         public DateTime PaidOn { get; set; }
 

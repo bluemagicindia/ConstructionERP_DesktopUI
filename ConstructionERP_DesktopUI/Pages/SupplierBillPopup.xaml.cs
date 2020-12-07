@@ -36,6 +36,7 @@ namespace ConstructionERP_DesktopUI.Pages
             apiHelper = new SupplierBillAPIHelper();
             paymentApiHelper = new SupplierPaymentAPIHelper();
             new Action(async () => await GetBills())();
+            new Action(async () => await GetPaymentModes())();
             BillCommand = new RelayCommand(async delegate { await Task.Run(() => CreateBill()); }, () => CanBill);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
             ClosePopupCommand = new RelayCommand(ClosePopup);
@@ -152,6 +153,30 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        //Unit
+        private ObservableCollection<PaymentModeModel> paymentModes;
+
+        public ObservableCollection<PaymentModeModel> PaymentModes
+        {
+            get { return paymentModes; }
+            set
+            {
+                paymentModes = value;
+                OnPropertyChanged("PaymentModes");
+            }
+        }
+
+        private PaymentModeModel selectedPaymentMode;
+
+        public PaymentModeModel SelectedPaymentMode
+        {
+            get { return selectedPaymentMode; }
+            set
+            {
+                selectedPaymentMode = value;
+                OnPropertyChanged("SelectedPaymentMode");
+            }
+        }
 
 
         #endregion
@@ -204,12 +229,12 @@ namespace ConstructionERP_DesktopUI.Pages
                 foreach (var bill in bills)
                 {
                     long pending = bill.Amount;
-                    SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending });
+                    SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
 
                     foreach (var supplierPayment in bill.SupplierPayments)
                     {
                         pending -= supplierPayment.Amount;
-                        SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, PaymentID = supplierPayment.ID, Date = supplierPayment.PaidOn, PaymentAmount = supplierPayment.Amount, IsBill = false, Pending = pending });
+                        SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, PaymentID = supplierPayment.ID, Date = supplierPayment.PaidOn, PaymentAmount = supplierPayment.Amount, PaymentMode = supplierPayment.PaymentMode?.Title ?? "NA", IsBill = false, Pending = pending });
                     }
                 }
             }
@@ -223,6 +248,24 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+
+        #endregion
+
+        #region Get Payment Modes
+
+        private async Task GetPaymentModes()
+        {
+            try
+            {
+                PaymentModes = await new PaymentModeAPIHelper().GetPaymentModes(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
 
         #endregion
 
@@ -298,7 +341,10 @@ namespace ConstructionERP_DesktopUI.Pages
                 else if (BillNo.Trim().Length == 0)
                 {
                     MessageBox.Show("Please enter Bill Number", "Bill Number Required", MessageBoxButton.OK, MessageBoxImage.Error);
-
+                }
+                else if (IsPayment && SelectedPaymentMode == null)
+                {
+                    MessageBox.Show("Please select Payment Mode", "Payment Mode Required", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -339,6 +385,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             SupplierBillID = SelectedBill.ID,
                             PaidOn = BillDate,
                             Amount = Amount,
+                            PaymentMode = SelectedPaymentMode,
                             Remarks = Remarks,
                             Status = true,
                             CreatedOn = DateTime.Now,
