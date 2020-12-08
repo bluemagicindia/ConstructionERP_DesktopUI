@@ -23,7 +23,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="700" Width="1250">
+        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="730" Width="1270">
             <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -155,13 +155,19 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Style="{StaticResource FormTitle}">Remarks</TextBlock>
-                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Remarks, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="100" ></TextBox>
+                                    <TextBlock Style="{StaticResource FormTitle}">Payment Mode</TextBlock>
+                                    <ComboBox Style="{StaticResource BorderedComboBox}" ItemsSource="{Binding PaymentModes}"  SelectedItem="{Binding SelectedPaymentMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedPaymentMode.Title}" />
                                 </StackPanel>
+
+
+
 
                             </Grid>
 
-
+                            <StackPanel >
+                                <TextBlock Style="{StaticResource FormTitle}">Remarks</TextBlock>
+                                <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Remarks, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="50" ></TextBox>
+                            </StackPanel>
 
 
                             <Button Width="180" Margin="0 40 0 0" Style="{StaticResource SquaredButton2}" Command="{Binding PaymentCommand}">
@@ -228,6 +234,8 @@
                                             <DataGridTextColumn Header = "GST Rec." Binding = "{Binding GSTReceived, StringFormat='₹ {0}'}" FontWeight="DemiBold" />
 
                                             <DataGridTextColumn Header = "Stamp Duty Bal." Binding = "{Binding StampDutyBalance}"/>
+
+                                            <DataGridTextColumn Header = "Payment Mode" Binding = "{Binding PaymentMode.Title}"/>
 
                                             <DataGridTextColumn Header = "Remarks" Binding = "{Binding Remarks}"/>
 

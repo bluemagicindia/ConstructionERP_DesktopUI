@@ -22,6 +22,9 @@ namespace ConstructionERP_DesktopUI.Models
 
         public DateTime PaymentDate { get; set; }
 
+        public long? PaymentModeID { get; set; }
+
+        public PaymentModeModel PaymentMode { get; set; }
         public string Remarks { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.Now;

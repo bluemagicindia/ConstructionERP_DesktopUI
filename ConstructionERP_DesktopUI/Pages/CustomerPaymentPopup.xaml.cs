@@ -36,6 +36,7 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             apiHelper = new CustomerPaymentAPIHelper();
             new Action(async () => await GetTransactions())();
+            new Action(async () => await GetPaymentModes())();
             PaymentCommand = new RelayCommand(async delegate { await Task.Run(() => CreatePayment()); }, () => CanPay);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
             ClosePopupCommand = new RelayCommand(ClosePopup);
@@ -173,6 +174,31 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private ObservableCollection<PaymentModeModel> paymentModes;
+
+        public ObservableCollection<PaymentModeModel> PaymentModes
+        {
+            get { return paymentModes; }
+            set
+            {
+                paymentModes = value;
+                OnPropertyChanged("PaymentModes");
+            }
+        }
+
+        private PaymentModeModel selectedPaymentMode;
+
+        public PaymentModeModel SelectedPaymentMode
+        {
+            get { return selectedPaymentMode; }
+            set
+            {
+                selectedPaymentMode = value;
+                OnPropertyChanged("SelectedPaymentMode");
+            }
+        }
+
+
         #endregion
 
         #region Get Transactions
@@ -234,6 +260,24 @@ namespace ConstructionERP_DesktopUI.Pages
 
         }
 
+
+        #endregion
+
+        #region Get Payment Modes
+
+        private async Task GetPaymentModes()
+        {
+            try
+            {
+                PaymentModes = await new PaymentModeAPIHelper().GetPaymentModes(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
 
         #endregion
 
@@ -307,6 +351,7 @@ namespace ConstructionERP_DesktopUI.Pages
                         GSTReceived = GSTReceived,
                         StampDutyBalance = StampDutyBalance,
                         PaymentDate = PaymentDate,
+                        PaymentModeID = SelectedPaymentMode.ID,
                         Remarks = Remarks,
                         Status = false,
                         CreatedOn = DateTime.Now,
@@ -353,6 +398,12 @@ namespace ConstructionERP_DesktopUI.Pages
             else if (AggregateAmountReceived <= 0 && ExtraWorkTotal <= 0 && ExtraWorkReceived <= 0)
             {
                 ErrorMessage = "Please enter Aggregate or Extra Amount";
+                ErrorVisibility = "Visible";
+                return false;
+            }
+            else if (SelectedPaymentMode == null)
+            {
+                ErrorMessage = "Please select valid Payment Mode";
                 ErrorVisibility = "Visible";
                 return false;
             }

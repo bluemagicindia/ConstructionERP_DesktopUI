@@ -183,7 +183,7 @@
                                             <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
                                             <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
                                             <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
-                                            <DataGridTextColumn Header = "PaymentMode" Binding = "{Binding PaymentMode}"/>
+                                            <DataGridTextColumn Header = "Payment Mode" Binding = "{Binding PaymentMode}"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
