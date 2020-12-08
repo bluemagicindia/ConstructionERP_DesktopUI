@@ -61,7 +61,7 @@
                     <Button Grid.Column="4" Margin="0 0 10 0"  Style="{StaticResource SolidButtonSuccess }" Command="{Binding PaymentCommand}" >
                         <StackPanel Orientation="Horizontal">
                             <icons:PackIconFontAwesome Kind="RupeeSignSolid"  />
-                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Payment"/>
+                            <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Add / Pay Bill"/>
                         </StackPanel>
                     </Button>
 

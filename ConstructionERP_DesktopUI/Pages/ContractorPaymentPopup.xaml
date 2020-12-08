@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         d:DesignHeight="700"
         d:DesignWidth="1366"
-        Title="TentativePaymentPopup" WindowState="Maximized"
+        Title="Contractor Bill &amp; Payments Popup" WindowState="Maximized"
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True">
     <Window.Background>
@@ -20,7 +20,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="600" Width="1150">
+        <Border Grid.Column="1" CornerRadius="12"  Background="#fff" Height="620" Width="1150">
             <Grid Grid.Column="1" Visibility="{Binding OperationsVisibility}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -37,7 +37,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Style="{StaticResource FormHeader}">Contractor Payments</TextBlock>
+                                <TextBlock Style="{StaticResource FormHeader}">Contractor Bills &amp; Payments</TextBlock>
                             </StackPanel>
 
                             <Button Grid.Column="1"  Command="{Binding ClosePopupCommand}" CommandParameter="Hide" Style="{StaticResource TransparentButton}">
@@ -75,22 +75,23 @@
 
                             </Grid>
 
-                            <Grid Margin="0 20 0 0">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="8*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="8*"/>
                                 </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                    <RadioButton IsChecked="{Binding IsTentativeAmount, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" />
-                                    <TextBlock Style="{StaticResource CheckboxText}" Text="Tentative Amount" />
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource FormTitle}">Bill Number</TextBlock>
+                                    <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding BillNo, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="2" Orientation="Horizontal" >
-                                    <RadioButton IsChecked="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType"/>
-                                    <TextBlock Style="{StaticResource CheckboxText}" Text="Payment" />
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Style="{StaticResource FormTitle}">Date</TextBlock>
+
+                                    <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding BillDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
                                 </StackPanel>
+
 
                             </Grid>
 
@@ -107,19 +108,33 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Style="{StaticResource FormTitle}">Date</TextBlock>
-
-                                    <DatePicker Style="{StaticResource BorderedDatePicker}" SelectedDate="{Binding AmountDate, UpdateSourceTrigger=PropertyChanged}"></DatePicker>
+                                    <TextBlock Style="{StaticResource FormTitle}">Payment Mode</TextBlock>
+                                    <ComboBox Style="{StaticResource BorderedComboBox}" IsEnabled="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding PaymentModes}"  SelectedItem="{Binding SelectedPaymentMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Title" SelectedValuePath="Title" SelectedValue="{Binding SelectedPaymentMode.Title}" />
                                 </StackPanel>
-
 
                             </Grid>
 
+                            <Grid  Margin="0 20 0 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0 0 0 10">
+                                    <RadioButton IsChecked="{Binding IsBill, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" IsEnabled="{Binding IsBill, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Style="{StaticResource CheckboxText}" Text="Bill" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" >
+                                    <RadioButton IsChecked="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}" GroupName="PaymentType" IsEnabled="{Binding IsPayment, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Style="{StaticResource CheckboxText}" Text="Payment" />
+                                </StackPanel>
+                            </Grid>
 
                             <TextBlock Style="{StaticResource FormTitle}">Remarks</TextBlock>
-                            <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Remarks, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="100" ></TextBox>
+                            <TextBox Style="{StaticResource BorderedTextBox}" Text="{Binding Remarks, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" ></TextBox>
 
-                            <Button Width="180" Margin="0 40 0 0" Style="{StaticResource SquaredButton2}" Command="{Binding PaymentCommand}">
+                            <Button Width="180" Margin="0 40 0 0" Style="{StaticResource SquaredButton2}" Command="{Binding BillCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <icons:PackIconFontAwesome Kind="{Binding SaveBtnIcon}" VerticalAlignment="Center" FontSize="15" Spin="{Binding IsSaveSpinning}" />
                                     <TextBlock Text="{Binding SaveBtnText}" VerticalAlignment="Center" FontSize="14" Padding="10 0 0 0"/>
@@ -135,12 +150,12 @@
                             </Grid.RowDefinitions>
                             <!--Buttons-->
                             <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                <!--<Button Command="{Binding ToggleOperationCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="120" Style="{StaticResource SquaredButton2}">
+                                <Button Command="{Binding SwitchPayBillCommand}" CommandParameter="Create" Margin="0 0 10 0" Width="120" Style="{StaticResource SolidButtonSuccess}">
                                     <StackPanel Orientation="Horizontal">
                                         <icons:PackIconFontAwesome Kind="PlusSolid" Height="13" Width="13" VerticalAlignment="Center"/>
-                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Payment</TextBlock>
+                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Pay Bill</TextBlock>
                                     </StackPanel>
-                                </Button>-->
+                                </Button>
 
                                 <!--<Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
                                     <StackPanel Orientation="Horizontal">
@@ -160,15 +175,15 @@
                             <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
                                 <Grid>
                                     <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,100,0,0" />
-                                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding ContractorTransactions}"
-                        SelectedItem="{Binding SelectedTransaction, Mode=TwoWay}" IsReadOnly="True">
+                                    <DataGrid Style="{StaticResource BasicGrid}" ItemsSource="{Binding ContractorBills}"
+                        SelectedItem="{Binding SelectedBill, Mode=TwoWay}" IsReadOnly="True">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header = "Transaction Date" Binding = "{Binding PaymentDate, StringFormat='dd-MM-yyyy'}"/>
-                                            <DataGridTextColumn Header = "Allocated By" Binding = "{Binding CreatedBy}"/>
-                                            <DataGridTextColumn Header = "Tentative Amount" Binding = "{Binding TentativeAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
-                                            <DataGridTextColumn Header = "Payment" Binding = "{Binding PaidAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold"/>
-                                            <DataGridTextColumn Header = "Cumulative Amout" Binding = "{Binding Cumulative, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="15" FontWeight="SemiBold"/>
-
+                                            <DataGridTextColumn Header = "Date" Binding = "{Binding Date, StringFormat='dd-MM-yyyy'}"/>
+                                            <DataGridTextColumn Header = "Bill No" FontWeight="SemiBold" Binding = "{Binding BillNo}"/>
+                                            <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
+                                            <DataGridTextColumn Header = "PaymentMode" Binding = "{Binding PaymentMode}"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>

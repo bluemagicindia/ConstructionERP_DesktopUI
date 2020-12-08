@@ -20,7 +20,8 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #region Initialization
 
-        private ContractorPaymentAPIHelper apiHelper;
+        private ContractorBillAPIHelper apiHelper;
+        private ContractorPaymentAPIHelper paymentApiHelper;
 
         public ContractorPaymentPopup(MainLayout parentLayout, ContractorModel contractor)
         {
@@ -33,11 +34,14 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
-            apiHelper = new ContractorPaymentAPIHelper();
-            new Action(async () => await GetTransactions())();
-            PaymentCommand = new RelayCommand(async delegate { await Task.Run(() => CreatePayment()); }, () => CanPay);
+            apiHelper = new ContractorBillAPIHelper();
+            paymentApiHelper = new ContractorPaymentAPIHelper();
+            new Action(async () => await GetBills())();
+            new Action(async () => await GetPaymentModes())();
+            BillCommand = new RelayCommand(async delegate { await Task.Run(() => CreateBill()); }, () => CanBill);
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
             ClosePopupCommand = new RelayCommand(ClosePopup);
+            SwitchPayBillCommand = new RelayCommand(SwitchPayBill);
 
         }
 
@@ -77,6 +81,17 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private string billNo;
+
+        public string BillNo
+        {
+            get { return billNo; }
+            set
+            {
+                billNo = value;
+                OnPropertyChanged("BillNo");
+            }
+        }
 
 
         private long amount;
@@ -92,14 +107,14 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
-        private DateTime amountDate = DateTime.Today;
-        public DateTime AmountDate
+        private DateTime billDate = DateTime.Today;
+        public DateTime BillDate
         {
-            get { return amountDate; }
+            get { return billDate; }
             set
             {
-                amountDate = value;
-                OnPropertyChanged("AmountDate");
+                billDate = value;
+                OnPropertyChanged("BillDate");
             }
         }
 
@@ -115,15 +130,15 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private bool isTentativeAmount;
+        private bool isBill = true;
 
-        public bool IsTentativeAmount
+        public bool IsBill
         {
-            get { return isTentativeAmount; }
+            get { return isBill; }
             set
             {
-                isTentativeAmount = value;
-                OnPropertyChanged("IsTentativeAmount");
+                isBill = value;
+                OnPropertyChanged("IsBill");
             }
         }
 
@@ -139,33 +154,57 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        //Unit
+        private ObservableCollection<PaymentModeModel> paymentModes;
+
+        public ObservableCollection<PaymentModeModel> PaymentModes
+        {
+            get { return paymentModes; }
+            set
+            {
+                paymentModes = value;
+                OnPropertyChanged("PaymentModes");
+            }
+        }
+
+        private PaymentModeModel selectedPaymentMode;
+
+        public PaymentModeModel SelectedPaymentMode
+        {
+            get { return selectedPaymentMode; }
+            set
+            {
+                selectedPaymentMode = value;
+                OnPropertyChanged("SelectedPaymentMode");
+            }
+        }
 
 
         #endregion
 
-        #region Get Transactions
+        #region Get Bills
 
-        private ObservableCollection<ContractorPaymentModel> contractorTransactions;
+        private ObservableCollection<ContractorBillPaymentModel> contractorBills;
 
-        public ObservableCollection<ContractorPaymentModel> ContractorTransactions
+        public ObservableCollection<ContractorBillPaymentModel> ContractorBills
         {
-            get { return contractorTransactions; }
+            get { return contractorBills; }
             set
             {
-                contractorTransactions = value;
-                OnPropertyChanged("ContractorTransactions");
+                contractorBills = value;
+                OnPropertyChanged("ContractorBills");
             }
         }
 
-        private ContractorPaymentModel selectedTransaction;
+        private ContractorBillPaymentModel selectedBill;
 
-        public ContractorPaymentModel SelectedTransaction
+        public ContractorBillPaymentModel SelectedBill
         {
-            get { return selectedTransaction; }
+            get { return selectedBill; }
             set
             {
-                selectedTransaction = value;
-                OnPropertyChanged("SelectedTransaction");
+                selectedBill = value;
+                OnPropertyChanged("SelectedBill");
             }
         }
 
@@ -181,17 +220,24 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-        private async Task GetTransactions()
+        private async Task GetBills()
         {
-            long cumulative = 0;
             try
             {
                 IsProgressing = true;
-                ContractorTransactions = await apiHelper.GetContractorPayments(Contractor.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
-                await Task.Run(() =>
+                var bills = await apiHelper.GetContractorBills(contractor.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
+                ContractorBills = new ObservableCollection<ContractorBillPaymentModel>();
+                foreach (var bill in bills)
                 {
-                    ContractorTransactions.ToList().ForEach(ct => ct.Cumulative = cumulative = cumulative + ct.TentativeAmount - ct.PaidAmount);
-                });
+                    long pending = bill.Amount;
+                    ContractorBills.Add(new ContractorBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
+
+                    foreach (var contractorPayment in bill.ContractorPayments)
+                    {
+                        pending -= contractorPayment.Amount;
+                        ContractorBills.Add(new ContractorBillPaymentModel { ID = bill.ID, PaymentID = contractorPayment.ID, Date = contractorPayment.PaidOn, PaymentAmount = contractorPayment.Amount, PaymentMode = contractorPayment.PaymentMode?.Title ?? "NA", IsBill = false, Pending = pending });
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -201,105 +247,186 @@ namespace ConstructionERP_DesktopUI.Pages
             {
                 IsProgressing = false;
             }
-
-
         }
 
 
         #endregion
 
-        #region Create Transaction
+        #region Get Payment Modes
 
-        public ICommand PaymentCommand { get; private set; }
-
-        private bool canPay = true;
-
-        public bool CanPay
+        private async Task GetPaymentModes()
         {
-            get { return canPay; }
+            try
+            {
+                PaymentModes = await new PaymentModeAPIHelper().GetPaymentModes(ParentLayout.LoggedInUser.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+
+        }
+
+        #endregion
+
+        #region Switch Pay Bill
+
+        public ICommand SwitchPayBillCommand { get; private set; }
+
+        public void SwitchPayBill(object value)
+        {
+            try
+            {
+                if (SelectedBill?.IsBill == true)
+                {
+                    if (MessageBox.Show($"Are you sure you want to pay for Bill No '{SelectedBill.BillNo}'", "Pay Bill", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        BillNo = SelectedBill.BillNo;
+                        Amount = SelectedBill.BillAmount;
+                        IsPayment = true;
+                        IsBill = false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a bill to be paid", "Select Bill", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        #endregion
+
+        #region Create or Pay Bill
+
+        public ICommand BillCommand { get; private set; }
+
+        private bool canBill = true;
+
+        public bool CanBill
+        {
+            get { return canBill; }
             set
             {
-                canPay = value;
-                OnPropertyChanged("CreatePayment");
+                canBill = value;
+                OnPropertyChanged("CreateBill");
                 OnPropertyChanged("IsSaveSpinning");
                 OnPropertyChanged("SaveBtnText");
                 OnPropertyChanged("SaveBtnIcon");
             }
         }
 
-        public bool IsSaveSpinning => !canPay;
+        public bool IsSaveSpinning => !canBill;
 
-        public string SaveBtnText => canPay ? "Save" : "Saving...";
+        public string SaveBtnText => canBill ? "Save" : "Saving...";
 
-        public string SaveBtnIcon => canPay ? "SaveRegular" : "SpinnerSolid";
+        public string SaveBtnIcon => canBill ? "SaveRegular" : "SpinnerSolid";
 
-        private async Task CreatePayment()
+        private async Task CreateBill()
         {
             try
             {
-                if (!(IsPayment || IsTentativeAmount))
+                if (!(IsPayment || IsBill))
                 {
-                    MessageBox.Show("Please select either a Tentative Amount or Payment Option", "Option Required", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Please select either a Bill or Payment Option", "Option Required", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else if (Amount <= 0)
                 {
                     MessageBox.Show("Please enter an amount", "Amount Required", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+                else if (BillNo.Trim().Length == 0)
+                {
+                    MessageBox.Show("Please enter Bill Number", "Bill Number Required", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (IsPayment && SelectedPaymentMode == null)
+                {
+                    MessageBox.Show("Please select Payment Mode", "Payment Mode Required", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 else
                 {
-                    CanPay = false;
-
-                    ContractorPaymentModel paymentData = new ContractorPaymentModel
+                    CanBill = false;
+                    if (IsBill)
                     {
-                        ContractorID = Contractor.ID,
-                        ProjectID = ParentLayout.SelectedProject.ID,
-                        PaidAmount = IsPayment ? Amount : 0,
-                        TentativeAmount = isTentativeAmount ? Amount : 0,
-                        PaymentDate = AmountDate,
-                        Remarks = Remarks,
-                        Status = false,
-                        CreatedOn = DateTime.Now,
-                        CreatedBy = ParentLayout.LoggedInUser.Name
-                    };
+                        ContractorBillModel billData = new ContractorBillModel
+                        {
+                            ContractorID = Contractor.ID,
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            BillNo = BillNo,
+                            BillDate = BillDate,
+                            Amount = Amount,
+                            Remarks = Remarks,
+                            Status = true,
+                            CreatedOn = DateTime.Now,
+                            CreatedBy = ParentLayout.LoggedInUser.Name
+                        };
 
 
-                    HttpResponseMessage result = await apiHelper.PostContractorPayment(ParentLayout.LoggedInUser.Token, paymentData).ConfigureAwait(false);
+                        HttpResponseMessage result = await apiHelper.PostContractorBill(ParentLayout.LoggedInUser.Token, billData).ConfigureAwait(false);
 
-                    if (result.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show($"TentativeAmount / Payment Done Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetTransactions();
-                        ClearFields();
-                        //Application.Current.Dispatcher.Invoke((Action)delegate
-                        //{
-                        //    ClearFields();
-                        //});
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Bill Added Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetBills();
+                            ClearFields();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
-                    else
+                    else if (IsPayment)
                     {
-                        MessageBox.Show("Error in payment", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        ContractorPaymentModel paymentData = new ContractorPaymentModel
+                        {
+                            ContractorBillID = SelectedBill.ID,
+                            PaidOn = BillDate,
+                            Amount = Amount,
+                            PaymentMode = SelectedPaymentMode,
+                            Remarks = Remarks,
+                            Status = true,
+                            CreatedOn = DateTime.Now,
+                            CreatedBy = ParentLayout.LoggedInUser.Name
+                        };
+
+
+                        HttpResponseMessage result = await paymentApiHelper.PostContractorPayment(ParentLayout.LoggedInUser.Token, paymentData).ConfigureAwait(false);
+
+                        if (result.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show($"Payment Added Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await GetBills();
+                            ClearFields();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error in adding bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
-                    CanPay = true;
+                    CanBill = true;
                 }
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                CanPay = true;
+                CanBill = true;
             }
-
         }
 
         private void ClearFields()
         {
             try
             {
+                BillNo = Remarks = string.Empty;
                 Amount = 0;
-                AmountDate = DateTime.Today;
-                Remarks = string.Empty;
+                BillDate = DateTime.Today;
                 IsPayment = false;
-                IsTentativeAmount = false;
+                IsBill = true;
             }
             catch (Exception)
             {
@@ -309,7 +436,7 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Transaction Command
+        #region Delete Transaction Bill / Payment
 
         public ICommand DeleteCommand { get; private set; }
 
@@ -337,23 +464,46 @@ namespace ConstructionERP_DesktopUI.Pages
         private async Task DeleteTransaction()
         {
 
-            if (SelectedTransaction != null)
+            if (SelectedBill != null)
             {
-                if (MessageBox.Show($"Are you sure you want to delete this transaction?", "Delete Transaction", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
-                    return;
-                CanDeleteTransaction = false;
                 try
                 {
-                    HttpResponseMessage result = await apiHelper.DeleteContractorPayment(ParentLayout.LoggedInUser.Token, SelectedTransaction.ID).ConfigureAwait(false);
-                    if (result.IsSuccessStatusCode)
+                    if (SelectedBill.IsBill)
                     {
-                        await GetTransactions();
+                        if (MessageBox.Show($"Are you sure you want to delete the bill and its related transactions?", "Delete Bill and Transactions", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            CanDeleteTransaction = false;
+                            HttpResponseMessage result = await apiHelper.DeleteContractorBill(ParentLayout.LoggedInUser.Token, SelectedBill.ID).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in deleting bill and its related payments", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            CanDeleteTransaction = true;
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Error in deleting Transaction", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (MessageBox.Show($"Are you sure you want to delete this bill payment?", "Delete Bill Payment", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            CanDeleteTransaction = false;
+                            HttpResponseMessage result = await paymentApiHelper.DeleteContractorPayment(ParentLayout.LoggedInUser.Token, SelectedBill.PaymentID).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in deleting bill payment", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            CanDeleteTransaction = true;
+
+                        }
                     }
-                    CanDeleteTransaction = true;
+
                 }
                 catch (Exception ex)
                 {

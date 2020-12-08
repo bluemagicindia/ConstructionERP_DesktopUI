@@ -2,7 +2,7 @@
 
 namespace ConstructionERP_DesktopUI.Models
 {
-    public class SupplierBillPaymentModel
+    public class ContractorBillPaymentModel
     {
         public long ID { get; set; }
         public long PaymentID { get; set; }

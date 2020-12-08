@@ -6,17 +6,16 @@ namespace ConstructionERP_DesktopUI.Models
     {
         public long ID { get; set; }
 
-        public long? ProjectID { get; set; }
+        public long? ContractorBillID { get; set; }
 
-        public long? ContractorID { get; set; }
-
-        public long TentativeAmount { get; set; }
-
-        public long PaidAmount { get; set; }
+        public long Amount { get; set; }
 
         public string Remarks { get; set; }
+        public long? PaymentModeID { get; set; }
 
-        public DateTime PaymentDate { get; set; }
+        public PaymentModeModel PaymentMode { get; set; }
+
+        public DateTime PaidOn { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -28,10 +27,8 @@ namespace ConstructionERP_DesktopUI.Models
 
         public bool Status { get; set; }
 
-        public ContractorModel Contractor { get; set; }
+        public ContractorBillModel ContractorBill { get; set; }
 
-        public ProjectModel Project { get; set; }
 
-        public long Cumulative { get; set; }
     }
 }

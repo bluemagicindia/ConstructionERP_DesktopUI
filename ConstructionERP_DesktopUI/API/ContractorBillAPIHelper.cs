@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ConstructionERP_DesktopUI.API
 {
-    public class ContractorPaymentAPIHelper
+    public class ContractorBillAPIHelper
     {
         #region Initialization
 
-        private HttpClient httpClient;
+        private readonly HttpClient httpClient;
 
-        public ContractorPaymentAPIHelper()
+        public ContractorBillAPIHelper()
         {
 
             httpClient = new HttpClient();
@@ -26,9 +26,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Post Contractor Payment
+        #region Post Contractor Bill
 
-        public async Task<HttpResponseMessage> PostContractorPayment(string token, ContractorPaymentModel paymentData)
+        public async Task<HttpResponseMessage> PostContractorBill(string token, ContractorBillModel billData)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/ContractorPayment", paymentData))
+                using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/ContractorBills", billData))
                 {
                     return response;
                 }
@@ -50,9 +50,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Get Contractor Payments
+        #region Get Contractor Bills
 
-        public async Task<ObservableCollection<ContractorPaymentModel>> GetContractorPayments(long? ContractorID, long? ProjectID, string token)
+        public async Task<ObservableCollection<ContractorBillModel>> GetContractorBills(long? ContractorID, long? ProjectID, string token)
         {
             try
             {
@@ -61,11 +61,11 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ContractorPayment/Transactions/{ContractorID}/{ProjectID}"))
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ContractorBills/Bills/{ContractorID}/{ProjectID}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsAsync<ObservableCollection<ContractorPaymentModel>>();
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<ContractorBillModel>>();
                         return result;
                     }
                     else
@@ -83,9 +83,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Delete Payment
+        #region Delete Bill
 
-        public async Task<HttpResponseMessage> DeleteContractorPayment(string token, long id)
+        public async Task<HttpResponseMessage> DeleteContractorBill(string token, long id)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/ContractorPayment/{id}"))
+                using (HttpResponseMessage response = await httpClient.DeleteAsync($"/api/ContractorBills/{id}"))
                 {
                     return response;
                 }

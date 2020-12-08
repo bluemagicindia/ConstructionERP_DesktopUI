@@ -131,9 +131,10 @@
     </ApplicationDefinition>
     <Compile Include="API\CustomerPaymentAPIHelper.cs" />
     <Compile Include="API\CustomerAPIHelper.cs" />
+    <Compile Include="API\ContractorBillAPIHelper.cs" />
+    <Compile Include="API\ContractorPaymentAPIHelper.cs" />
     <Compile Include="API\SupplierPaymentAPIHelper.cs" />
     <Compile Include="API\SupplierBillAPIHelper.cs" />
-    <Compile Include="API\ContractorPaymentAPIHelper.cs" />
     <Compile Include="API\ContractorAPIHelper.cs" />
     <Compile Include="API\DocumentAPIHelper.cs" />
     <Compile Include="API\ProjectSuppliersAPIHelper.cs" />
@@ -144,7 +145,6 @@
     <Compile Include="API\FirmAPIHelper.cs" />
     <Compile Include="API\PaymentModeAPIHelper.cs" />
     <Compile Include="Models\CustomerPaymentModel.cs" />
-    <Compile Include="Models\ContractorPaymentModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
     <Compile Include="API\MaterialAPIHelper.cs" />
@@ -189,9 +189,12 @@
     <Compile Include="Models\SiteManagerModel.cs" />
     <Compile Include="Models\StampModel.cs" />
     <Compile Include="Models\StatusModel.cs" />
+    <Compile Include="Models\ContractorBillModel.cs" />
     <Compile Include="Models\SupplierBillModel.cs" />
+    <Compile Include="Models\ContractorBillPaymentModel.cs" />
     <Compile Include="Models\SupplierBillPaymentModel.cs" />
     <Compile Include="Models\SupplierModel.cs" />
+    <Compile Include="Models\ContractorPaymentModel.cs" />
     <Compile Include="Models\SupplierPaymentModel.cs" />
     <Compile Include="Models\TaskWatchersModel.cs" />
     <Compile Include="Models\TaskMembersModel.cs" />
