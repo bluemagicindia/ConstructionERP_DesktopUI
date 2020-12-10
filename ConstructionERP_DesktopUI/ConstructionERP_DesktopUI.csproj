@@ -133,6 +133,7 @@
     <Compile Include="API\CustomerAPIHelper.cs" />
     <Compile Include="API\ContractorBillAPIHelper.cs" />
     <Compile Include="API\ContractorPaymentAPIHelper.cs" />
+    <Compile Include="API\ProjectMilestoneAPIHelper.cs" />
     <Compile Include="API\SupplierPaymentAPIHelper.cs" />
     <Compile Include="API\SupplierBillAPIHelper.cs" />
     <Compile Include="API\ContractorAPIHelper.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="API\TaskMembersAPIHelper.cs" />
     <Compile Include="API\FirmAPIHelper.cs" />
     <Compile Include="API\PaymentModeAPIHelper.cs" />
+    <Compile Include="API\ActivityLogAPIHelper.cs" />
     <Compile Include="Models\CustomerPaymentModel.cs" />
     <Compile Include="Models\DocumentModel.cs" />
     <Compile Include="API\LoginAPIHelper.cs" />
@@ -185,6 +187,7 @@
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\QuotationModel.cs" />
     <Compile Include="Models\SalesEnquiryModel.cs" />
+    <Compile Include="Models\ProjectMilestoneModel.cs" />
     <Compile Include="Models\SheetModel.cs" />
     <Compile Include="Models\SiteManagerModel.cs" />
     <Compile Include="Models\StampModel.cs" />
@@ -203,6 +206,7 @@
     <Compile Include="Models\TeamSiteManagersModel.cs" />
     <Compile Include="Models\TypeModel.cs" />
     <Compile Include="Models\PaymentModeModel.cs" />
+    <Compile Include="Models\ActivityLogModel.cs" />
     <Compile Include="Models\UnitModel.cs" />
     <Compile Include="Pages\Contractor.xaml.cs">
       <DependentUpon>Contractor.xaml</DependentUpon>
