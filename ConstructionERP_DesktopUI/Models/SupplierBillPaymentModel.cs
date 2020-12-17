@@ -13,5 +13,6 @@ namespace ConstructionERP_DesktopUI.Models
         public string PaymentMode { get; set; }
         public bool IsBill { get; set; }
         public long Pending { get; set; }
+        public string Status { get; set; }
     }
 }

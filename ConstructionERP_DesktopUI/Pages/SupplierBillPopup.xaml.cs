@@ -2,8 +2,10 @@
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,6 +43,7 @@ namespace ConstructionERP_DesktopUI.Pages
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
             ClosePopupCommand = new RelayCommand(ClosePopup);
             SwitchPayBillCommand = new RelayCommand(SwitchPayBill);
+            CloseBillCommand = new RelayCommand(async delegate { await Task.Run(() => CloseBill()); });
 
         }
 
@@ -219,17 +222,30 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+        private ObservableCollection<SupplierBillModel> bills;
+
+        public ObservableCollection<SupplierBillModel> Bills
+        {
+            get { return bills; }
+            set
+            {
+                bills = value;
+                OnPropertyChanged("Bills");
+            }
+        }
+
+
         private async Task GetBills()
         {
             try
             {
                 IsProgressing = true;
-                var bills = await apiHelper.GetSupplierBills(supplier.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
+                Bills = await apiHelper.GetSupplierBills(supplier.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
                 SupplierBills = new ObservableCollection<SupplierBillPaymentModel>();
-                foreach (var bill in bills)
+                foreach (var bill in Bills)
                 {
                     long pending = bill.Amount;
-                    SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
+                    SupplierBills.Add(new SupplierBillPaymentModel { ID = bill.ID, Status = bill.Status ? "Active" : "Closed", Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
 
                     foreach (var supplierPayment in bill.SupplierPayments)
                     {
@@ -277,7 +293,11 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                if (SelectedBill?.IsBill == true)
+                if(SelectedBill.Status != "Active")
+                {
+                    MessageBox.Show("Bill has already been closed", "Bill closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (SelectedBill?.IsBill == true)
                 {
                     if (MessageBox.Show($"Are you sure you want to pay for Bill No '{SelectedBill.BillNo}'", "Pay Bill", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
@@ -330,6 +350,7 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
+
                 if (!(IsPayment || IsBill))
                 {
                     MessageBox.Show("Please select either a Bill or Payment Option", "Option Required", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -364,7 +385,6 @@ namespace ConstructionERP_DesktopUI.Pages
                             CreatedBy = ParentLayout.LoggedInUser.Name
                         };
 
-
                         HttpResponseMessage result = await apiHelper.PostSupplierBill(ParentLayout.LoggedInUser.Token, billData).ConfigureAwait(false);
 
                         if (result.IsSuccessStatusCode)
@@ -391,7 +411,6 @@ namespace ConstructionERP_DesktopUI.Pages
                             CreatedOn = DateTime.Now,
                             CreatedBy = ParentLayout.LoggedInUser.Name
                         };
-
 
                         HttpResponseMessage result = await paymentApiHelper.PostSupplierPayment(ParentLayout.LoggedInUser.Token, paymentData).ConfigureAwait(false);
 
@@ -513,6 +532,60 @@ namespace ConstructionERP_DesktopUI.Pages
             else
             {
                 MessageBox.Show("Please select a Transaction to be deleted", "Select Transaction", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+        }
+
+        #endregion
+
+        #region Close Bill
+
+        public ICommand CloseBillCommand { get; private set; }
+
+        private async Task CloseBill()
+        {
+
+            if (SelectedBill != null)
+            {
+                try
+                {
+                    if (SelectedBill.Status == "Active")
+                    {
+                        if (MessageBox.Show($"Are you sure you want to close this bill\nThis process can't be undone?", "Close Bill", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            var closingBill = new List<SupplierBillModel>(Bills).Where(s => s.BillNo == SelectedBill.BillNo).FirstOrDefault();
+                            closingBill.Status = false;
+                            closingBill.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                            closingBill.ModifiedOn = DateTime.Now;
+                            closingBill.SupplierPayments = null;
+
+                            HttpResponseMessage result = await apiHelper.PutSupplierBill(ParentLayout.LoggedInUser.Token, closingBill).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in closing bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bill has already been closed", "Bill already closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CanDeleteTransaction = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a bill to the closed", "Select Bill", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
