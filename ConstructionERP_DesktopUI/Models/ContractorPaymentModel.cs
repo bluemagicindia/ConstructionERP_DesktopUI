@@ -29,6 +29,5 @@ namespace ConstructionERP_DesktopUI.Models
 
         public ContractorBillModel ContractorBill { get; set; }
 
-
     }
 }

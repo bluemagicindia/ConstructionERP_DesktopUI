@@ -156,19 +156,21 @@
                                         <TextBlock VerticalAlignment="Center" Padding="5 0 0 0">Pay Bill</TextBlock>
                                     </StackPanel>
                                 </Button>
-
-                                <!--<Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding ToggleOperationCommand}" CommandParameter="Edit">
-                                    <StackPanel Orientation="Horizontal">
-                                        <icons:PackIconFontAwesome Kind="EditRegular"  />
-                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Edit"/>
-                                    </StackPanel>
-                                </Button>-->
+                               
                                 <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonDanger}" Command="{Binding DeleteCommand}">
                                     <StackPanel Orientation="Horizontal">
                                         <icons:PackIconFontAwesome Kind="{Binding DeleteBtnIcon}" Spin="{Binding IsDeleteSpinning}"  />
                                         <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="{Binding DeleteBtnText}"/>
                                     </StackPanel>
                                 </Button>
+
+                                <Button Margin="0 0 10 0" Width="100" Style="{StaticResource HoveredButtonWarning}" Command="{Binding CloseBillCommand}" CommandParameter="Close">
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:PackIconFontAwesome Kind="EditRegular"  />
+                                        <TextBlock VerticalAlignment="Center" Padding="5 0 0 0" Text="Close Bill"/>
+                                    </StackPanel>
+                                </Button>
+                                
                             </StackPanel>
 
                             <!--Data Grid-->
@@ -180,10 +182,11 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header = "Date" Binding = "{Binding Date, StringFormat='dd-MM-yyyy'}"/>
                                             <DataGridTextColumn Header = "Bill No" FontWeight="SemiBold" Binding = "{Binding BillNo}"/>
-                                            <DataGridTextColumn Header = "Bill Amount" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
-                                            <DataGridTextColumn Header = "Payment Amount" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
-                                            <DataGridTextColumn Header = "Pending" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
-                                            <DataGridTextColumn Header = "Payment Mode" Binding = "{Binding PaymentMode}"/>
+                                            <DataGridTextColumn Header = "Bill ₹" Binding = "{Binding BillAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource SuccessColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Payment ₹" Binding = "{Binding PaymentAmount, StringFormat='₹ {0}'}" Foreground="{StaticResource DangerColor}" FontSize="14" FontWeight="DemiBold" />
+                                            <DataGridTextColumn Header = "Pending ₹" Binding = "{Binding Pending, StringFormat='₹ {0}'}" Foreground="{StaticResource PrimaryColor}" FontSize="14" FontWeight="DemiBold"/>
+                                            <DataGridTextColumn Header = "PaymentMode" Binding = "{Binding PaymentMode}"/>
+                                            <DataGridTextColumn Header = "Status" FontWeight="SemiBold" Binding = "{Binding Status}"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>

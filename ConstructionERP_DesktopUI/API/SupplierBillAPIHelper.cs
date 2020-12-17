@@ -107,7 +107,7 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Put Contractor
+        #region Put Supplier Bill
 
         public async Task<HttpResponseMessage> PutSupplierBill(string token, SupplierBillModel billData)
         {

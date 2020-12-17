@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConstructionERP_DesktopUI.Models
 {
@@ -32,7 +28,6 @@ namespace ConstructionERP_DesktopUI.Models
         public bool Status { get; set; }
 
         public SupplierBillModel SupplierBill { get; set; }
-
 
     }
 }

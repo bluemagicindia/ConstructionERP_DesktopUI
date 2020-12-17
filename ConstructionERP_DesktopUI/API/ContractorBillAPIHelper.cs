@@ -107,9 +107,9 @@ namespace ConstructionERP_DesktopUI.API
 
         #endregion
 
-        #region Put Contractor
+        #region Put Contractor Bill
 
-        public async Task<HttpResponseMessage> PutContractorPayment(string token, ContractorPaymentModel paymentData)
+        public async Task<HttpResponseMessage> PutContractorBill(string token, ContractorBillModel billData)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace ConstructionERP_DesktopUI.API
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
-                using (HttpResponseMessage response = await httpClient.PutAsJsonAsync("/api/ContractorPayment", paymentData))
+                using (HttpResponseMessage response = await httpClient.PutAsJsonAsync("/api/ContractorBills", billData))
                 {
                     return response;
                 }

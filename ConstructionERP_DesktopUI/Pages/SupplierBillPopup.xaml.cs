@@ -405,7 +405,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             SupplierBillID = SelectedBill.ID,
                             PaidOn = BillDate,
                             Amount = Amount,
-                            PaymentMode = SelectedPaymentMode,
+                            PaymentModeID = SelectedPaymentMode.ID,
                             Remarks = Remarks,
                             Status = true,
                             CreatedOn = DateTime.Now,

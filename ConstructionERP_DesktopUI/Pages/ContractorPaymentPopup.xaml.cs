@@ -2,6 +2,7 @@
 using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace ConstructionERP_DesktopUI.Pages
             DeleteCommand = new RelayCommand(async delegate { await Task.Run(() => DeleteTransaction()); }, () => CanDeleteTransaction);
             ClosePopupCommand = new RelayCommand(ClosePopup);
             SwitchPayBillCommand = new RelayCommand(SwitchPayBill);
-
+            CloseBillCommand = new RelayCommand(async delegate { await Task.Run(() => CloseBill()); });
         }
 
         #endregion
@@ -184,6 +185,18 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #region Get Bills
 
+        private ObservableCollection<ContractorBillModel> bills;
+
+        public ObservableCollection<ContractorBillModel> Bills
+        {
+            get { return bills; }
+            set
+            {
+                bills = value;
+                OnPropertyChanged("Bills");
+            }
+        }
+
         private ObservableCollection<ContractorBillPaymentModel> contractorBills;
 
         public ObservableCollection<ContractorBillPaymentModel> ContractorBills
@@ -225,12 +238,12 @@ namespace ConstructionERP_DesktopUI.Pages
             try
             {
                 IsProgressing = true;
-                var bills = await apiHelper.GetContractorBills(contractor.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
+                Bills = await apiHelper.GetContractorBills(contractor.ID, ParentLayout.SelectedProject.ID, ParentLayout.LoggedInUser.Token);
                 ContractorBills = new ObservableCollection<ContractorBillPaymentModel>();
                 foreach (var bill in bills)
                 {
                     long pending = bill.Amount;
-                    ContractorBills.Add(new ContractorBillPaymentModel { ID = bill.ID, Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
+                    ContractorBills.Add(new ContractorBillPaymentModel { ID = bill.ID, Status = bill.Status ? "Active" : "Closed", Date = bill.BillDate, BillNo = bill.BillNo, BillAmount = bill.Amount, IsBill = true, Pending = pending, PaymentMode = "NA" });
 
                     foreach (var contractorPayment in bill.ContractorPayments)
                     {
@@ -278,7 +291,11 @@ namespace ConstructionERP_DesktopUI.Pages
         {
             try
             {
-                if (SelectedBill?.IsBill == true)
+                if (SelectedBill.Status != "Active")
+                {
+                    MessageBox.Show("Bill has already been closed", "Bill closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else if (SelectedBill?.IsBill == true)
                 {
                     if (MessageBox.Show($"Are you sure you want to pay for Bill No '{SelectedBill.BillNo}'", "Pay Bill", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
@@ -386,7 +403,7 @@ namespace ConstructionERP_DesktopUI.Pages
                             ContractorBillID = SelectedBill.ID,
                             PaidOn = BillDate,
                             Amount = Amount,
-                            PaymentMode = SelectedPaymentMode,
+                            PaymentModeID = SelectedPaymentMode.ID,
                             Remarks = Remarks,
                             Status = true,
                             CreatedOn = DateTime.Now,
@@ -514,6 +531,60 @@ namespace ConstructionERP_DesktopUI.Pages
             else
             {
                 MessageBox.Show("Please select a Transaction to be deleted", "Select Transaction", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+        }
+
+        #endregion
+
+        #region Close Bill
+
+        public ICommand CloseBillCommand { get; private set; }
+
+        private async Task CloseBill()
+        {
+
+            if (SelectedBill != null)
+            {
+                try
+                {
+                    if (SelectedBill.Status == "Active")
+                    {
+                        if (MessageBox.Show($"Are you sure you want to close this bill\nThis process can't be undone?", "Close Bill", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        {
+                            var closingBill = new List<ContractorBillModel>(Bills).Where(s => s.BillNo == SelectedBill.BillNo).FirstOrDefault();
+                            closingBill.Status = false;
+                            closingBill.ModifiedBy = ParentLayout.LoggedInUser.Name;
+                            closingBill.ModifiedOn = DateTime.Now;
+                            closingBill.ContractorPayments = null;
+
+                            HttpResponseMessage result = await apiHelper.PutContractorBill(ParentLayout.LoggedInUser.Token, closingBill).ConfigureAwait(false);
+                            if (result.IsSuccessStatusCode)
+                            {
+                                await GetBills();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in closing bill", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Bill has already been closed", "Bill already closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CanDeleteTransaction = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a bill to the closed", "Select Bill", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
