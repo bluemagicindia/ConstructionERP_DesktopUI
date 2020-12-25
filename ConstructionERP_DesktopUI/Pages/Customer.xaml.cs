@@ -23,7 +23,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private CustomerAPIHelper apiHelper;
-
+        private ActivityLogAPIHelper logAPIHelper;
         public Customer(MainLayout mainLayout)
         {
             InitializeComponent();
@@ -36,6 +36,7 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new CustomerAPIHelper();
+            logAPIHelper = new ActivityLogAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetCustomers())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateCustomer()); }, () => CanSaveCustomer);
@@ -406,6 +407,24 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Customer Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetCustomers();
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Customer",
+                            Description = $"Customer '{customerData.Name}' created by '{ParentLayout.LoggedInUser.Name}'",
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+                        if (isUpdate)
+                        {
+                            logData.Description = $"Customer '{customerData.Name}' updated by '{ParentLayout.LoggedInUser.Name}'";
+                        }
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         ClearFields();
                     }
                     else
@@ -440,7 +459,7 @@ namespace ConstructionERP_DesktopUI.Pages
         }
         #endregion
 
-        #region Delete Contractor Command
+        #region Delete Customer Command
 
         public ICommand DeleteCommand { get; private set; }
 
@@ -478,6 +497,20 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteCustomer(ParentLayout.LoggedInUser.Token, SelectedCustomer.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Customer",
+                            Description = $"Customer '{SelectedCustomer.Name}' deleted by '{ParentLayout.LoggedInUser.Name}'",
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         await GetCustomers();
                         ClearFields();
                     }

@@ -25,7 +25,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private DocumentAPIHelper apiHelper;
-
+        private ActivityLogAPIHelper logAPIHelper;
         public Document(MainLayout mainLayout)
         {
             InitializeComponent();
@@ -37,6 +37,8 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new DocumentAPIHelper();
+            logAPIHelper = new ActivityLogAPIHelper();
+
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetDocuments())();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateDocument()); }, () => CanSaveDocument);
@@ -331,6 +333,25 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Document Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetDocuments();
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Document",
+                            Description = $"Document '{documentData.Title}' created by '{ParentLayout.LoggedInUser.Name}'",
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+                        if (isUpdate)
+                        {
+                            logData.Description = $"Sheet '{documentData.Title}' updated by '{ParentLayout.LoggedInUser.Name}'";
+                        }
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         ClearFields();
 
                         IsUpdate = false;
@@ -406,8 +427,28 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteDocument(ParentLayout.LoggedInUser.Token, SelectedDocument.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Document",
+                            Description = $"Document '{SelectedDocument.Title}' deleted by '{ParentLayout.LoggedInUser.Name}'",
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
+                        if (!string.IsNullOrEmpty(SelectedDocument.Title))
+                        {
+                            FTPHelper.DeletFile(SelectedDocument.DocUrl);
+                        }
+
                         await GetDocuments();
-                        FTPHelper.DeletFile(SelectedDocument.DocUrl);
                     }
                     else
                     {

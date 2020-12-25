@@ -302,32 +302,28 @@
                         <Border BorderBrush="#ccc" BorderThickness="1" CornerRadius="3" Padding="15" Background="#fff">
                             <StackPanel>
                                 <TextBlock Foreground="#999" FontSize="13" Margin="0 0 0 10">RECENT ACTIVITY</TextBlock>
-                                <mah:SplitButton  x:Name="DrpActivityFilter" BorderBrush="{StaticResource PrimaryColor}" 
-                 HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="1">
+                                <mah:SplitButton  x:Name="DrpActivityFilter" BorderBrush="{StaticResource PrimaryColor}"
+                 HorizontalContentAlignment="Left" FontSize="14" Padding="0" BorderThickness="1" ItemsSource="{Binding LogTypes}" SelectedItem="{Binding SelectedLogType}">
                                     <mah:SplitButton.Icon>
                                         <icons:PackIconFontAwesome Margin="6" Kind="ListAltRegular" />
                                     </mah:SplitButton.Icon>
+                                    
                                 </mah:SplitButton>
 
-                                <StackPanel x:Name="TimeLineStack" Margin="0 40 0 0">
-                                    <StackPanel >
-                                        <StackPanel Orientation="Horizontal">
-                                            <icons:PackIconFontAwesome Kind="CalendarAltRegular" Height="20" Width="20" Foreground="#333" />
-                                            <TextBlock Padding="10 0 0 20" FontSize="15" Foreground="#333">May 30, 2020</TextBlock>
-                                        </StackPanel>
+                                <ScrollViewer Margin="0 10 0 0" Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                    <Grid>
+                                        <mah:ProgressRing IsActive="{Binding IsProgressing}" Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,60,0,0" />
+                                        <DataGrid Style="{StaticResource MahApps.Styles.DataGrid}" MaxHeight="620" ItemsSource="{Binding Logs}" AutoGenerateColumns="False"
+                         IsReadOnly="True">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn  Header = "Activity" Binding = "{Binding Description}"/>
+                                                <!--<DataGridTextColumn Header = "Type" Binding = "{Binding Type.Title}"/>-->
+                                                <DataGridTextColumn Header = "Date/Time" Binding = "{Binding CreatedOn, StringFormat='dd-MM-yy hh:mm tt'}"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </ScrollViewer>
 
-                                        <StackPanel Margin="20 0 0 10" Orientation="Horizontal">
-                                            <icons:PackIconFontAwesome Foreground="#666" Kind="ArrowAltCircleRightRegular" Height="18" Width="18" />
-                                            <TextBlock Foreground="#666" FontSize="13" Padding="10 0 0 0">Basharat Hussain created a new project</TextBlock>
-                                        </StackPanel>
-
-                                        <StackPanel Margin="20 0 0 10" Orientation="Horizontal">
-                                            <icons:PackIconFontAwesome Foreground="#666" Kind="ArrowAltCircleRightRegular" Height="18" Width="18" />
-                                            <TextBlock Foreground="#666" FontSize="13" Padding="10 0 0 0">Basharat Hussain created a new document</TextBlock>
-                                        </StackPanel>
-                                    </StackPanel>
-
-                                </StackPanel>
                             </StackPanel>
                         </Border>
                     </StackPanel>

@@ -31,7 +31,7 @@ namespace ConstructionERP_DesktopUI.Pages
         private TeamSiteManagersAPIHelper teamSiteManagersAPIHelper;
         private TaskMembersAPIHelper taskMembersAPIHelper;
         private TaskWatchersAPIHelper taskWatchersAPIHelper;
-
+        private ActivityLogAPIHelper logAPIHelper;
         public TaskControl(MainLayout mainLayout)
         {
             InitializeComponent();
@@ -52,6 +52,7 @@ namespace ConstructionERP_DesktopUI.Pages
             teamSiteManagersAPIHelper = new TeamSiteManagersAPIHelper();
             taskMembersAPIHelper = new TaskMembersAPIHelper();
             taskWatchersAPIHelper = new TaskWatchersAPIHelper();
+            logAPIHelper = new ActivityLogAPIHelper();
 
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetTasks())();
@@ -629,7 +630,6 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
-
         public ICommand SaveCommand { get; private set; }
 
         private bool canSaveTask = true;
@@ -738,6 +738,25 @@ namespace ConstructionERP_DesktopUI.Pages
                         {
                             MessageBox.Show($"Task Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                             await GetTasks();
+
+                            #region Log Data
+
+                            ActivityLogModel logData = new ActivityLogModel()
+                            {
+                                Type = "Task",
+                                Description = $"Task '{taskData.Title}' created by '{ParentLayout.LoggedInUser.Name}'",
+                                ProjectID = ParentLayout.SelectedProject.ID,
+                                CreatedBy = ParentLayout.LoggedInUser.Name,
+                                CreatedOn = DateTime.Now
+                            };
+                            if (isUpdate)
+                            {
+                                logData.Description = $"Task '{taskData.Title}' updated by '{ParentLayout.LoggedInUser.Name}'";
+                            }
+                            await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                            #endregion
+
                             IsUpdate = false;
                             ClearFields();
                             await GetStamps();
@@ -787,7 +806,7 @@ namespace ConstructionERP_DesktopUI.Pages
 
         #endregion
 
-        #region Delete Project Command
+        #region Delete Task Command
 
         public ICommand DeleteCommand { get; private set; }
 
@@ -825,6 +844,22 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteTask(ParentLayout.LoggedInUser.Token, SelectedTask.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
+                       
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Task",
+                            Description = $"Task '{SelectedTask.Title}' deleted by '{ParentLayout.LoggedInUser.Name}'",
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         await GetTasks();
                         ClearFields();
                         await GetTeamMembers();

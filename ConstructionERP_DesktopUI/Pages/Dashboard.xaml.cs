@@ -1,7 +1,11 @@
-﻿using ConstructionERP_DesktopUI.Helpers;
+﻿using ConstructionERP_DesktopUI.API;
+using ConstructionERP_DesktopUI.Helpers;
 using ConstructionERP_DesktopUI.Models;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,7 +21,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private MainLayout ParentLayout = null;
-
+        private ActivityLogAPIHelper logAPIHelper;
         public Dashboard(MainLayout mainLayout)
         {
             InitializeComponent();
@@ -29,7 +33,10 @@ namespace ConstructionERP_DesktopUI.Pages
 
         void SetValues()
         {
+            logAPIHelper = new ActivityLogAPIHelper();
             SetProgress();
+            SetLogTypes();
+            new Action(async () => await GetLogs(null))();
             ParentLayout.PropertyChanged += ParentLayout_PropertyChanged;
             NavigationCommand = new RelayCommand(ParentLayout.SetActiveControl);
         }
@@ -93,6 +100,32 @@ namespace ConstructionERP_DesktopUI.Pages
         }
 
 
+        private List<string> logTypes;
+
+        public List<string> LogTypes
+        {
+            get { return logTypes; }
+            set
+            {
+                logTypes = value;
+                OnPropertyChanged("LogTypes");
+            }
+        }
+
+        private string selectedLogType = "All";
+
+        public string SelectedLogType
+        {
+            get { return selectedLogType; }
+            set
+            {
+                selectedLogType = value;
+                OnPropertyChanged("SelectedLogType");
+                new Action(async () => await GetLogs(value))();
+            }
+        }
+
+
 
         #endregion
 
@@ -114,6 +147,83 @@ namespace ConstructionERP_DesktopUI.Pages
             }
         }
 
+
+        #endregion
+
+        #region Get Logs
+
+        private ObservableCollection<ActivityLogModel> logs;
+
+        public ObservableCollection<ActivityLogModel> Logs
+        {
+            get { return logs; }
+            set
+            {
+                logs = value;
+                OnPropertyChanged("Logs");
+            }
+        }
+
+        private bool isProgressing;
+
+        public bool IsProgressing
+        {
+            get { return isProgressing; }
+            set
+            {
+                isProgressing = value;
+                OnPropertyChanged("IsProgressing");
+            }
+        }
+
+        private async Task GetLogs(string logType)
+        {
+            try
+            {
+                IsProgressing = true;
+                if (logType == null || logType == "All")
+                {
+                    Logs = await logAPIHelper.GetActivityLogsByProject(ParentLayout.LoggedInUser.Token, ParentLayout.SelectedProject.ID);
+                }
+                else
+                {
+                    Logs = await logAPIHelper.GetActivityLogsByProjectAndType(ParentLayout.LoggedInUser.Token, ParentLayout.SelectedProject.ID, logType);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
+            }
+
+
+        }
+
+        #endregion
+
+        #region Set Log Types
+
+        private void SetLogTypes()
+        {
+            try
+            {
+
+                LogTypes = new List<string> { "All", "Sheet", "Task", "Document", "Mention", "Quotation", "Customer" };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                IsProgressing = false;
+            }
+
+
+        }
 
         #endregion
 

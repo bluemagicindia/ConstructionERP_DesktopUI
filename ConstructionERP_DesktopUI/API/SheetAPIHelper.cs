@@ -13,7 +13,6 @@ namespace ConstructionERP_DesktopUI.API
         #region Initialization
 
         private HttpClient httpClient;
-
         public SheetAPIHelper()
         {
 

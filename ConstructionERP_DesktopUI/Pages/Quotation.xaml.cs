@@ -25,6 +25,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private QuotationAPIHelper apiHelper;
+        private ActivityLogAPIHelper logAPIHelper;
 
         public Quotation(MainLayout mainLayout)
         {
@@ -38,6 +39,7 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new QuotationAPIHelper();
+            logAPIHelper = new ActivityLogAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetQuotations())();
             new Action(async () => await GetMaterials())();
@@ -405,6 +407,24 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Quotation Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetQuotations();
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Quotation",
+                            Description = $"Quotation for '{quotationData.Vendor}' created by '{ParentLayout.LoggedInUser.Name}'",
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+                        if (isUpdate)
+                        {
+                            logData.Description = $"Quotation for '{quotationData.Vendor}' updated by '{ParentLayout.LoggedInUser.Name}'";
+                        }
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         IsUpdate = false;
                         ClearFields();
                     }
@@ -481,12 +501,26 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteQuotation(ParentLayout.LoggedInUser.Token, SelectedQuotation.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
-                        await GetQuotations();
-                        if (string.IsNullOrEmpty(SelectedQuotation.DocUrl))
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Quotation",
+                            Description = $"Quotation for '{SelectedQuotation.Vendor}' deleted by '{ParentLayout.LoggedInUser.Name}'",
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
+                        if (!string.IsNullOrEmpty(SelectedQuotation.DocUrl))
                         {
                             FTPHelper.DeletFile(SelectedQuotation.DocUrl);
                         }
-                        FTPHelper.DeletFile(selectedQuotation.DocUrl);
+
+                        await GetQuotations();
                     }
                     else
                     {

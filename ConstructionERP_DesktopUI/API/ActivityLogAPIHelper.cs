@@ -79,6 +79,62 @@ namespace ConstructionERP_DesktopUI.API
 
         }
 
+        public async Task<ObservableCollection<ActivityLogModel>> GetActivityLogsByProject(string token, long projectID)
+        {
+            try
+            {
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ActivityLog/ByProject/{projectID}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<ActivityLogModel>>();
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception(response.ReasonPhrase);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public async Task<ObservableCollection<ActivityLogModel>> GetActivityLogsByProjectAndType(string token, long projectID, string logType)
+        {
+            try
+            {
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {token}");
+                using (HttpResponseMessage response = await httpClient.GetAsync($"/api/ActivityLog/ByProjectAndLogType/{projectID}/{logType}"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await response.Content.ReadAsAsync<ObservableCollection<ActivityLogModel>>();
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception(response.ReasonPhrase);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
         #endregion
 
         #region Delete ActivityLog

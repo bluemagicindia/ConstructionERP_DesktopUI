@@ -25,7 +25,7 @@ namespace ConstructionERP_DesktopUI.Pages
         #region Initialization
 
         private SheetAPIHelper apiHelper;
-
+        private ActivityLogAPIHelper logAPIHelper;
         public Sheet(MainLayout mainLayout)
         {
             InitializeComponent();
@@ -37,6 +37,7 @@ namespace ConstructionERP_DesktopUI.Pages
         void SetValues()
         {
             apiHelper = new SheetAPIHelper();
+            logAPIHelper = new ActivityLogAPIHelper();
             ToggleOperationCommand = new RelayCommand(OpenCloseOperations);
             new Action(async () => await GetSheets(null))();
             SaveCommand = new RelayCommand(async delegate { await Task.Run(() => CreateSheet()); }, () => CanSaveSheet);
@@ -346,8 +347,27 @@ namespace ConstructionERP_DesktopUI.Pages
                     {
                         MessageBox.Show($"Sheet Saved Successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await GetSheets(null);
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Sheet",
+                            Description = $"Sheet '{sheetData.Title}' created by '{ParentLayout.LoggedInUser.Name}'",
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+                        if (isUpdate)
+                        {
+                            logData.Description = $"Sheet '{sheetData.Title}' updated by '{ParentLayout.LoggedInUser.Name}'";
+                        }
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
                         ClearFields();
-                        
+
                         IsUpdate = false;
                     }
                     else
@@ -421,8 +441,28 @@ namespace ConstructionERP_DesktopUI.Pages
                     HttpResponseMessage result = await apiHelper.DeleteSheet(ParentLayout.LoggedInUser.Token, SelectedSheet.ID).ConfigureAwait(false);
                     if (result.IsSuccessStatusCode)
                     {
+
+                        #region Log Data
+
+                        ActivityLogModel logData = new ActivityLogModel()
+                        {
+                            Type = "Sheet",
+                            Description = $"Sheet '{SelectedSheet.Title}' deleted by '{ParentLayout.LoggedInUser.Name}'",
+                            ProjectID = ParentLayout.SelectedProject.ID,
+                            CreatedBy = ParentLayout.LoggedInUser.Name,
+                            CreatedOn = DateTime.Now
+                        };
+
+                        await logAPIHelper.PostActivityLog(ParentLayout.LoggedInUser.Token, logData);
+
+                        #endregion
+
+                        if (!string.IsNullOrEmpty(SelectedSheet.DocUrl))
+                        {
+                            FTPHelper.DeletFile(SelectedSheet.DocUrl);
+                        }
+
                         await GetSheets(null);
-                        FTPHelper.DeletFile(SelectedSheet.DocUrl);
                     }
                     else
                     {

@@ -14,5 +14,8 @@ namespace ConstructionERP_DesktopUI.Models
 
         public string CreatedBy { get; set; }
 
+        public long? ProjectID { get; set; }
+        public ProjectModel Project { get; set; }
+
     }
 }
